@@ -3,6 +3,9 @@ mod capture;
 mod db;
 mod shortcuts;
 mod shell;
+mod continuous;
+mod vision;
+mod ui_automation;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager, WebviewWindow};
@@ -43,6 +46,8 @@ pub fn run() {
         .manage(shortcuts::RegisteredShortcuts::default())
         .manage(shortcuts::MoveWindowState::default())
         .manage(shell::ShellState::default())
+        .manage(continuous::ContinuousState::default())
+        .manage(vision::VisionState::default())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_keychain::init())
@@ -83,6 +88,16 @@ pub fn run() {
             shell::get_shell_settings,
             shell::toggle_answer_window,
             shell::answer_ask,
+            continuous::get_capture_settings,
+            continuous::update_capture_settings,
+            continuous::continuous_add_question,
+            continuous::continuous_add_transcript,
+            continuous::start_continuous,
+            continuous::stop_continuous,
+            continuous::continuous_request_done,
+            vision::get_vision_settings,
+            vision::update_vision_settings,
+            vision::build_screen_context,
             speaker::get_input_devices,
             speaker::get_output_devices,
         ])
