@@ -6,6 +6,9 @@ mod shell;
 mod continuous;
 mod vision;
 mod ui_automation;
+mod providers;
+mod structured;
+mod tts;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager, WebviewWindow};
@@ -48,6 +51,8 @@ pub fn run() {
         .manage(shell::ShellState::default())
         .manage(continuous::ContinuousState::default())
         .manage(vision::VisionState::default())
+        .manage(providers::ProvidersState::default())
+        .manage(tts::TtsState::default())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_keychain::init())
@@ -98,6 +103,18 @@ pub fn run() {
             vision::get_vision_settings,
             vision::update_vision_settings,
             vision::build_screen_context,
+            providers::list_providers,
+            providers::upsert_provider,
+            providers::remove_provider,
+            providers::pick_provider,
+            providers::report_provider_result,
+            providers::set_global_daily_limit,
+            providers::set_neutral_mode,
+            providers::get_providers_status,
+            structured::parse_structured,
+            tts::get_tts_settings,
+            tts::update_tts_settings,
+            tts::set_tts_enabled,
             speaker::get_input_devices,
             speaker::get_output_devices,
         ])
