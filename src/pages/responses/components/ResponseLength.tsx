@@ -1,6 +1,5 @@
 import { Card, Header } from "@/components";
 import { RESPONSE_LENGTHS } from "@/lib";
-import { useApp } from "@/contexts";
 import { updateResponseLength } from "@/lib/storage/response-settings.storage";
 import { useState, useEffect } from "react";
 import { getResponseSettings } from "@/lib";

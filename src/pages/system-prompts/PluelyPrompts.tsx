@@ -5,9 +5,8 @@ import {
   CardHeader,
   CardTitle,
   Header,
-  Empty,
 } from "@/components";
-import { CheckCircle2, Sparkles, BotIcon } from "lucide-react";
+import { CheckCircle2, BotIcon } from "lucide-react";
 import { useApp } from "@/contexts";
 import { safeLocalStorage } from "@/lib";
 import { STORAGE_KEYS } from "@/config";
@@ -57,7 +56,7 @@ const LOCAL_PRESETS: PluelyPrompt[] = [
 
 export const PluelyPrompts = () => {
   const { setSystemPrompt, setSupportsImages } = useApp();
-  const [prompts, setPrompts] = useState<PluelyPrompt[]>(LOCAL_PRESETS);
+  const [prompts] = useState<PluelyPrompt[]>(LOCAL_PRESETS);
   const [selectedPluelyPrompt, setSelectedPluelyPrompt] =
     useState<PluelyPrompt | null>(() => {
       const stored = safeLocalStorage.getItem(

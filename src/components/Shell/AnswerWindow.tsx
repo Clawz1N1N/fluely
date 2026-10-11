@@ -3,7 +3,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { X } from "lucide-react";
 import { Markdown } from "@/components";
-import { useTts } from "@/hooks/useTts";
 import { useShellDrag } from "./useShellDrag";
 import { Shimmer } from "./Shimmer";
 
@@ -23,8 +22,8 @@ interface ChatMessage {
 export const AnswerWindow: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
-  const [mainText, setMainText] = useState("");
-  const [sideText, setSideText] = useState("");
+  const [mainText] = useState("");
+  const [sideText] = useState("");
   const drag = useShellDrag("free");
 
   const sendQuestion = async () => {

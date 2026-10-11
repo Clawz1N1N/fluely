@@ -247,7 +247,6 @@ export const formatShortcutKeyForDisplay = (key: string): string => {
  * Get all available actions (default + custom)
  */
 export const getAllShortcutActions = (): ShortcutAction[] => {
-): ShortcutAction[] => {
   const config = getShortcutsConfig();
   const actions = [...DEFAULT_SHORTCUT_ACTIONS];
 

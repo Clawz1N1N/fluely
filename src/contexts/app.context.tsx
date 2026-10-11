@@ -5,7 +5,6 @@ import {
   STORAGE_KEYS,
 } from "@/config";
 import { getPlatform, safeLocalStorage } from "@/lib";
-import { getShortcutsConfig } from "@/lib/storage";
 import {
   getCustomizableState,
   setCustomizableState,
@@ -131,7 +130,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [customizable, setCustomizable] = useState<CustomizableState>(
     DEFAULT_CUSTOMIZABLE_STATE
   );
-  const hasActiveLicense = true;
   const [supportsImages, setSupportsImagesState] = useState<boolean>(() => {
     const stored = safeLocalStorage.getItem(STORAGE_KEYS.SUPPORTS_IMAGES);
     return stored === null ? true : stored === "true";
@@ -142,9 +140,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setSupportsImagesState(value);
     safeLocalStorage.setItem(STORAGE_KEYS.SUPPORTS_IMAGES, String(value));
   };
-
-  // Pluely API removed: always use local providers
-  const pluelyApiEnabled = false;
 
 
   // Function to load AI, STT, system prompt and screenshot config data from storage
@@ -546,8 +541,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     toggleAlwaysOnTop,
     toggleAutostart,
     loadData,
-    pluelyApiEnabled,
-    hasActiveLicense,
+    selectedAudioDevices,
     setSelectedAudioDevices,
     setCursorType,
     supportsImages,

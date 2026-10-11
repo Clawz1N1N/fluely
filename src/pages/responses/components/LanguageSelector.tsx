@@ -1,6 +1,5 @@
 import { Header, Selection } from "@/components";
 import { LANGUAGES } from "@/lib";
-import { useApp } from "@/contexts";
 import { updateLanguage } from "@/lib/storage/response-settings.storage";
 import { useState, useEffect, useMemo } from "react";
 import { getResponseSettings } from "@/lib";

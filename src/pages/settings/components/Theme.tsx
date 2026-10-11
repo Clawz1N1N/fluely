@@ -1,4 +1,4 @@
-import { useApp, useTheme } from "@/contexts";
+import { useTheme } from "@/contexts";
 import { Header, Label, Slider, Button } from "@/components";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import {
@@ -80,9 +80,7 @@ export const Theme = () => {
       </div>
 
       {/* Transparency Slider */}
-        className="space-y-2"
-        }`}
-      >
+      <div className="space-y-2">
         <Header
           title="Window Transparency"
           description="Adjust the transparency level of the application window"

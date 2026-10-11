@@ -8,14 +8,12 @@ import {
   MonitorIcon,
   HomeIcon,
   PowerIcon,
-  MailIcon,
   CoffeeIcon,
   GlobeIcon,
   BugIcon,
   MessageSquareTextIcon,
 } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
-import { useApp } from "@/contexts";
 import { XIcon, GithubIcon } from "@/components";
 
 export const useMenuItems = () => {
@@ -75,7 +73,7 @@ export const useMenuItems = () => {
     },
   ];
 
-      : []),
+  const footerItems = [
     {
       icon: BugIcon,
       label: "Report a bug",

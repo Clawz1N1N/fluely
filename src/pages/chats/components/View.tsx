@@ -293,8 +293,7 @@ const View = () => {
                   onClick={() => completion.submit()}
                   disabled={
                     completion.isLoading ||
-                    !completion.input.trim() ||
-
+                    !completion.input.trim()
                   }
                 >
                   {completion.isLoading ? (

@@ -149,13 +149,12 @@ export const AudioRecorder = ({
     try {
       const audioBlob = new Blob(chunks, { type: mimeType });
 
-      const usePluelyAPI = false;
       const provider = allSttProviders.find(
         (p) => p.id === selectedSttProvider.provider
       );
 
       const text = await fetchSTT({
-        provider: usePluelyAPI ? undefined : provider,
+        provider: provider,
         selectedProvider: selectedSttProvider,
         audio: audioBlob,
       });

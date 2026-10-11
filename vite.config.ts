@@ -1,18 +1,26 @@
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
+import { writeFileSync } from "node:fs";
 import tailwindcss from "@tailwindcss/vite";
 
 const host = process.env.TAURI_DEV_HOST;
 
 // https://vite.dev/config/
 export default defineConfig(async () => ({
-  plugins: [react(), tailwindcss()],
+  plugins: [react(), tailwindcss(), {
+    name: "local-dev-process",
+    configureServer() {
+      writeFileSync(new URL("./_research/logs/vite-process.json", import.meta.url), JSON.stringify({ pid: process.pid, started: new Date().toISOString() }));
+    },
+  }],
   resolve: {
+    preserveSymlinks: true,
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": path.resolve(process.cwd(), "./src"),
     },
   },
+  optimizeDeps: { esbuildOptions: { preserveSymlinks: true } },
   // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
   //
   // 1. prevent Vite from obscuring rust errors

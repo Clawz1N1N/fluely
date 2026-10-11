@@ -40,8 +40,6 @@ export type IContextType = {
   toggleAlwaysOnTop: (isEnabled: boolean) => Promise<void>;
   toggleAutostart: (isEnabled: boolean) => Promise<void>;
   loadData: () => void;
-  pluelyApiEnabled: boolean;
-  hasActiveLicense: boolean;
   selectedAudioDevices: {
     input: { id: string; name: string };
     output: { id: string; name: string };

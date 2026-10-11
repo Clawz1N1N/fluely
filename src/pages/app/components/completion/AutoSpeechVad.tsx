@@ -38,10 +38,9 @@ const AutoSpeechVADInternal = ({
         const audioBlob = floatArrayToWav(audio, 16000, "wav");
 
         let transcription: string;
-        const usePluelyAPI = false;
 
         // Check if we have a configured speech provider
-        if (!selectedSttProvider.provider && !usePluelyAPI) {
+        if (!selectedSttProvider.provider) {
           console.warn("No speech provider selected");
           setState((prev: any) => ({
             ...prev,
@@ -55,7 +54,7 @@ const AutoSpeechVADInternal = ({
           (p) => p.id === selectedSttProvider.provider
         );
 
-        if (!providerConfig && !usePluelyAPI) {
+        if (!providerConfig) {
           console.warn("Selected speech provider configuration not found");
           setState((prev: any) => ({
             ...prev,
@@ -69,7 +68,7 @@ const AutoSpeechVADInternal = ({
 
         // Use the fetchSTT function for all providers
         transcription = await fetchSTT({
-          provider: usePluelyAPI ? undefined : providerConfig,
+          provider: providerConfig,
           selectedProvider: selectedSttProvider,
           audio: audioBlob,
         });

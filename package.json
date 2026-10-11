@@ -35,8 +35,8 @@
   ],
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "tsc && vite build",
+    "dev": "node scripts/frontend.mjs dev",
+    "build": "tsc && node scripts/frontend.mjs build",
     "preview": "vite preview",
     "tauri": "tauri",
     "check": "node scripts/check-encoding.mjs && tsc --noEmit",
@@ -92,5 +92,9 @@
     "tw-animate-css": "^1.3.6",
     "typescript": "~5.8.3",
     "vite": "^7.0.4"
+  },
+  "allowScripts": {
+    "@tailwindcss/oxide@4.1.12": true,
+    "esbuild@0.25.9": true
   }
 }

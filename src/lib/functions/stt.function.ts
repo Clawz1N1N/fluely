@@ -4,7 +4,6 @@ import {
   blobToBase64,
 } from "./common.function";
 import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
-import { invoke } from "@tauri-apps/api/core";
 
 import { TYPE_PROVIDER } from "@/types";
 import curl2Json from "@bany/curl-to-json";

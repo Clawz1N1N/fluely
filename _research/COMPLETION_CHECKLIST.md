@@ -29,13 +29,13 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | F1a | Усі own text без BOM/invalidUTF8/U+FFFD; FINAL_REPORT repaired | DONE | BUILD_LOG r1-encoding exit0 |
 | F1b | check-encoding BOM/replacement/mojibake/mixedEOL; npm check; precommit | DONE | scripts/check-encoding, tests2/2 |
 | F1c | UTF8 writer, .gitattributes/.editorconfig, targeted recovery | DONE | repair-encoding; valid files untouched |
-| F2 | ALL TS syntax/types errors fixed; lint if configured; changed files read | TODO | R2 |
-| F3 | Deleted-file imports/reexports pluely.api/analytics/api/activate/updater gone | TODO | R2 |
+| F2 | ALL TS syntax/types errors fixed; lint if configured; changed files read | DONE | r2-tsc exit0; no lint configured |
+| F3 | Deleted-file imports/reexports pluely.api/analytics/api/activate/updater gone | DONE | deleted reexport removed, src symbol search0 |
 | F4a | ring exactCL replay+flag bisection English logs | TODO | R3 |
 | F4b | Developer env/SDK; short target/profile/release/clang/nativeTLS as needed | TODO | R3 |
 | F4c | All Rust errors fixed; check/test/clippy | TODO | R3 |
 | F5a | force source removed; legacy-peer-deps=true | DONE | r1-npm-policy false/true |
-| F5b | Approve oxide/esbuild scripts; protobuf only if needed | TODO | R2 |
+| F5b | Approve oxide/esbuild scripts; protobuf only if needed | DONE | approve oxide/esbuild0; protobuf prebuilt runtime dependency, no script needed |
 | F5c | VAD React19 runtime, Vite/Tailwind build/dev | TODO | R2/R5 |
 | F5d | No audit fix force; safe vulnerabilities fixed, others documented | TODO | R2 |
 | F6 | P0 license/input/hooks/keychain/CSP diagnosed and fixed | TODO | P0a-g |
@@ -43,7 +43,7 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | P0b1 | Old main hidden; persistent Listen/Ask/global shortcut handlers | TODO | R4/R5 |
 | P0b2 | Strip/buttons/answer Listen/screenshot/Ask own provider actually run | TODO | R5 |
 | P0c | Input temporary activation removes NOACTIVATE then restores; topmost/protected | TODO | R5 |
-| P0d | LicenseState/has_active_license/hasActiveLicense/pluelyApiEnabled/text removed | TODO | R2/R3 |
+| P0d | LicenseState/has_active_license/hasActiveLicense/pluelyApiEnabled/text removed | DONE | frontend constants/consumers removed; Rust license state already absent |
 | P0e1 | Positional saveItem/getItem/removeItem and verified write/read | TODO | R2/R5 |
 | P0e2 | Migrate plaintext keys; failure warning no silent plaintext fallback | TODO | R5 |
 | P0f | Hide/show all, reset/find, ui_mode, TTS binds registered+handled | TODO | R5 |
@@ -69,8 +69,8 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | P2l2 | Dead code/dependencies removed; npm test/cargo test wired | TODO | R6 |
 | A01 | Tag/status/log/diff, ALL notes+changed/current files read | DONE | TAKEOVER_AUDIT.md |
 | A02 | Claims table+defects+wiring matrix including PHASES_SPEC | DONE | TAKEOVER_AUDIT.md |
-| R1 | Encoding/policy check+group commit | TODO | F1/F5a |
-| R2 | tsc/build0, Vite30s, commit, frontend-green | TODO | BUILD_LOG |
+| R1 | Encoding/policy check+group commit | DONE | commit63a22ac; r1-encoding0, tests2/2 |
+| R2 | tsc/build0, Vite30s, commit, frontend-green | DONE | r2-tsc0, r2-build-final0, r2-vite-preserve30.1s HTTP200 no errors |
 | R3 | cargo check/test/clippy, commit, rust-green | TODO | BUILD_LOG |
 | R4 | runtime60s/backtrace/logs/inspect, commit, runs | TODO | BUILD_LOG |
 | R5 | P0/P1/P2 integrated+tests, group commits, wiring-done | TODO | BUILD_LOG |

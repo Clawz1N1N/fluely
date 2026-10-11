@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
 
 /**
  * Animated rainbow/gradient "shimmer" so buttons are hard to lose.

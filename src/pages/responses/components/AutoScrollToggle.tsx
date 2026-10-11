@@ -1,5 +1,4 @@
 import { Switch, Label, Header } from "@/components";
-import { useApp } from "@/contexts";
 import { useState, useEffect } from "react";
 import { getResponseSettings, updateAutoScroll } from "@/lib";
 
