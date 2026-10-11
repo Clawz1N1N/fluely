@@ -1,7 +1,7 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+﻿import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components";
 import { AudioVisualizer } from "@/pages/app/components/speech/audio-visualizer";
-import { shouldUsePluelyAPI, fetchSTT } from "@/lib";
+import { fetchSTT } from "@/lib";
 import { useApp } from "@/contexts";
 import { StopCircle, Send } from "lucide-react";
 
@@ -149,7 +149,7 @@ export const AudioRecorder = ({
     try {
       const audioBlob = new Blob(chunks, { type: mimeType });
 
-      const usePluelyAPI = await shouldUsePluelyAPI();
+      const usePluelyAPI = false;
       const provider = allSttProviders.find(
         (p) => p.id === selectedSttProvider.provider
       );

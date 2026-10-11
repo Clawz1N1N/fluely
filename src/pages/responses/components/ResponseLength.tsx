@@ -1,4 +1,4 @@
-import { Card, Header } from "@/components";
+﻿import { Card, Header } from "@/components";
 import { RESPONSE_LENGTHS } from "@/lib";
 import { useApp } from "@/contexts";
 import { updateResponseLength } from "@/lib/storage/response-settings.storage";
@@ -7,8 +7,7 @@ import { getResponseSettings } from "@/lib";
 import { CheckCircle2 } from "lucide-react";
 
 export const ResponseLength = () => {
-  const { hasActiveLicense } = useApp();
-  const [selectedLength, setSelectedLength] = useState<string>("auto");
+ const [selectedLength, setSelectedLength] = useState<string>("auto");
 
   useEffect(() => {
     const settings = getResponseSettings();
@@ -16,9 +15,6 @@ export const ResponseLength = () => {
   }, []);
 
   const handleLengthChange = (lengthId: string) => {
-    if (!hasActiveLicense) {
-      return;
-    }
     setSelectedLength(lengthId);
     updateResponseLength(lengthId);
   };
@@ -39,7 +35,7 @@ export const ResponseLength = () => {
               selectedLength === length.id
                 ? "border-primary"
                 : "border-border hover:border-primary/50"
-            } ${!hasActiveLicense ? "opacity-50 cursor-not-allowed" : ""}`}
+            } `}
             onClick={() => handleLengthChange(length.id)}
           >
             <div className="space-y-1">

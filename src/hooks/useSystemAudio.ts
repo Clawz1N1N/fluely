@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback, useRef } from "react";
+﻿import { useEffect, useState, useCallback, useRef } from "react";
 import { useWindowResize, useGlobalShortcuts } from ".";
 import { invoke } from "@tauri-apps/api/core";
 import { listen } from "@tauri-apps/api/event";
@@ -11,8 +11,7 @@ import {
 } from "@/config";
 import {
   safeLocalStorage,
-  shouldUsePluelyAPI,
-  generateConversationTitle,
+ generateConversationTitle,
   saveConversation,
   CONVERSATION_SAVE_DEBOUNCE_MS,
   generateConversationId,
@@ -235,7 +234,7 @@ export function useSystemAudio() {
             }
             const audioBlob = new Blob([bytes], { type: "audio/wav" });
 
-            const usePluelyAPI = await shouldUsePluelyAPI();
+            const usePluelyAPI = false;
             if (!selectedSttProvider.provider && !usePluelyAPI) {
               setError("No speech provider selected.");
               return;
@@ -487,7 +486,7 @@ export function useSystemAudio() {
 
         let fullResponse = "";
 
-        const usePluelyAPI = await shouldUsePluelyAPI();
+        const usePluelyAPI = false;
         if (!selectedAIProvider.provider && !usePluelyAPI) {
           setError("No AI provider selected.");
           return;

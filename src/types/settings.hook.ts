@@ -1,4 +1,4 @@
-import { TYPE_PROVIDER } from "./provider.type";
+﻿import { TYPE_PROVIDER } from "./provider.type";
 import { ScreenshotConfig, ScreenshotMode } from "./settings";
 
 export interface UseSettingsReturn {
@@ -29,5 +29,4 @@ export interface UseSettingsReturn {
   setShowDeleteConfirmDialog: React.Dispatch<React.SetStateAction<boolean>>;
   variables: { key: string; value: string }[];
   sttVariables: { key: string; value: string }[];
-  hasActiveLicense: boolean;
 }

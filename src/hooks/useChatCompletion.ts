@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+﻿import { useState, useCallback, useRef, useEffect } from "react";
 import { useApp } from "@/contexts";
 import { MAX_FILES } from "@/config";
 import {
@@ -6,8 +6,7 @@ import {
   saveConversation,
   getConversationById,
   generateConversationTitle,
-  shouldUsePluelyAPI,
-  MESSAGE_ID_OFFSET,
+ MESSAGE_ID_OFFSET,
   generateMessageId,
   generateRequestId,
   getResponseSettings,
@@ -60,7 +59,7 @@ export const useChatCompletion = (
     selectedSttProvider,
     allSttProviders,
     selectedAudioDevices,
-    hasActiveLicense,
+
   } = useApp();
 
   const [state, setState] = useState<ChatCompletionState>({
@@ -174,7 +173,7 @@ export const useChatCompletion = (
           });
         }
 
-        const usePluelyAPI = await shouldUsePluelyAPI();
+        const usePluelyAPI = false;
         // Check if AI provider is configured
         if (!selectedAIProvider.provider && !usePluelyAPI) {
           setState((prev) => ({
@@ -591,16 +590,6 @@ export const useChatCompletion = (
         screenshotInitiatedByThisContext.current = false;
       } else {
         // Selection Mode: Open overlay to select an area
-        // Only allow if user has active license
-        if (!hasActiveLicense) {
-          setState((prev) => ({
-            ...prev,
-            error: "Selection mode requires an active license",
-          }));
-          setIsScreenshotLoading(false);
-          screenshotInitiatedByThisContext.current = false;
-          return;
-        }
         isProcessingScreenshotRef.current = false;
         await invoke("start_screen_capture");
       }
@@ -616,7 +605,7 @@ export const useChatCompletion = (
         setIsScreenshotLoading(false);
       }
     }
-  }, [handleScreenshotSubmit, hasActiveLicense]);
+  }, [handleScreenshotSubmit]);
 
   useEffect(() => {
     let unlisten: any;
@@ -720,6 +709,6 @@ export const useChatCompletion = (
     selectedSttProvider,
     allSttProviders,
     selectedAudioDevices,
-    hasActiveLicense,
+
   };
 };

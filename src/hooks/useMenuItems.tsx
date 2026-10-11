@@ -1,4 +1,4 @@
-import {
+﻿import {
   Settings,
   Code,
   MessagesSquare,
@@ -19,7 +19,7 @@ import { useApp } from "@/contexts";
 import { XIcon, GithubIcon } from "@/components";
 
 export const useMenuItems = () => {
-  const { hasActiveLicense } = useApp();
+
 
   const menu: {
     icon: React.ElementType;
@@ -75,15 +75,6 @@ export const useMenuItems = () => {
     },
   ];
 
-  const footerItems = [
-    ...(hasActiveLicense
-      ? [
-          {
-            icon: MailIcon,
-            label: "Contact Support",
-            href: "mailto:support@pluely.com",
-          },
-        ]
       : []),
     {
       icon: BugIcon,
@@ -107,7 +98,7 @@ export const useMenuItems = () => {
     {
       title: "Website",
       icon: GlobeIcon,
-      link: "https://pluely.com",
+      link: "https://github.com/iamsrikanthnani/pluely",
     },
     {
       title: "Github",

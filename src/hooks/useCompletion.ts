@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useEffect } from "react";
+﻿import { useState, useCallback, useRef, useEffect } from "react";
 import { useWindowResize } from "./useWindow";
 import { useGlobalShortcuts } from "@/hooks";
 import { MAX_FILES } from "@/config";
@@ -8,8 +8,7 @@ import {
   saveConversation,
   getConversationById,
   generateConversationTitle,
-  shouldUsePluelyAPI,
-  MESSAGE_ID_OFFSET,
+ MESSAGE_ID_OFFSET,
   generateConversationId,
   generateMessageId,
   generateRequestId,
@@ -179,7 +178,7 @@ export const useCompletion = () => {
 
         let fullResponse = "";
 
-        const usePluelyAPI = await shouldUsePluelyAPI();
+        const usePluelyAPI = false;
         // Check if AI provider is configured
         if (!selectedAIProvider.provider && !usePluelyAPI) {
           setState((prev) => ({
@@ -582,7 +581,7 @@ export const useCompletion = () => {
 
             let fullResponse = "";
 
-            const usePluelyAPI = await shouldUsePluelyAPI();
+            const usePluelyAPI = false;
             // Check if AI provider is configured
             if (!selectedAIProvider.provider && !usePluelyAPI) {
               setState((prev) => ({

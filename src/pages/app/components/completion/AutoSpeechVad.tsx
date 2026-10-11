@@ -1,4 +1,4 @@
-import { fetchSTT } from "@/lib";
+﻿import { fetchSTT } from "@/lib";
 import { UseCompletionReturn } from "@/types";
 import { useMicVAD } from "@ricky0123/vad-react";
 import { LoaderCircleIcon, MicIcon, MicOffIcon } from "lucide-react";
@@ -6,7 +6,6 @@ import { useState } from "react";
 import { Button } from "@/components";
 import { useApp } from "@/contexts";
 import { floatArrayToWav } from "@/lib/utils";
-import { shouldUsePluelyAPI } from "@/lib/functions/pluely.api";
 
 interface AutoSpeechVADProps {
   submit: UseCompletionReturn["submit"];
@@ -39,7 +38,7 @@ const AutoSpeechVADInternal = ({
         const audioBlob = floatArrayToWav(audio, 16000, "wav");
 
         let transcription: string;
-        const usePluelyAPI = await shouldUsePluelyAPI();
+        const usePluelyAPI = false;
 
         // Check if we have a configured speech provider
         if (!selectedSttProvider.provider && !usePluelyAPI) {

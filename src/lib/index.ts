@@ -1,4 +1,4 @@
-export * from "./storage";
+﻿export * from "./storage";
 export * from "./version";
 export * from "./functions";
 export * from "./curl-validator";
@@ -6,5 +6,4 @@ export * from "./platform-instructions";
 export * from "./database";
 export * from "./chat-constants";
 export * from "./platform";
-export * from "./analytics";
 export * from "./response-settings.constants";

@@ -1,4 +1,4 @@
-import { useApp, useTheme } from "@/contexts";
+﻿import { useApp, useTheme } from "@/contexts";
 import { Header, Label, Slider, Button } from "@/components";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import {
@@ -10,25 +10,18 @@ import {
 
 export const Theme = () => {
   const { theme, transparency, setTheme, onSetTransparency } = useTheme();
-  const { hasActiveLicense } = useApp();
 
   return (
     <div id="theme" className="relative space-y-3">
       <Header
-        title={`Theme Customization ${
-          hasActiveLicense
-            ? ""
-            : " (You need an active license to use this feature)"
-        }`}
+        title="Theme Customization"
         description="Personalize your experience with custom theme and transparency settings"
         isMainTitle
       />
 
       {/* Theme Toggle */}
       <div
-        className={`space-y-2 ${
-          hasActiveLicense ? "" : "opacity-60 pointer-events-none"
-        }`}
+        className="space-y-2"
       >
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -87,9 +80,7 @@ export const Theme = () => {
       </div>
 
       {/* Transparency Slider */}
-      <div
-        className={`space-y-2 ${
-          hasActiveLicense ? "" : "opacity-60 pointer-events-none"
+        className="space-y-2"
         }`}
       >
         <Header
@@ -109,7 +100,7 @@ export const Theme = () => {
           </div>
 
           <p className="text-xs text-muted-foreground/70">
-            💡 Tip: Higher transparency lets you see through the window, perfect
+            рџ’Ў Tip: Higher transparency lets you see through the window, perfect
             for dark overlay. Changes apply immediately.
           </p>
         </div>
