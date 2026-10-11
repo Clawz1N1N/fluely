@@ -1,4 +1,4 @@
-﻿import {
+import {
   Label,
   Input,
   Select,
@@ -122,7 +122,7 @@ export const ScreenshotConfigs = ({
       {/* Tips */}
       <div className="text-xs text-muted-foreground/70">
         <p>
-          рџ’Ў <strong>Tip:</strong>{" "}
+          💡 <strong>Tip:</strong>{" "}
           {screenshotConfiguration.enabled
             ? "Screenshot mode captures the full screen with one click."
             : "Selection mode lets you choose specific areas to capture."}{" "}

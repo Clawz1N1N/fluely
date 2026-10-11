@@ -1,4 +1,4 @@
-﻿import { useApp, useTheme } from "@/contexts";
+import { useApp, useTheme } from "@/contexts";
 import { Header, Label, Slider, Button } from "@/components";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
 import {
@@ -100,7 +100,7 @@ export const Theme = () => {
           </div>
 
           <p className="text-xs text-muted-foreground/70">
-            рџ’Ў Tip: Higher transparency lets you see through the window, perfect
+            💡 Tip: Higher transparency lets you see through the window, perfect
             for dark overlay. Changes apply immediately.
           </p>
         </div>

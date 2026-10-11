@@ -125,7 +125,7 @@ impl ScreenContext {
         }
         if out.chars().count() > max_chars {
             out.truncate(max_chars);
-            out.push_str("…[truncated]");
+            out.push_str("â€¦[truncated]");
         }
         out
     }

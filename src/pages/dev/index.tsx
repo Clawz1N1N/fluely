@@ -1,4 +1,4 @@
-﻿import { AIProviders, STTProviders } from "./components";
+import { AIProviders, STTProviders } from "./components";
 import { useSettings } from "@/hooks";
 import { PageLayout } from "@/layouts";
 

@@ -1,4 +1,4 @@
-﻿import {
+import {
   ResponseLength,
   LanguageSelector,
   AutoScrollToggle,

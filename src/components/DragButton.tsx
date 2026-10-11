@@ -1,4 +1,4 @@
-﻿import { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { GripVerticalIcon } from "lucide-react";
 import { Button } from "@/components";
 import { useWindowResize } from "@/hooks";

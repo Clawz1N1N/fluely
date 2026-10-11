@@ -2,9 +2,9 @@
 //
 // The model is instructed (via the system prompt) to wrap
 // its output in:
-//   <main>…</main>   primary answer
-//   <side>…</side>   secondary analysis
-//   <speak>…</speak> a detailed plain-language explanation
+//   <main>â€¦</main>   primary answer
+//   <side>â€¦</side>   secondary analysis
+//   <speak>â€¦</speak> a detailed plain-language explanation
 //
 // The parser is tolerant:
 //   * tags split across chunks are reassembled,

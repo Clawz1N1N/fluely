@@ -1,4 +1,4 @@
-﻿import { TYPE_PROVIDER } from "./provider.type";
+import { TYPE_PROVIDER } from "./provider.type";
 import { ScreenshotConfig, ScreenshotMode } from "./settings";
 
 export interface UseSettingsReturn {

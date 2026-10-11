@@ -1,4 +1,4 @@
-﻿import { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button, Card, Switch } from "@/components";
 import { RotateCcw, AlertCircle, Keyboard } from "lucide-react";
 import {
@@ -271,7 +271,7 @@ export const ShortcutManager = () => {
 
       {/* Footer Note */}
       <p className="text-xs text-muted-foreground text-center pt-2">
-        рџ’Ў Shortcuts work globally, even when the app is hidden
+        💡 Shortcuts work globally, even when the app is hidden
       </p>
     </div>
   );

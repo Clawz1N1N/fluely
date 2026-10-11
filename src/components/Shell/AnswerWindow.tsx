@@ -79,11 +79,11 @@ export const AnswerWindow: React.FC = () => {
       <div className="flex flex-1 min-h-0 gap-2 p-2">
         <div className="flex-1 min-w-0 overflow-auto rounded bg-neutral-800/60 p-2">
           <div className="text-[10px] uppercase text-white/40 mb-1">Main</div>
-          <Markdown>{mainText || "…"}</Markdown>
+          <Markdown>{mainText || "â€¦"}</Markdown>
         </div>
         <div className="flex-1 min-w-0 overflow-auto rounded bg-neutral-800/60 p-2">
           <div className="text-[10px] uppercase text-white/40 mb-1">Side</div>
-          <Markdown>{sideText || "…"}</Markdown>
+          <Markdown>{sideText || "â€¦"}</Markdown>
         </div>
       </div>
 
@@ -96,7 +96,7 @@ export const AnswerWindow: React.FC = () => {
             onKeyDown={(e) => {
               if (e.key === "Enter") sendQuestion();
             }}
-            placeholder="Ask…"
+            placeholder="Askâ€¦"
             className="flex-1 bg-neutral-800 rounded px-2 py-1 text-sm outline-none"
           />
           <button

@@ -1,41 +1,41 @@
 # Pluely Fork (custom-overlay)
 
-Це форк Pluely (GPL-3.0) з кастомним оверлеєм, безплатними функціями, локальними провайдерами та без telemetry/updater.
+Р¦Рµ С„РѕСЂРє Pluely (GPL-3.0) Р· РєР°СЃС‚РѕРјРЅРёРј РѕРІРµСЂР»РµС”Рј, Р±РµР·РїР»Р°С‚РЅРёРјРё С„СѓРЅРєС†С–СЏРјРё, Р»РѕРєР°Р»СЊРЅРёРјРё РїСЂРѕРІР°Р№РґРµСЂР°РјРё С‚Р° Р±РµР· telemetry/updater.
 
-## Що змінено
+## Р©Рѕ Р·РјС–РЅРµРЅРѕ
 
-- **Вилучено все платне/віддалене/telemetry**: ліцензії, квоти, Pluely API, PostHog, auto-updater. Маршрутизатор завжди локальний.
-- **Новий shell оверлей**: замість одного вікна 600x54 — кілька вікон (strips / buttons / answer), завжди зверху, захищені від захоплення екрана (`contentProtected` > `WDA_EXCLUDEFROMCAPTURE` на Windows).
-- **Три стани UI** (`ui_mode`): `side` (бічні смуги), `top` (верх/низ), `buttons` (окремі кнопки).
-- **Неперервний режим (mode 3)**: Rust-цикл захоплення кадрів + dedup + батчер (один запит).
-- **Vision для текстових моделей**: OCR (Windows.Media.Ocr), UI Automation, VLM.
-- **Провайдери**: реєстр з ранжуванням, fallback, лімітами запитів, neutral mode.
-- **Структурована відповідь**: `<main>`, `<side>`, `<speak>` теги + стримінг парсер.
-- **TTS**: системні голоси (Web Speech API) з підсвіткою слів.
+- **Р’РёР»СѓС‡РµРЅРѕ РІСЃРµ РїР»Р°С‚РЅРµ/РІС–РґРґР°Р»РµРЅРµ/telemetry**: Р»С–С†РµРЅР·С–С—, РєРІРѕС‚Рё, Pluely API, PostHog, auto-updater. РњР°СЂС€СЂСѓС‚РёР·Р°С‚РѕСЂ Р·Р°РІР¶РґРё Р»РѕРєР°Р»СЊРЅРёР№.
+- **РќРѕРІРёР№ shell РѕРІРµСЂР»РµР№**: Р·Р°РјС–СЃС‚СЊ РѕРґРЅРѕРіРѕ РІС–РєРЅР° 600x54 вЂ” РєС–Р»СЊРєР° РІС–РєРѕРЅ (strips / buttons / answer), Р·Р°РІР¶РґРё Р·РІРµСЂС…Сѓ, Р·Р°С…РёС‰РµРЅС– РІС–Рґ Р·Р°С…РѕРїР»РµРЅРЅСЏ РµРєСЂР°РЅР° (`contentProtected` > `WDA_EXCLUDEFROMCAPTURE` РЅР° Windows).
+- **РўСЂРё СЃС‚Р°РЅРё UI** (`ui_mode`): `side` (Р±С–С‡РЅС– СЃРјСѓРіРё), `top` (РІРµСЂС…/РЅРёР·), `buttons` (РѕРєСЂРµРјС– РєРЅРѕРїРєРё).
+- **РќРµРїРµСЂРµСЂРІРЅРёР№ СЂРµР¶РёРј (mode 3)**: Rust-С†РёРєР» Р·Р°С…РѕРїР»РµРЅРЅСЏ РєР°РґСЂС–РІ + dedup + Р±Р°С‚С‡РµСЂ (РѕРґРёРЅ Р·Р°РїРёС‚).
+- **Vision РґР»СЏ С‚РµРєСЃС‚РѕРІРёС… РјРѕРґРµР»РµР№**: OCR (Windows.Media.Ocr), UI Automation, VLM.
+- **РџСЂРѕРІР°Р№РґРµСЂРё**: СЂРµС”СЃС‚СЂ Р· СЂР°РЅР¶СѓРІР°РЅРЅСЏРј, fallback, Р»С–РјС–С‚Р°РјРё Р·Р°РїРёС‚С–РІ, neutral mode.
+- **РЎС‚СЂСѓРєС‚СѓСЂРѕРІР°РЅР° РІС–РґРїРѕРІС–РґСЊ**: `<main>`, `<side>`, `<speak>` С‚РµРіРё + СЃС‚СЂРёРјС–РЅРі РїР°СЂСЃРµСЂ.
+- **TTS**: СЃРёСЃС‚РµРјРЅС– РіРѕР»РѕСЃРё (Web Speech API) Р· РїС–РґСЃРІС–С‚РєРѕСЋ СЃР»С–РІ.
 
-## Як запустити / зібрати
+## РЇРє Р·Р°РїСѓСЃС‚РёС‚Рё / Р·С–Р±СЂР°С‚Рё
 
-Потрібні: Node.js 18+, Rust (stable), Windows 10/11, Tauri deps (https://tauri.app/start/prerequisites).
+РџРѕС‚СЂС–Р±РЅС–: Node.js 18+, Rust (stable), Windows 10/11, Tauri deps (https://tauri.app/start/prerequisites).
 
 ```
 npm install
-npm run dev          # або: npm run tauri dev
+npm run dev          # Р°Р±Рѕ: npm run tauri dev
 npm run build        # tsc + vite
 cd src-tauri
 cargo check
-npm run tauri build  # Windows installer (MSI/NSIS) у src-tauri/target/release/bundle
+npm run tauri build  # Windows installer (MSI/NSIS) Сѓ src-tauri/target/release/bundle
 ```
 
-## Де знаходяться налаштування
+## Р”Рµ Р·РЅР°С…РѕРґСЏС‚СЊСЃСЏ РЅР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ
 
-- **Режим UI / shimmer / прозорість answer**: `shell_layout.json` (директорія даних додатку); команди `set_ui_mode`, `set_shimmer`, `set_answer_opacity`.
-- **Захоплення (continuous)**: `get_capture_settings` / `update_capture_settings` (режим, інтервал, монітор, max_frames, downscale, JPEG quality, dedup threshold).
+- **Р РµР¶РёРј UI / shimmer / РїСЂРѕР·РѕСЂС–СЃС‚СЊ answer**: `shell_layout.json` (РґРёСЂРµРєС‚РѕСЂС–СЏ РґР°РЅРёС… РґРѕРґР°С‚РєСѓ); РєРѕРјР°РЅРґРё `set_ui_mode`, `set_shimmer`, `set_answer_opacity`.
+- **Р—Р°С…РѕРїР»РµРЅРЅСЏ (continuous)**: `get_capture_settings` / `update_capture_settings` (СЂРµР¶РёРј, С–РЅС‚РµСЂРІР°Р», РјРѕРЅС–С‚РѕСЂ, max_frames, downscale, JPEG quality, dedup threshold).
 - **Vision**: `get_vision_settings` / `update_vision_settings` (mode: ocr/ocr+ui/vlm/full).
-- **Провайдери / ліміти / neutral**: `list_providers`, `upsert_provider`, `pick_provider`, `set_global_daily_limit`, `set_neutral_mode`.
+- **РџСЂРѕРІР°Р№РґРµСЂРё / Р»С–РјС–С‚Рё / neutral**: `list_providers`, `upsert_provider`, `pick_provider`, `set_global_daily_limit`, `set_neutral_mode`.
 - **TTS**: `get_tts_settings` / `update_tts_settings` / `set_tts_enabled`.
-- **Користувацькі провайдери**: сторінка "Dev space" (шаблони curl).
+- **РљРѕСЂРёСЃС‚СѓРІР°С†СЊРєС– РїСЂРѕРІР°Р№РґРµСЂРё**: СЃС‚РѕСЂС–РЅРєР° "Dev space" (С€Р°Р±Р»РѕРЅРё curl).
 
-## Горячі клавіші (типові)
+## Р“РѕСЂСЏС‡С– РєР»Р°РІС–С€С– (С‚РёРїРѕРІС–)
 
 - Toggle Dashboard: `Ctrl+Shift+D`
 - Toggle Window: `Ctrl+\`
@@ -47,25 +47,25 @@ npm run tauri build  # Windows installer (MSI/NSIS) у src-tauri/target/release/b
 - TTS Pause: `Ctrl+Shift+P`
 - TTS Seek Back/Forward: `Ctrl+Shift+<` / `Ctrl+Shift+>`
 
-(Налаштовується на сторінці "Cursor & Shortcuts".)
+(РќР°Р»Р°С€С‚РѕРІСѓС”С‚СЊСЃСЏ РЅР° СЃС‚РѕСЂС–РЅС†С– "Cursor & Shortcuts".)
 
-## Як додати провайдер
+## РЇРє РґРѕРґР°С‚Рё РїСЂРѕРІР°Р№РґРµСЂ
 
-1. Сторінка "Dev space" > "Add Custom Provider".
-2. Вставте шаблон curl з місцями `{{API_KEY}}`, `{{MODEL}}`, `{{SYSTEM_PROMPT}}`, `{{TEXT}}`, `{{IMAGE}}`.
-3. Вкажіть `responseContentPath` (шлях JSON до відповіді).
-4. Для текстових моделей вимкніть `supportsImages` — тоді використовується Vision pipeline (OCR/UI/VLM).
+1. РЎС‚РѕСЂС–РЅРєР° "Dev space" > "Add Custom Provider".
+2. Р’СЃС‚Р°РІС‚Рµ С€Р°Р±Р»РѕРЅ curl Р· РјС–СЃС†СЏРјРё `{{API_KEY}}`, `{{MODEL}}`, `{{SYSTEM_PROMPT}}`, `{{TEXT}}`, `{{IMAGE}}`.
+3. Р’РєР°Р¶С–С‚СЊ `responseContentPath` (С€Р»СЏС… JSON РґРѕ РІС–РґРїРѕРІС–РґС–).
+4. Р”Р»СЏ С‚РµРєСЃС‚РѕРІРёС… РјРѕРґРµР»РµР№ РІРёРјРєРЅС–С‚СЊ `supportsImages` вЂ” С‚РѕРґС– РІРёРєРѕСЂРёСЃС‚РѕРІСѓС”С‚СЊСЃСЏ Vision pipeline (OCR/UI/VLM).
 
-## Відомі обмеження
+## Р’С–РґРѕРјС– РѕР±РјРµР¶РµРЅРЅСЏ
 
-- **Linux/Wayland**: захоплення екрана та завжди-верху обмежені (Wayland не дозволяє произвольні topmost вікна).
-- **Exclusive fullscreen**: справжній exclusive fullscreen (наприклад, гра) володіє дисплеєм — нічого не може бути зверху.
-- **OCR / UI Automation**: потребують увімкнення feature `Media_Ocr` / `Accessibility` crates `windows` та встановленого OCR language pack (Windows). Зараз заглушки з TODO (див. `_research/BLOCKED.md`).
-- **VLM mode**: потребує налаштування vision-провайдера (Phase 4); зараз placeholder.
-- **KaTeX**: `remark-math` + `rehype-katex` встановлені; рендеринг через Streamdown — потребує ручної перевірки `[NEEDS HUMAN CHECK]`.
+- **Linux/Wayland**: Р·Р°С…РѕРїР»РµРЅРЅСЏ РµРєСЂР°РЅР° С‚Р° Р·Р°РІР¶РґРё-РІРµСЂС…Сѓ РѕР±РјРµР¶РµРЅС– (Wayland РЅРµ РґРѕР·РІРѕР»СЏС” РїСЂРѕРёР·РІРѕР»СЊРЅС– topmost РІС–РєРЅР°).
+- **Exclusive fullscreen**: СЃРїСЂР°РІР¶РЅС–Р№ exclusive fullscreen (РЅР°РїСЂРёРєР»Р°Рґ, РіСЂР°) РІРѕР»РѕРґС–С” РґРёСЃРїР»РµС”Рј вЂ” РЅС–С‡РѕРіРѕ РЅРµ РјРѕР¶Рµ Р±СѓС‚Рё Р·РІРµСЂС…Сѓ.
+- **OCR / UI Automation**: РїРѕС‚СЂРµР±СѓСЋС‚СЊ СѓРІС–РјРєРЅРµРЅРЅСЏ feature `Media_Ocr` / `Accessibility` crates `windows` С‚Р° РІСЃС‚Р°РЅРѕРІР»РµРЅРѕРіРѕ OCR language pack (Windows). Р—Р°СЂР°Р· Р·Р°РіР»СѓС€РєРё Р· TODO (РґРёРІ. `_research/BLOCKED.md`).
+- **VLM mode**: РїРѕС‚СЂРµР±СѓС” РЅР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ vision-РїСЂРѕРІР°Р№РґРµСЂР° (Phase 4); Р·Р°СЂР°Р· placeholder.
+- **KaTeX**: `remark-math` + `rehype-katex` РІСЃС‚Р°РЅРѕРІР»РµРЅС–; СЂРµРЅРґРµСЂРёРЅРі С‡РµСЂРµР· Streamdown вЂ” РїРѕС‚СЂРµР±СѓС” СЂСѓС‡РЅРѕС— РїРµСЂРµРІС–СЂРєРё `[NEEDS HUMAN CHECK]`.
 
-## Як продовжити роботу
+## РЇРє РїСЂРѕРґРѕРІР¶РёС‚Рё СЂРѕР±РѕС‚Сѓ
 
-Див. `_research/IMPLEMENTATION_STATE.md`, `_research/PHASES_SPEC.md`, `_research/DECISIONS.md`, `_research/BLOCKED.md`, `_research/MANUAL_TESTS.md`.
+Р”РёРІ. `_research/IMPLEMENTATION_STATE.md`, `_research/PHASES_SPEC.md`, `_research/DECISIONS.md`, `_research/BLOCKED.md`, `_research/MANUAL_TESTS.md`.
 
-Це форк під GPL-3.0. LICENSE збережено.
+Р¦Рµ С„РѕСЂРє РїС–Рґ GPL-3.0. LICENSE Р·Р±РµСЂРµР¶РµРЅРѕ.

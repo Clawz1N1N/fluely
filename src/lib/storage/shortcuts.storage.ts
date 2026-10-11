@@ -1,4 +1,4 @@
-﻿import { STORAGE_KEYS, DEFAULT_SHORTCUT_ACTIONS } from "@/config";
+import { STORAGE_KEYS, DEFAULT_SHORTCUT_ACTIONS } from "@/config";
 import {
   ShortcutsConfig,
   ShortcutBinding,

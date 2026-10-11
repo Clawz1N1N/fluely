@@ -1,4 +1,4 @@
-﻿import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction } from "react";
 import { ScreenshotConfig, TYPE_PROVIDER } from "@/types";
 import { CursorType, CustomizableState } from "@/lib/storage";
 

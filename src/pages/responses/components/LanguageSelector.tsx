@@ -1,4 +1,4 @@
-﻿import { Header, Selection } from "@/components";
+import { Header, Selection } from "@/components";
 import { LANGUAGES } from "@/lib";
 import { useApp } from "@/contexts";
 import { updateLanguage } from "@/lib/storage/response-settings.storage";
