@@ -3,6 +3,7 @@ import { invoke } from "@tauri-apps/api/core";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { X } from "lucide-react";
 import { Markdown } from "@/components";
+import { useTts } from "@/hooks/useTts";
 import { useShellDrag } from "./useShellDrag";
 import { Shimmer } from "./Shimmer";
 
@@ -43,6 +44,10 @@ export const AnswerWindow: React.FC = () => {
     } catch {
       // Not yet wired in Phase 2.
     }
+    // Placeholder: when the model streams a structured
+    // response, parse it and route MAIN/SIDE/SPEAK.
+    // (Phase 5 wiring; the real stream arrives via the
+    // continuous-batch / answer pipeline.)
   };
 
   return (

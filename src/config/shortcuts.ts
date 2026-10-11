@@ -71,4 +71,54 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
       linux: "ctrl+shift+s",
     },
   },
+  {
+    id: "tts_toggle",
+    name: "TTS Toggle",
+    description: "Enable/disable text-to-speech entirely",
+    defaultKey: {
+      macos: "cmd+shift+t",
+      windows: "ctrl+shift+t",
+      linux: "ctrl+shift+t",
+    },
+  },
+  {
+    id: "tts_stop",
+    name: "TTS Stop",
+    description: "Stop TTS playback",
+    defaultKey: {
+      macos: "cmd+shift+o",
+      windows: "ctrl+shift+o",
+      linux: "ctrl+shift+o",
+    },
+  },
+  {
+    id: "tts_pause",
+    name: "TTS Pause",
+    description: "Pause/resume TTS playback",
+    defaultKey: {
+      macos: "cmd+shift+p",
+      windows: "ctrl+shift+p",
+      linux: "ctrl+shift+p",
+    },
+  },
+  {
+    id: "tts_seek_back",
+    name: "TTS Seek Back",
+    description: "Play the previous sentence",
+    defaultKey: {
+      macos: "cmd+shift+left",
+      windows: "ctrl+shift+left",
+      linux: "ctrl+shift+left",
+    },
+  },
+  {
+    id: "tts_seek_forward",
+    name: "TTS Seek Forward",
+    description: "Play the next sentence",
+    defaultKey: {
+      macos: "cmd+shift+right",
+      windows: "ctrl+shift+right",
+      linux: "ctrl+shift+right",
+    },
+  },
 ];
