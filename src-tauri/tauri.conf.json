@@ -1,4 +1,4 @@
-﻿{
+{
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Pluely",
   "version": "0.1.9",
@@ -30,7 +30,9 @@
         "shadow": false
       }
     ],
-    "security": { "csp": null }
+    "security": {
+      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://localhost:* https://*; font-src 'self' data:; frame-ancestors 'none'"
+    }
   },
   "bundle": {
     "active": true,
