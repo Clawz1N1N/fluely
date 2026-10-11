@@ -13,6 +13,12 @@ import {
   Responses,
 } from "@/pages";
 import { DashboardLayout } from "@/layouts";
+import {
+  ShellSideStrip,
+  ShellTopStrip,
+  ShellButton,
+  AnswerWindow,
+} from "@/components/Shell";
 
 export default function AppRoutes() {
   return (
@@ -31,6 +37,11 @@ export default function AppRoutes() {
           <Route path="/responses" element={<Responses />} />
           <Route path="/dev-space" element={<DevSpace />} />
         </Route>
+        {/* Shell overlay windows (routed by window label in main.tsx) */}
+        <Route path="/shell/side-strip" element={<ShellSideStrip />} />
+        <Route path="/shell/top-strip" element={<ShellTopStrip />} />
+        <Route path="/shell/button/:action" element={<ShellButton />} />
+        <Route path="/shell/answer" element={<AnswerWindow />} />
       </Routes>
     </Router>
   );

@@ -10,7 +10,22 @@ const currentWindow = getCurrentWindow();
 const windowLabel = currentWindow.label;
 
 // Render different components based on window label
-if (windowLabel.startsWith("capture-overlay-")) {
+// Shell overlay windows render their dedicated shell components.
+if (
+  windowLabel.startsWith("strip-") ||
+  windowLabel.startsWith("button-") ||
+  windowLabel === "answer"
+) {
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <React.StrictMode>
+      <ThemeProvider>
+        <AppProvider>
+          <AppRoutes />
+        </AppProvider>
+      </ThemeProvider>
+    </React.StrictMode>
+  );
+} else if (windowLabel.startsWith("capture-overlay-")) {
   const monitorIndex = parseInt(windowLabel.split("-")[2], 10) || 0;
   // Render overlay without providers
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(

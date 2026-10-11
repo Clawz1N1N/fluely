@@ -1,7 +1,8 @@
-﻿// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+// Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod capture;
 mod db;
 mod shortcuts;
+mod shell;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager, WebviewWindow};
@@ -41,6 +42,7 @@ pub fn run() {
         })
         .manage(shortcuts::RegisteredShortcuts::default())
         .manage(shortcuts::MoveWindowState::default())
+        .manage(shell::ShellState::default())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_keychain::init())
@@ -71,6 +73,16 @@ pub fn run() {
             speaker::update_vad_config,
             speaker::get_capture_status,
             speaker::get_audio_sample_rate,
+            shell::get_window_display_affinity,
+            shell::move_shell_window,
+            shell::set_ui_mode,
+            shell::get_ui_mode,
+            shell::set_shimmer,
+            shell::set_answer_opacity,
+            shell::reset_shell_layout,
+            shell::get_shell_settings,
+            shell::toggle_answer_window,
+            shell::answer_ask,
             speaker::get_input_devices,
             speaker::get_output_devices,
         ])
@@ -151,6 +163,10 @@ pub fn run() {
                         .build(),
                 )
                 .expect("Failed to initialize global shortcut plugin");
+            // Build the custom overlay shell windows.
+            if let Err(e) = shell::init_shell(app.handle()) {
+                eprintln!("Failed to initialize shell windows: {}", e);
+            }
             if let Err(e) = shortcuts::setup_global_shortcuts(app.handle()) {
                 eprintln!("Failed to setup global shortcuts: {}", e);
             }

@@ -1,8 +1,8 @@
-﻿{
+{
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
   "description": "Capability for the main window on macOS",
-  "windows": ["main", "dashboard"],
+  "windows": ["main", "dashboard", "strip-left", "strip-right", "strip-top", "strip-bottom", "answer", "button-listen", "button-screenshot", "button-continuous", "button-answer", "button-chat", "button-tts", "button-mode", "button-settings"],
   "platforms": ["macOS"],
   "permissions": [
     "core:default",

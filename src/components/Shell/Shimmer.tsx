@@ -1,0 +1,48 @@
+import React, { useEffect, useState } from "react";
+import { invoke } from "@tauri-apps/api/core";
+
+/**
+ * Animated rainbow/gradient "shimmer" so buttons are hard to lose.
+ * Toggle and speed are controlled by the `set_shimmer` Rust command
+ * (persisted in shell_layout.json). The shimmer is drawn with a
+ * CSS animation; it lives only inside the tight button window so it
+ * never creates a large transparent hit area.
+ */
+export const Shimmer: React.FC<{ enabled: boolean; speed: number }> = ({
+  enabled,
+  speed,
+}) => {
+  const [on, setOn] = useState(enabled);
+
+  useEffect(() => setOn(enabled), [enabled]);
+
+  if (!on) return null;
+
+  const duration = Math.max(1, 6 / Math.max(1, speed));
+  return (
+    <div
+      aria-hidden
+      className="shimmer-ring"
+      style={{
+        position: "absolute",
+        inset: 0,
+        borderRadius: 8,
+        pointerEvents: "none",
+        background:
+          "linear-gradient(90deg, rgba(255,0,128,0.55), rgba(0,200,255,0.55), rgba(255,220,0,0.55), rgba(255,0,128,0.55))",
+        backgroundSize: "300% 100%",
+        animation: `shimmer-slide ${duration}s linear infinite`,
+        filter: "blur(6px)",
+        zIndex: -1,
+      }}
+    />
+  );
+};
+
+// Inject keyframes once.
+if (typeof document !== "undefined" && !document.getElementById("shimmer-keyframes")) {
+  const style = document.createElement("style");
+  style.id = "shimmer-keyframes";
+  style.textContent = `@keyframes shimmer-slide { 0% { background-position: 0% 0; } 100% { background-position: 300% 0; } }`;
+  document.head.appendChild(style);
+}
