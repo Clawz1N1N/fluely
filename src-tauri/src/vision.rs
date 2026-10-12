@@ -78,13 +78,7 @@ pub struct OcrBlock {
 }
 
 /// A UI Automation node (name/role/value), flattened.
-#[derive(Debug, Clone, Serialize)]
-pub struct UiNode {
-    pub name: String,
-    pub role: String,
-    pub value: String,
-    pub depth: usize,
-}
+pub use crate::ui_automation::UiNode;
 
 /// The structured screen context handed to the brain.
 #[derive(Debug, Clone, Serialize, Default)]
@@ -144,30 +138,14 @@ pub mod ocr_windows {
     pub fn ocr_image(
         img: &DynamicImage,
     ) -> Result<Vec<OcrBlock>, String> {
-        use windows::core::HSTRING;
-        use windows::Win32::Graphics::Gdi as Gdi;
-        use windows::Win32::System::Com::{
-            CoCreateInstance, CoInitializeEx, CLSCTX_ALL,
-            COINIT_APARTMENTTHREADED,
-        };
-        use windows::Win32::UI::WindowsAndMessaging;
-        let _ = WindowsAndMessaging;
-        let _ = Gdi;
-        let _ = HSTRING;
-        let _ = CoCreateInstance;
-        let _ = CoInitializeEx;
-        let _ = CLSCTX_ALL;
-        let _ = COINIT_APARTMENTTHREADED;
-
         // NOTE: Windows.Media.Ocr is a WinRT API. The `windows`
         // crate exposes it under windows::Media::Ocr, but it
         // requires the "Media_Ocr" feature. When that feature
         // is not enabled this module compiles to a stub that
         // reports the limitation (see BLOCKED.md).
         //
-        // The plumbing (HBITMAP -> SoftwareBitmap -> Ocr) is
-        // implemented in the full build; here we return a
-        // clear "not available" so callers can fall back.
+        // OCR plumbing is not implemented in this module yet. Enabling
+        // Media_Ocr alone does not replace this explicit unavailable result.
         let _ = img;
         Err("OCR not available: enable the Media_Ocr windows crate feature and install an OCR language pack".to_string())
     }
@@ -221,12 +199,13 @@ pub mod ocr_windows {
 
 // --------------------------- Tauri commands ---------------------------
 
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 #[tauri::command]
 pub fn get_vision_settings(app: AppHandle) -> Result<VisionSettings, String> {
     let state = app.state::<VisionState>();
-    Ok(state.settings.lock().unwrap().clone())
+    let settings = state.settings.lock().unwrap().clone();
+    Ok(settings)
 }
 
 #[tauri::command]

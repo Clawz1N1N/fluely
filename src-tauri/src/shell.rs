@@ -22,18 +22,15 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::{Arc, Mutex};
 use std::time::Duration;
-use tauri::{AppHandle, Manager, PhysicalPosition, PhysicalSize, Position, Runtime, Size};
-use tauri_plugin_global_shortcut::GlobalShortcutExt;
+use tauri::{AppHandle, Manager, PhysicalPosition, Position, Runtime};
 
 #[cfg(target_os = "windows")]
-use windows::core::{w, PCWSTR};
-#[cfg(target_os = "windows")]
-use windows::Win32::Foundation::{HWND, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE};
+use windows::Win32::Foundation::HWND;
 #[cfg(target_os = "windows")]
 use windows::Win32::UI::WindowsAndMessaging::{
     GetWindowLongPtrW, SetWindowLongPtrW, SetWindowPos, GWL_EXSTYLE,
-    WS_EX_TOPMOST, WS_EX_TOOLWINDOW, WS_EX_NOACTIVATE, WS_EX_TRANSPARENT,
-    GetWindowDisplayAffinity, WDA_EXCLUDEFROMCAPTURE,
+    WS_EX_TOPMOST, WS_EX_TOOLWINDOW, WS_EX_NOACTIVATE,
+    GetWindowDisplayAffinity, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE,
 };
 
 /// The UI mode of the shell.
@@ -157,7 +154,7 @@ pub fn create_shell_window<R: Runtime>(
     .closable(false)
     .accept_first_mouse(true)
     .shadow(false)
-    .content_protected()
+    .content_protected(true)
     .build()
     .map_err(|e| format!("Failed to create shell window {}: {}", label, e))?;
 
@@ -166,6 +163,7 @@ pub fn create_shell_window<R: Runtime>(
 
     Ok(window)
 }
+#[cfg(target_os = "windows")]
 pub fn apply_windows_shell_style(hwnd: HWND) {
     unsafe {
         // Read current extended style and add TOPMOST | TOOLWINDOW | NOACTIVATE.
@@ -180,7 +178,7 @@ pub fn apply_windows_shell_style(hwnd: HWND) {
         // Re-assert topmost without activating / moving / resizing.
         let _ = SetWindowPos(
             hwnd,
-            HWND_TOPMOST,
+            Some(HWND_TOPMOST),
             0,
             0,
             0,
@@ -294,7 +292,8 @@ fn clamp_to_monitor<R: Runtime>(
             // Fall back to the primary monitor.
             let primary = app
                 .primary_monitor()
-                .map_err(|e| format!("Failed to get primary monitor: {}", e))?;
+                .map_err(|e| format!("Failed to get primary monitor: {}", e))?
+                .ok_or_else(|| "No primary monitor available".to_string())?;
             let psize = primary.size();
             let ppos = primary.position();
             (ppos.x as i32, ppos.y as i32, psize.width, psize.height)
@@ -319,7 +318,7 @@ fn persist_placement<R: Runtime>(app: &AppHandle<R>, label: &str, x: i32, y: i32
         std::thread::spawn(move || {
             save_layout(&app_clone, &layout_clone);
         });
-    }
+    };
 }
 
 /// Start the watchdog thread that re-asserts always-on-top for all shell
@@ -470,15 +469,10 @@ pub fn set_shimmer(app: AppHandle, enabled: bool) -> Result<(), String> {
 /// Tauri command: set the answer window opacity.
 #[tauri::command]
 pub fn set_answer_opacity(app: AppHandle, opacity: f64) -> Result<(), String> {
-    let state = app.state::<ShellState>();
-    let mut layout = state.layout.lock().unwrap();
-    layout.answer_opacity = opacity.clamp(0.2, 1.0);
-    let clone = layout.clone();
-    save_layout(&app, &clone);
-    if let Some(window) = app.get_webview_window("answer") {
-        let _ = window.set_opacity(layout.answer_opacity);
-    }
-    Ok(())
+    let _ = (app, opacity);
+    // Tauri 2 exposes no native WebviewWindow::set_opacity API. The answer
+    // renderer must apply opacity before this setting can be advertised.
+    Err("Answer opacity is not implemented yet".to_string())
 }
 
 /// Tauri command: reset the shell layout to defaults and re-create
@@ -493,7 +487,7 @@ pub fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
         save_layout(&app, &clone);
     }
     // Re-create the shell from the (reset) layout.
-    crate::shell::rebuild_shell(&app);
+    crate::shell::rebuild_shell(&app)?;
     Ok(())
 }
 
@@ -518,7 +512,7 @@ fn close_shell_windows<R: Runtime>(app: &AppHandle<R>) {
 /// the persisted per-window placements (or sensible defaults).
 pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     close_shell_windows(app);
-    let layout = load_layout(&app.clone().into());
+    let layout = load_layout(app);
 
     // Primary monitor geometry for defaults.
     let (mon_w, mon_h) = app

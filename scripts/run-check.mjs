@@ -30,7 +30,7 @@ child.on('close', code => stream.end(() => {
   let output;
   try { output = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
   catch { output = new TextDecoder('ibm866').decode(bytes); }
-  const tail = output.replace(/\x1b\[[0-9;]*m/g, '').trimEnd().split(/\r?\n/).slice(-20).join('\n');
+  const tail = output.replace(/\x1b\[[0-9;]*m/g, '').trimEnd().split(/\r?\n/).slice(-20).map(line => line.trimEnd()).join('\n');
   const entry = `\n## ${label} — ${started}\n\nDirectory: ${path.resolve(root, directory)}\n\nCommand: \`${command}\`\n\nExit code: ${code ?? 'spawn failed'}\n\nLast 20 output lines:\n\n\`\`\`text\n${tail}\n\`\`\`\n\nFull log: logs/${label}.log\n`;
   appendFileSync(path.join(root, '_research', 'BUILD_LOG.md'), entry, 'utf8');
   console.log(entry);

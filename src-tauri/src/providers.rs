@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 use std::sync::Mutex;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
-use tauri::{AppHandle, Emitter};
+use tauri::{AppHandle, Emitter, Manager};
 
 /// One configured provider/model.
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -117,7 +117,7 @@ impl ProvidersState {
         // Global daily limit.
         let global_limit = *self.global_daily_limit.lock().unwrap();
         if global_limit > 0 {
-            let mut counts = self.global_daily_count.lock().unwrap();
+            let counts = self.global_daily_count.lock().unwrap();
             let used = counts.get(&day).copied().unwrap_or(0);
             if used >= global_limit {
                 return None; // neutral: limits exhausted
@@ -202,7 +202,7 @@ impl ProvidersState {
             if let Some(cd) = cooldowns.get(&p.id) {
                 let remaining = cd
                     .until
-                    .saturating_duration_from(Instant::now())
+                    .saturating_duration_since(Instant::now())
                     .as_secs();
                 soonest = Some(match soonest {
                     Some(cur) => cur.min(remaining),
@@ -245,7 +245,8 @@ fn broadcast_status(app: &AppHandle) {
 #[tauri::command]
 pub fn list_providers(app: AppHandle) -> Result<Vec<ProviderEntry>, String> {
     let state = app.state::<ProvidersState>();
-    Ok(state.providers.lock().unwrap().clone())
+    let providers = state.providers.lock().unwrap().clone();
+    Ok(providers)
 }
 
 #[tauri::command]
@@ -355,7 +356,7 @@ pub fn get_providers_status(
                 Some(cd) => {
                     let r = cd
                         .until
-                        .saturating_duration_from(Instant::now())
+                        .saturating_duration_since(Instant::now())
                         .as_secs();
                     (Instant::now() < cd.until, r)
                 }

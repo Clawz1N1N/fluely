@@ -18,10 +18,11 @@
 // nothing changed.
 
 use base64::Engine;
+use image::{GenericImageView, ImageEncoder};
 use serde::{Deserialize, Serialize};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::{Duration, Instant};
+use std::time::Duration;
 use tauri::{AppHandle, Emitter, Manager};
 use xcap::Monitor;
 
@@ -126,14 +127,14 @@ fn encode_jpeg(
 ) -> Result<Vec<u8>, String> {
     let rgb = img.to_rgb8();
     let mut buf = Vec::new();
-    let mut encoder =
+    let encoder =
         image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buf, quality);
     encoder
         .write_image(
             rgb.as_raw(),
             rgb.width(),
             rgb.height(),
-            image::ColorType::Rgb8,
+            image::ColorType::Rgb8.into(),
         )
         .map_err(|e| format!("JPEG encode failed: {}", e))?;
     Ok(buf)
@@ -176,7 +177,7 @@ fn capture_monitor_frame(
     max_long_side: u32,
 ) -> Result<(image::RgbaImage, u32, u32), String> {
     let img = monitor.capture_image().map_err(|e| format!("capture: {}", e))?;
-    let scaled = downscale(&img, max_long_side);
+    let scaled = downscale(&image::DynamicImage::ImageRgba8(img), max_long_side);
     let rgba = scaled.to_rgba8();
     let (w, h) = rgba.dimensions();
     Ok((rgba, w, h))
@@ -205,7 +206,8 @@ pub fn get_capture_settings(
     app: AppHandle,
 ) -> Result<CaptureSettings, String> {
     let state = app.state::<ContinuousState>();
-    Ok(state.settings.lock().unwrap().clone())
+    let settings = state.settings.lock().unwrap().clone();
+    Ok(settings)
 }
 
 #[tauri::command]
@@ -329,7 +331,7 @@ fn capture_and_maybe_send(
 
         // Dedup against the previous frame.
         let is_changed = {
-            let mut last = state.last_frame.lock().unwrap();
+            let last = state.last_frame.lock().unwrap();
             match &*last {
                 Some(prev) => {
                     let prev_img =
@@ -475,7 +477,7 @@ mod tests {
         // One differing pixel in a 64x64 image sampled every 8px:
         // sampled grid is 8x8 = 64 samples, 1 differs -> ~0.0156.
         let mut a = solid([0, 0, 0, 255], 64, 64);
-        let mut b = solid([0, 0, 0, 255], 64, 64);
+        let b = solid([0, 0, 0, 255], 64, 64);
         a.put_pixel(0, 0, image::Rgba([200, 200, 200, 255]));
         let d = frame_diff(&a, &b);
         assert!(d < 0.05, "expected low diff, got {}", d);

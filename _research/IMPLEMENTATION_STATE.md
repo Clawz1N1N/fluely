@@ -1,28 +1,28 @@
-# Стан передачі — 2026-10-11
+# Стан передачі — 2026-10-12
 
 ## Зроблено
-- custom-overlay, HEAD a954976, takeover-start; початкові lock/Cargo зміни збережені.
-- Повністю прочитані всі нотатки/додатки й змінені файли; три read-only аудити. TAKEOVER_AUDIT містить claims/defects/matrix.
-- Baseline encoding exit1 (63 files), tsc exit2 у BUILD_LOG.
-- R1 targeted BOM/ANSI/mixedEOL repair, CP1251 Ukrainian recovered; encoding exit0 (283files), tests2/2; npm force=false legacy-peer-deps=true.
+- Гілка custom-overlay, початковий HEAD a954976, тег takeover-start. Початкові зміни користувача збережені.
+- Повністю прочитані всі нотатки, додатки й змінені файли. TAKEOVER_AUDIT містить таблицю тверджень, дефекти й матрицю підключення.
+- R1: commit63a22ac; BOM/ANSI/mixed-EOL виправлені цільово, український README відновлено з CP1251. Encoding exit0, два тести проходять. npm force=false, legacy-peer-deps=true.
+- R2: commit4cffb2b, тег frontend-green. tsc exit0, production build exit0, Vite працював30.1с; HTTP200 для index і src/main, помилок у логах немає.
+- Виправлені syntax/types/imports та ліцензійні споживачі у frontend; positional keychain API. Фактична міграція ключів ще не підключена.
+- Схвалені install scripts oxide/esbuild; protobufjs має готовий runtime і не потребував скрипту для збірки.
+- Windows Vite launcher використовує тимчасове process-local subst відображення та preserveSymlinks. Файли залишаються у репозиторії; TEMP/TMP — _research/temp.
+- Точна ring CL-команда з усіма прапорцями успішна після vcvars64 SDK22621/26100/28000. Повна Cargo-збірка поки не проходить.
 
-## Далі
-- R1 commit після encoding.
-- R2 frontend syntax/types/imports/license/keychain API, install scripts, tsc/build/Vite30s.
-- R3 ring experiments + Rust compile/check/test/clippy. MSVC14.44 уже встановлено.
-- R4–R8 за TAKEOVER_PLAN і COMPLETION_CHECKLIST; оновлювати після кожної групи.
+## Зараз / далі
+- R3: cargo check exit101 на запуску vswhom-sys build-script, Windows STATUS_DLL_INIT_FAILED0xc0000142. Мінімальний plain Rust exe працює, Ole32-linked exe не доходить до main.
+- DELAYLOAD дозволяє main, але COM-виклик падає. Пробний Cargo з ephemeral прапорцями дійшов до zerocopy: дочірній rustc --version має ту саму DLL-помилку. Прямий rustc з PowerShell працює. Діагностика триває; прапорці не додані до конфігурації продукту.
+- Rust API виправлення готові й пройшли незалежне рев’ю. Прямий metadata compile shell/providers/TTS/parser exit0; parser14 реальних Rust тестів, TypeScript7 тестів. Повний lib.rs не перевірений: бракує cached image/audio/plugin metadata, Cargo заблокований B02.
+- inspect-windows.ps1 створено й виконано на власному PowerShell PID: script exit0, вікон застосунку не було. Це не доказ topmost/affinity застосунку.
+- R3 позначено BLOCKED; rust-green не створюємо без Cargo доказу. Далі R4, потім реалізація service/UI за контрактом src/lib/overlay/contracts.ts.
+- Далі R4 startup/CSP/native inspect, R5 підключення функцій, R6 тести, R7 release, R8 фінальні перевірки. Незавершені вимоги явно TODO у COMPLETION_CHECKLIST.
 
-## Рішення
-- Працюємо в цьому checkout custom-overlay за контрактом, worktree не створюємо.
+## Рішення й обмеження
+- Цей checkout custom-overlay за контрактом; без push/force. Коміт після групи, encoding перед кожним комітом.
 - Автономність користувача переважає skill approval паузи й історичні phase STOP.
-- Hidden main єдиний service; Rust authoritative batcher/registry/settings; keychain secrets.
-- Без push/force. Claims лише після exact command/exit/tail у BUILD_LOG.
-- Старий BLOCKED не чинний; confirmed blockers наразі немає.
-- C:/b поза writable root: target relocation лише у repo/TEMP за необхідності.
-- node scripts/check-encoding.mjs перед кожним commit; scripts/run-check.mjs записує докази.
-## R2 ?????????
-- tsc0; production build0; Vite30.1s HTTP200/index+src/main, ??? log errors.
-- Syntax/imports/license consumers/keychain signatures ??????????. Build warnings: ONNX eval, large Shiki/Mermaid chunks.
-- Vite Windows launch ???????????? process-local subst drive + preserveSymlinks; ???? ??? ????????? ? repo; TMP ? _research/temp.
-- npm script approvals oxide/esbuild. Security audit ? ???? npm dependencies ?????????? (policy EALLOWREMOTE); ????? Node built-in ??????? Vitest.
-- ???? R3: vcvars64 SDK22621 before Cargo.
+- Hidden main — єдиний службовий runtime; Rust authoritative batcher/registry/layout; keychain для секретів. Архітектура ще не реалізована.
+- C:/b поза writable root: за потреби короткий target лише в дозволеному repo/TEMP.
+- Нові npm-пакети та актуальний security audit недоступні через політику; B01 у BLOCKED. Тести — вбудований Node runner, без Vitest.
+- scripts/run-check.mjs записує команду, код і останні20 рядків у BUILD_LOG. Фізичні перевірки — MANUAL_TESTS з NEEDS HUMAN CHECK.
+- Поки немає доказів запуску застосунку або готового release executable.

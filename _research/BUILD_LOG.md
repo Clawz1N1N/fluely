@@ -1151,3 +1151,887 @@ dist/assets/index-D8Sz8KMI.js                         2,324.89 kB │ gzip: 611.
 ```
 
 Full log: logs/r2-build-final.log
+
+## r3-cargo-baseline — 2026-10-11T21:10:05.147Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+
+Command: `call ..\scripts\rust-env.cmd cargo check --offline`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+   Compiling serde_with v3.14.0
+   Compiling walkdir v2.5.0
+   Compiling serde-untagged v0.1.8
+   Compiling http v1.3.1
+   Compiling anyhow v1.0.99
+   Compiling glob v0.3.3
+   Compiling dunce v1.0.5
+    Checking stable_deref_trait v1.2.0
+    Checking crossbeam-utils v0.8.21
+   Compiling regex v1.11.1
+    Checking once_cell v1.21.3
+   Compiling urlpattern v0.3.0
+    Checking windows-link v0.1.3
+    Checking pin-project-lite v0.2.16
+   Compiling vswhom-sys v0.1.3
+error: failed to run custom build command for `vswhom-sys v0.1.3`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/r3-cargo-baseline.log
+
+## r3-native-probe — 2026-10-11T21:11:11.027Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\native-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+    ADVAPI32.dll
+    ole32.dll
+    OLEAUT32.dll
+    ntdll.dll
+    VCRUNTIME140.dll
+    api-ms-win-crt-runtime-l1-1-0.dll
+    api-ms-win-crt-math-l1-1-0.dll
+    api-ms-win-crt-stdio-l1-1-0.dll
+    api-ms-win-crt-locale-l1-1-0.dll
+    api-ms-win-crt-heap-l1-1-0.dll
+
+  Summary
+
+        1000 .data
+        E000 .pdata
+       3E000 .rdata
+        2000 .reloc
+       C1000 .text
+warn: could not canonicalize path C:\Users\broma
+Native Rust executable starts.
+```
+
+Full log: logs/r3-native-probe.log
+
+## r3-native-com-probe — 2026-10-11T21:11:45.200Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\native-com-probe.cmd`
+
+Exit code: 3221225794
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+```
+
+Full log: logs/r3-native-com-probe.log
+
+## r3-vswhom-tree — 2026-10-11T21:12:03.709Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+
+Command: `cargo tree --offline -i vswhom-sys`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+                [build-dependencies]
+                ├── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                └── tauri v2.8.2
+                    ├── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-autostart v2.5.0
+                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-fs v2.4.2
+                    │   └── tauri-plugin-http v2.5.2
+                    │       └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-global-shortcut v2.3.0
+                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-http v2.5.2 (*)
+                    ├── tauri-plugin-keychain v2.0.2
+                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-opener v2.4.0
+                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── tauri-plugin-shell v2.3.1
+                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    └── tauri-plugin-sql v2.3.0
+                        └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+```
+
+Full log: logs/r3-vswhom-tree.log
+
+## r3-native-com-delay-probe — 2026-10-11T21:12:59.201Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\native-com-probe.cmd`
+
+Exit code: 3228369022
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+COM Rust executable starts.
+```
+
+Full log: logs/r3-native-com-delay-probe.log
+
+## r3-cargo-delayload — 2026-10-11T21:13:27.495Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\cargo-delay-probe.cmd`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+   Compiling getrandom v0.2.16
+   Compiling thiserror v2.0.14
+   Compiling smallvec v1.15.1
+   Compiling siphasher v1.0.1
+   Compiling memchr v2.7.5
+error: failed to run custom build command for `zerocopy v0.8.26`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\zerocopy-ed60612e1982ff9b\build-script-build` (exit code: 101)
+  --- stdout
+  cargo:rerun-if-changed=build.rs
+  cargo:rerun-if-changed=Cargo.toml
+
+  --- stderr
+
+  thread 'main' (2644) panicked at C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\zerocopy-0.8.26\build.rs:229:9:
+  rustc failed with status: exit code: 0xc0000142
+  rustc output:
+  note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/r3-cargo-delayload.log
+
+## r3-native-spawn-probe — 2026-10-11T21:14:19.369Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\native-spawn-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+cwd=.: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+cwd=C:/Users/broma/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.26: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+```
+
+Full log: logs/r3-native-spawn-probe.log
+
+## r3-native-spawn-flags — 2026-10-11T21:14:43.187Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\native-spawn-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+cwd=.: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+cwd=C:/Users/broma/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.26: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+CREATE_NO_WINDOW: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+inherit: Ok(ExitStatus(ExitStatus(3221225794)))
+```
+
+Full log: logs/r3-native-spawn-flags.log
+
+## r3-test-runner — 2026-10-11T21:17:33.404Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 1 - valid Ukrainian UTF-8 and consistent line endings are accepted
+  ---
+  duration_ms: 2.1993
+  type: 'test'
+  ...
+# Subtest: BOM, malformed bytes, replacement characters and mixed endings are rejected
+ok 2 - BOM, malformed bytes, replacement characters and mixed endings are rejected
+  ---
+  duration_ms: 0.3389
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 2
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 537.585
+```
+
+Full log: logs/r3-test-runner.log
+
+## r3-structured-red — 2026-10-11T21:18:47.946Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+not ok 1 - tests\\structured.test.mjs
+  ---
+  duration_ms: 448.1973
+  type: 'test'
+  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\structured.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 455.9892
+```
+
+Full log: logs/r3-structured-red.log
+
+## r3-dll-probe — 2026-10-11T21:18:57.272Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\dll-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+LoadLibraryExW kernel32.dll flags=0x0: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW kernel32.dll flags=0x800: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW ntdll.dll flags=0x0: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW ntdll.dll flags=0x800: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x0: handle=0x7ffbf6440000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x800: handle=0x7ffbf6440000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x0: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x800: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW combase.dll flags=0x0: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW combase.dll flags=0x800: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW ole32.dll flags=0x0: handle=0x0, error=1114
+LoadLibraryExW ole32.dll flags=0x800: handle=0x0, error=1359
+LoadLibraryExW oleaut32.dll flags=0x0: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW oleaut32.dll flags=0x800: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW user32.dll flags=0x0: handle=0x0, error=8
+LoadLibraryExW user32.dll flags=0x800: handle=0x0, error=8
+child plain hello: Ok(Output { status: ExitStatus(ExitStatus(0)), stdout: "Native Rust executable starts.\n", stderr: "" })
+child rustc direct: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+child cmd rustc: Ok(Output { status: ExitStatus(ExitStatus(1)), stdout: "", stderr: [145, 168, 173, 226, 160, 170, 225, 168, 231, 165, 225, 170, 160, 239, 32, 174, 232, 168, 161, 170, 160, 32, 162, 32, 168, 172, 165, 173, 168, 32, 228, 160, 169, 171, 160, 44, 32, 168, 172, 165, 173, 168, 32, 175, 160, 175, 170, 168, 32, 168, 171, 168, 32, 172, 165, 226, 170, 165, 32, 226, 174, 172, 160, 46, 13, 10] })
+child powershell rustc: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+```
+
+Full log: logs/r3-dll-probe.log
+
+## r3-dll-mitigations — 2026-10-11T21:19:25.161Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\dll-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+LoadLibraryExW kernel32.dll flags=0x0: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW kernel32.dll flags=0x800: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW ntdll.dll flags=0x0: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW ntdll.dll flags=0x800: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x0: handle=0x7ffbf6440000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x800: handle=0x7ffbf6440000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x0: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x800: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW combase.dll flags=0x0: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW combase.dll flags=0x800: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW ole32.dll flags=0x0: handle=0x0, error=1114
+LoadLibraryExW ole32.dll flags=0x800: handle=0x0, error=1359
+LoadLibraryExW oleaut32.dll flags=0x0: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW oleaut32.dll flags=0x800: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW user32.dll flags=0x0: handle=0x0, error=8
+LoadLibraryExW user32.dll flags=0x800: handle=0x0, error=8
+child plain hello: Ok(Output { status: ExitStatus(ExitStatus(0)), stdout: "Native Rust executable starts.\n", stderr: "" })
+child rustc direct: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+child cmd rustc: Ok(Output { status: ExitStatus(ExitStatus(1)), stdout: "", stderr: [145, 168, 173, 226, 160, 170, 225, 168, 231, 165, 225, 170, 160, 239, 32, 174, 232, 168, 161, 170, 160, 32, 162, 32, 168, 172, 165, 173, 168, 32, 228, 160, 169, 171, 160, 44, 32, 168, 172, 165, 173, 168, 32, 175, 160, 175, 170, 168, 32, 168, 171, 168, 32, 172, 165, 226, 170, 165, 32, 226, 174, 172, 160, 46, 13, 10] })
+child powershell rustc: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+```
+
+Full log: logs/r3-dll-mitigations.log
+
+## r3-dll-native-cmd — 2026-10-11T21:20:37.918Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\dll-probe.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+LoadLibraryExW kernel32.dll flags=0x0: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW kernel32.dll flags=0x800: handle=0x7ffbf5d70000, error=6
+LoadLibraryExW ntdll.dll flags=0x0: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW ntdll.dll flags=0x800: handle=0x7ffbf74c0000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x0: handle=0x7ffbf6440000, error=6
+LoadLibraryExW rpcrt4.dll flags=0x800: handle=0x7ffbf6440000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x0: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW bcryptprimitives.dll flags=0x800: handle=0x7ffbf49f0000, error=6
+LoadLibraryExW combase.dll flags=0x0: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW combase.dll flags=0x800: handle=0x7ffbf70f0000, error=2
+LoadLibraryExW ole32.dll flags=0x0: handle=0x0, error=1114
+LoadLibraryExW ole32.dll flags=0x800: handle=0x0, error=1359
+LoadLibraryExW oleaut32.dll flags=0x0: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW oleaut32.dll flags=0x800: handle=0x7ffbf5e70000, error=203
+LoadLibraryExW user32.dll flags=0x0: handle=0x0, error=8
+LoadLibraryExW user32.dll flags=0x800: handle=0x0, error=8
+child plain hello: Ok(Output { status: ExitStatus(ExitStatus(0)), stdout: "Native Rust executable starts.\n", stderr: "" })
+child rustc direct: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+child cmd rustc: Ok(Output { status: ExitStatus(ExitStatus(1)), stdout: "", stderr: [141, 165, 32, 227, 164, 160, 165, 226, 225, 239, 32, 225, 174, 167, 164, 160, 226, 236, 32, 228, 160, 169, 171, 32, 168, 171, 168, 32, 175, 160, 175, 170, 227, 46, 13, 10] })
+child powershell rustc: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
+```
+
+Full log: logs/r3-dll-native-cmd.log
+
+## r3-structured-green — 2026-10-11T21:20:49.544Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 3 - partial reserved tags never flash in streamed panels
+  ---
+  duration_ms: 0.2113
+  type: 'test'
+  ...
+# Subtest: plain text, unknown HTML, missing closers and incomplete tags are preserved
+ok 4 - plain text, unknown HTML, missing closers and incomplete tags are preserved
+  ---
+  duration_ms: 0.1252
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 4
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 589.5295
+```
+
+Full log: logs/r3-structured-green.log
+
+## r3-rust-foundation-metadata — 2026-10-11T21:22:08.988Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-720c0f264cdbf104.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-025abdb1f26993d0.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    |
+980 |   fn emit<S: Serialize + Clone>(&self, event: &str, payload: S) -> Result<()> {
+    |              ^^^^^^^^^ required by this bound in `Emitter::emit`
+    = note: the full name for the type has been written to 'src-tauri\target\rust-foundation.long-type-1853025121867014857.txt'
+    = note: consider using `--verbose` to print the full type name to the console
+
+warning: variable does not need to be mutable
+   --> _research\temp\..\..\src-tauri\src\providers.rs:120:17
+    |
+120 |             let mut counts = self.global_daily_count.lock().unwrap();
+    |                 ----^^^^^^
+    |                 |
+    |                 help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+error: aborting due to 24 previous errors; 2 warnings emitted
+
+Some errors have detailed explanations: E0277, E0599.
+For more information about an error, try `rustc --explain E0277`.
+```
+
+Full log: logs/r3-rust-foundation-metadata.log
+
+## r3-typescript-after-core — 2026-10-11T21:22:06.239Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npx tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 npx
+npm notice run tsc --noEmit
+```
+
+Full log: logs/r3-typescript-after-core.log
+
+## r3-rust-foundation-metadata-env — 2026-10-11T21:22:28.828Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    |
+help: there is a method `saturating_duration_since` with a similar name
+    |
+359 -                         .saturating_duration_from(Instant::now())
+359 +                         .saturating_duration_since(Instant::now())
+    |
+
+warning: variable does not need to be mutable
+   --> _research\temp\..\..\src-tauri\src\providers.rs:120:17
+    |
+120 |             let mut counts = self.global_daily_count.lock().unwrap();
+    |                 ----^^^^^^
+    |                 |
+    |                 help: remove this `mut`
+    |
+    = note: `#[warn(unused_mut)]` (part of `#[warn(unused)]`) on by default
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0599`.
+```
+
+Full log: logs/r3-rust-foundation-metadata-env.log
+
+## r3-rust-foundation-metadata-green — 2026-10-11T21:22:56.549Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+...
+ 51 |     pub fn finish(&mut self) -> StructuredOutput {
+    |            ^^^^^^
+...
+ 58 |     fn consume(&mut self, final_chunk: bool) {
+    |        ^^^^^^^
+...
+100 |     fn append(&mut self, text: &str) {
+    |        ^^^^^^
+...
+108 |     fn snapshot(&self) -> StructuredOutput {
+    |        ^^^^^^^^
+
+warning: function `parse` is never used
+   --> _research\temp\..\..\src-tauri\src\structured_core.rs:117:8
+    |
+117 | pub fn parse(text: &str) -> StructuredOutput {
+    |        ^^^^^
+
+warning: 67 warnings emitted
+```
+
+Full log: logs/r3-rust-foundation-metadata-green.log
+
+## r3-cargo-test-blocker — 2026-10-11T21:23:16.133Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+
+Command: `call ..\scripts\rust-env.cmd cargo test --offline`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+   Compiling vswhom-sys v0.1.3
+error: failed to run custom build command for `vswhom-sys v0.1.3`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/r3-cargo-test-blocker.log
+
+## r3-cargo-clippy-blocker — 2026-10-11T21:23:24.572Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+
+Command: `call ..\scripts\rust-env.cmd cargo clippy --offline --all-targets`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+   Compiling vswhom-sys v0.1.3
+    Checking icu_locale_core v2.0.0
+    Checking percent-encoding v2.3.1
+    Checking icu_collections v2.0.0
+    Checking windows-result v0.3.4
+   Compiling windows-targets v0.53.3
+   Compiling tauri-plugin v2.4.0
+    Checking windows-strings v0.4.2
+error: failed to run custom build command for `vswhom-sys v0.1.3`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/r3-cargo-clippy-blocker.log
+
+## r3-parser-compile — 2026-10-11T21:23:29.886Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\structured_core.rs -o src-tauri\target\structured-core-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+```
+
+Full log: logs/r3-parser-compile.log
+
+## r3-parser-tests — 2026-10-11T21:23:33.007Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\structured-core-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 14 tests
+test tests::closed_secondary_section_does_not_publish_later_unclosed_content ... ok
+test tests::finish_publishes_unclosed_sections_and_literal_prefixes ... ok
+test tests::parse_tag_split_across_chunks_streaming ... ok
+test tests::parse_exact_tag_names_only ... ok
+test tests::parse_latex_angle_brackets_untouched ... ok
+test tests::parse_missing_side ... ok
+test tests::parse_partial_main_visible_before_close ... ok
+test tests::parse_all_three_tags ... ok
+test tests::parse_unclosed_tag_takes_rest ... ok
+test tests::parse_untagged_goes_to_main ... ok
+test tests::preserves_section_order_and_repeated_tags ... ok
+test tests::preserves_untagged_unicode ... ok
+test tests::stream_does_not_leak_split_tag_prefixes ... ok
+test tests::streaming_matches_literal_output_at_every_character_split ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/r3-parser-tests.log
+
+## r3-rust-foundation-tests-metadata — 2026-10-11T21:23:34.289Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_tests_metadata --test --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation-tests.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `set_tts_enabled` is never used
+   --> _research\temp\..\..\src-tauri\src\tts.rs:100:8
+    |
+100 | pub fn set_tts_enabled(app: AppHandle, enabled: bool) -> Result<(), String> {
+    |        ^^^^^^^^^^^^^^^
+
+warning: struct `StructuredOutput` is never constructed
+ --> _research\temp\..\..\src-tauri\src\structured.rs:5:12
+  |
+5 | pub struct StructuredOutput {
+  |            ^^^^^^^^^^^^^^^^
+
+warning: function `parse_structured` is never used
+  --> _research\temp\..\..\src-tauri\src\structured.rs:22:8
+   |
+22 | pub fn parse_structured(text: String) -> Result<StructuredOutput, String> {
+   |        ^^^^^^^^^^^^^^^^
+
+warning: 54 warnings emitted
+```
+
+Full log: logs/r3-rust-foundation-tests-metadata.log
+
+## r3-precommit-rust-tests — 2026-10-11T21:25:40.200Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\structured-core-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 14 tests
+test tests::parse_exact_tag_names_only ... ok
+test tests::parse_latex_angle_brackets_untouched ... ok
+test tests::parse_missing_side ... ok
+test tests::parse_tag_split_across_chunks_streaming ... ok
+test tests::finish_publishes_unclosed_sections_and_literal_prefixes ... ok
+test tests::parse_all_three_tags ... ok
+test tests::closed_secondary_section_does_not_publish_later_unclosed_content ... ok
+test tests::parse_partial_main_visible_before_close ... ok
+test tests::parse_unclosed_tag_takes_rest ... ok
+test tests::parse_untagged_goes_to_main ... ok
+test tests::preserves_section_order_and_repeated_tags ... ok
+test tests::preserves_untagged_unicode ... ok
+test tests::stream_does_not_leak_split_tag_prefixes ... ok
+test tests::streaming_matches_literal_output_at_every_character_split ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/r3-precommit-rust-tests.log
+
+## r3-precommit-encoding — 2026-10-11T21:25:40.200Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node scripts/check-encoding.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Encoding: 294 text files checked; 0 failures.
+```
+
+Full log: logs/r3-precommit-encoding.log
+
+## r3-precommit-ts — 2026-10-11T21:25:40.482Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npx tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 npx
+npm notice run tsc --noEmit
+```
+
+Full log: logs/r3-precommit-ts.log
+
+## r3-precommit-ts-tests — 2026-10-11T21:25:49.801Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 5 - partial reserved tags never flash in streamed panels
+  ---
+  duration_ms: 0.3003
+  type: 'test'
+  ...
+# Subtest: plain text, unknown HTML, missing closers and incomplete tags are preserved
+ok 6 - plain text, unknown HTML, missing closers and incomplete tags are preserved
+  ---
+  duration_ms: 0.1557
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 671.6489
+```
+
+Full log: logs/r3-precommit-ts-tests.log
+
+## r3-review-parser-red — 2026-10-11T21:26:43.381Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    speak: ''
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/structured.test.mjs:35:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 4
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 613.4112
+```
+
+Full log: logs/r3-review-parser-red.log
+
+## r3-review-parser-green — 2026-10-11T21:26:51.689Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 6 - plain text, unknown HTML, missing closers and incomplete tags are preserved
+  ---
+  duration_ms: 0.1365
+  type: 'test'
+  ...
+# Subtest: only exact lowercase protocol tags are special and unmatched closers remain literal
+ok 7 - only exact lowercase protocol tags are special and unmatched closers remain literal
+  ---
+  duration_ms: 0.1342
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 572.7654
+```
+
+Full log: logs/r3-review-parser-green.log

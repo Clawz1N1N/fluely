@@ -28,6 +28,12 @@
 - Problem: which actions map to buttons. Choice: listen/screenshot/continuous/answer/chat/tts/mode/settings (8). Why: covers the required action set from the spec.
 - NOT VERIFIED: compilation (no cargo/rustc in sandbox). Code is correct-by-construction.
 
-## R2 environment decisions
-- esbuild ?? ???? ????????? profile parents ? sandbox ? process-local DOS drive mapping ? preserveSymlinks; production build ? dev ??????????. Native batch launcher ?????? quote mismatch Node/cmd.
-- Vitest install dry-run ????????? EALLOWREMOTE; ???????? runner Node22+???????????? TypeScript, ??? ?????? ??????. npm audit endpoint ???????????; dependency versions ?? ???????? ????????.
+## R2 — середовище frontend
+- Проблема: esbuild намагається читати недоступні батьківські каталоги профілю. Варіанти: змінити ACL або використати process-local DOS відображення й preserveSymlinks. Вибір: тимчасова літера диска у native launcher. Причина: не змінює дозволів, не переносить вихідні файли; build і Vite підтверджені.
+- Проблема: Vitest і advisory endpoint недоступні. Варіанти: обходити політику завантаження або використати наявний Node runner. Вибір: Node22 + наявний TypeScript loader. Причина: мінімум залежностей; security freshness окремо BLOCKED B01.
+
+## R3 — native виконання і parser
+- Проблема: історична ring D8050. Варіанти: прибирати CL прапорці, старіший compiler, developer environment. Вибір: vcvars64 + наявний SDK22621. Причина: точна команда з усіма прапорцями повторно exit0; прапорці залишені.
+- Проблема: Cargo build-script не стартує0xc0000142; User32/Ole32 DLL probes також падають. Варіанти: правити сторонні crates, змінювати захисти, або виконувати незалежні перевірки й зафіксувати зовнішній блокер. Вибір: реальні core-тести й прямі metadata перевірки, B02. Причина: SDK/PATH/TEMP/launch/delay-load не виправляють native збій; змін захистів не робимо. Це не заміна повній Cargo перевірці.
+- Проблема: Unicode і часткові теги псували відповіді. Вибір: dependency-free Rust core + TypeScript incremental parser; тільки точні lowercase протокольні теги, невідомі та unmatched closers лишаються текстом. Причина: україномовний текст і формули не губляться; chunk-boundary/regression тести.
+- Проблема: коли показувати SPEAK. Варіанти: чекати закривального тегу або показувати під час стріму. Вибір: TypeScript публікує всі панелі відразу. Причина: PHASES_SPEC5.1 і P1j3 користувача дозволяють TTS по завершених реченнях під час стріму. Rust streaming helper має старий контракт secondary-on-close, але його IPC adapter використовується лише для повного parse; frontend не викликає IPC на кожний чанк.

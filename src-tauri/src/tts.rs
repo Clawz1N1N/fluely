@@ -74,12 +74,13 @@ impl Default for TtsState {
 
 // --------------------------- Tauri commands ---------------------------
 
-use tauri::AppHandle;
+use tauri::{AppHandle, Manager};
 
 #[tauri::command]
 pub fn get_tts_settings(app: AppHandle) -> Result<TtsSettings, String> {
     let state = app.state::<TtsState>();
-    Ok(state.settings.lock().unwrap().clone())
+    let settings = state.settings.lock().unwrap().clone();
+    Ok(settings)
 }
 
 #[tauri::command]

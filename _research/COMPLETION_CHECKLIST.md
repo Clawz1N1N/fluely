@@ -31,13 +31,13 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | F1c | UTF8 writer, .gitattributes/.editorconfig, targeted recovery | DONE | repair-encoding; valid files untouched |
 | F2 | ALL TS syntax/types errors fixed; lint if configured; changed files read | DONE | r2-tsc exit0; no lint configured |
 | F3 | Deleted-file imports/reexports pluely.api/analytics/api/activate/updater gone | DONE | deleted reexport removed, src symbol search0 |
-| F4a | ring exactCL replay+flag bisection English logs | TODO | R3 |
-| F4b | Developer env/SDK; short target/profile/release/clang/nativeTLS as needed | TODO | R3 |
-| F4c | All Rust errors fixed; check/test/clippy | TODO | R3 |
+| F4a | ring exactCL replay+flag bisection English logs | DONE | diagnose-ring: exact flags/SDK22621 repeated0; other SDKs0; D8050 not reproduced |
+| F4b | Developer env/SDK; short target/profile/release/clang/nativeTLS as needed | DONE | vcvars64+SDK22621 first working CL variant, all original flags retained |
+| F4c | All Rust errors fixed; check/test/clippy | BLOCKED | B02: all Cargo commands101 at native build-script; partial direct metadata0 and parser14/14 |
 | F5a | force source removed; legacy-peer-deps=true | DONE | r1-npm-policy false/true |
 | F5b | Approve oxide/esbuild scripts; protobuf only if needed | DONE | approve oxide/esbuild0; protobuf prebuilt runtime dependency, no script needed |
 | F5c | VAD React19 runtime, Vite/Tailwind build/dev | TODO | R2/R5 |
-| F5d | No audit fix force; safe vulnerabilities fixed, others documented | TODO | R2 |
+| F5d | No audit fix force; safe vulnerabilities fixed, others documented | BLOCKED | B01: advisory endpoint unavailable; no blind dependency upgrades |
 | F6 | P0 license/input/hooks/keychain/CSP diagnosed and fixed | TODO | P0a-g |
 | P0a | CSP IPC ipc:/ipc.localhost, WASM/Shiki, KaTeX fonts, blob/data/dev | TODO | R4 |
 | P0b1 | Old main hidden; persistent Listen/Ask/global shortcut handlers | TODO | R4/R5 |
@@ -71,7 +71,7 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | A02 | Claims table+defects+wiring matrix including PHASES_SPEC | DONE | TAKEOVER_AUDIT.md |
 | R1 | Encoding/policy check+group commit | DONE | commit63a22ac; r1-encoding0, tests2/2 |
 | R2 | tsc/build0, Vite30s, commit, frontend-green | DONE | r2-tsc0, r2-build-final0, r2-vite-preserve30.1s HTTP200 no errors |
-| R3 | cargo check/test/clippy, commit, rust-green | TODO | BUILD_LOG |
+| R3 | cargo check/test/clippy, commit, rust-green | BLOCKED | B02; source API repairs reviewed, metadata0+Rustparser14+TS7; no rust-green without Cargo proof |
 | R4 | runtime60s/backtrace/logs/inspect, commit, runs | TODO | BUILD_LOG |
 | R5 | P0/P1/P2 integrated+tests, group commits, wiring-done | TODO | BUILD_LOG |
 | R6 | Parser/limiter/fallback/packer/dedup/axis tests, build/check/test0, quality-green | TODO | BUILD_LOG |

@@ -8,10 +8,13 @@ mod vision;
 mod ui_automation;
 mod providers;
 mod structured;
+mod structured_core;
 mod tts;
 mod window;
 use std::sync::{Arc, Mutex};
-use tauri::{AppHandle, Manager, WebviewWindow};
+use tauri::Manager;
+#[cfg(target_os = "macos")]
+use tauri::{AppHandle, WebviewWindow};
 use tokio::task::JoinHandle;
 mod speaker;
 use capture::CaptureState;
@@ -35,7 +38,7 @@ fn get_app_version() -> String {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut builder = tauri::Builder::default()
+    let builder = tauri::Builder::default()
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations("sqlite:pluely.db", db::migrations())
@@ -207,9 +210,7 @@ pub fn run() {
 
     // Add macOS-specific permissions plugin
     #[cfg(target_os = "macos")]
-    {
-        builder = builder.plugin(tauri_plugin_macos_permissions::init());
-    }
+    let builder = builder.plugin(tauri_plugin_macos_permissions::init());
 
     builder
         .run(tauri::generate_context!())

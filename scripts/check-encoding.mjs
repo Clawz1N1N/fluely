@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const ignored = new Set(['.git', 'node_modules', 'target', 'dist', 'dist-ssr', 'gen', 'logs', '.superpowers', 'temp', 'npm-cache', 'ring-probe']);
-const extensions = /\.(json|ts|tsx|rs|toml|css|md|html|yml|yaml|txt|sql|mjs|cjs|ps1|bat|cfg|ini)$/i;
+const extensions = /\.(json|ts|tsx|rs|toml|css|md|html|yml|yaml|txt|sql|mjs|cjs|ps1|bat|cmd|cfg|ini)$/i;
 const mojibake = /\u044f\u2510\u255c|\u0420\u040e\u2026|\u0440\u045f|\u00e2\u20ac|\u00ef\u00bb\u00bf|\u0432\u0402/;
 export function inspectEncoding(bytes) {
   const findings = [];
