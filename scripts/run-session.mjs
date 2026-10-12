@@ -72,7 +72,7 @@ child.on('close', code => {
     try { decoded = new TextDecoder('utf-8', { fatal: true }).decode(bytes); }
     catch { decoded = new TextDecoder('ibm866').decode(bytes); }
     const text = decoded.replace(/\x1b\[[0-9;]*m/g, '');
-    const tail = text.trimEnd().split(/\r?\n/).slice(-20).map(line => line.trimEnd()).join('\n');
+    const tail = text.replace(/\uFFFD/g,'[U+FFFD in native diagnostic]').trimEnd().split(/\r?\n/).slice(-20).map(line => line.trimEnd()).join('\n');
     const entry = `\n## ${label} — ${new Date(started).toISOString()}\n\nCommand: \`${command}\`\n\nObservation: ${((Date.now()-started)/1000).toFixed(1)}s; native exit: ${code}; stopped by timer: ${terminated}. Intentional termination is not a build success.\n\nProbes: ${[...new Set(probes)].join('; ') || 'none'}\n\nLast 20 lines:\n\n\`\`\`text\n${tail}\n\`\`\`\n\nFull log: logs/${label}.log\n`;
     appendFileSync(path.join(root, '_research/BUILD_LOG.md'), entry, 'utf8'); console.log(entry);
     const badLogs = /error TS\d|Internal server error|failed to resolve|panicked at|error: failed|Failed to initialize shell/i.test(text);

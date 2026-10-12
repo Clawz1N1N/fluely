@@ -14,6 +14,7 @@
 
 use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
+use std::sync::atomic::{AtomicBool, Ordering};
 
 /// Which vision strategy to use when the brain model
 /// cannot accept images.
@@ -21,6 +22,7 @@ use std::sync::Mutex;
 #[serde(rename_all = "lowercase")]
 pub enum VisionMode {
     Ocr,
+    #[serde(rename = "ocr+ui", alias = "ocrui")]
     OcrUi,
     Vlm,
     Full,
@@ -34,6 +36,7 @@ impl Default for VisionMode {
 
 /// Settings for the vision pipeline.
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
 pub struct VisionSettings {
     pub mode: VisionMode,
     /// max characters of screen text (cap)
@@ -57,12 +60,14 @@ impl Default for VisionSettings {
 
 pub struct VisionState {
     pub settings: Mutex<VisionSettings>,
+    loaded: AtomicBool,
 }
 
 impl Default for VisionState {
     fn default() -> Self {
         VisionState {
             settings: Mutex::new(VisionSettings::default()),
+            loaded: AtomicBool::new(false),
         }
     }
 }
@@ -118,8 +123,10 @@ impl ScreenContext {
             out.push('\n');
         }
         if out.chars().count() > max_chars {
-            out.truncate(max_chars);
-            out.push_str("…[truncated]");
+            let suffix = "…[truncated]";
+            let suffix_len = suffix.chars().count();
+            out = out.chars().take(max_chars.saturating_sub(suffix_len)).collect();
+            out.extend(suffix.chars().take(max_chars));
         }
         out
     }
@@ -138,39 +145,52 @@ pub mod ocr_windows {
     pub fn ocr_image(
         img: &DynamicImage,
     ) -> Result<Vec<OcrBlock>, String> {
-        // NOTE: Windows.Media.Ocr is a WinRT API. The `windows`
-        // crate exposes it under windows::Media::Ocr, but it
-        // requires the "Media_Ocr" feature. When that feature
-        // is not enabled this module compiles to a stub that
-        // reports the limitation (see BLOCKED.md).
-        //
-        // OCR plumbing is not implemented in this module yet. Enabling
-        // Media_Ocr alone does not replace this explicit unavailable result.
-        let _ = img;
-        Err("OCR not available: enable the Media_Ocr windows crate feature and install an OCR language pack".to_string())
+        // Own apartment lifetime; async WinRT waits never run on the GUI thread.
+        let img = img.clone();
+        std::thread::spawn(move || {
+            use windows::{Graphics::Imaging::{SoftwareBitmap, BitmapPixelFormat},
+                Storage::Streams::DataWriter, Media::Ocr::OcrEngine,
+                Win32::System::WinRT::{RoInitialize, RoUninitialize, RO_INIT_MULTITHREADED}};
+            unsafe { RoInitialize(RO_INIT_MULTITHREADED) }.map_err(|e| format!("Initialize OCR: {e}"))?;
+            struct Apartment;
+            impl Drop for Apartment { fn drop(&mut self) { unsafe { RoUninitialize() }; } }
+            let _apartment = Apartment;
+            let recognize = || -> windows::core::Result<Vec<OcrBlock>> {
+                let max = OcrEngine::MaxImageDimension()?;
+                let img = if img.width().max(img.height()) > max { img.thumbnail(max, max) } else { img };
+                let pixels = img.to_luma8();
+                let writer = DataWriter::new()?;
+                writer.WriteBytes(pixels.as_raw())?;
+                let bitmap = SoftwareBitmap::CreateCopyFromBuffer(&writer.DetachBuffer()?,
+                    BitmapPixelFormat::Gray8, pixels.width() as i32, pixels.height() as i32)?;
+                let engine = OcrEngine::TryCreateFromUserProfileLanguages()?;
+                let recognized = engine.RecognizeAsync(&bitmap)?.get()?;
+                let lines = recognized.Lines()?;
+                let mut blocks = Vec::new();
+                for index in 0..lines.Size()? {
+                    let words = lines.GetAt(index)?.Words()?;
+                    for word_index in 0..words.Size()? {
+                        let word = words.GetAt(word_index)?;
+                        let rect = word.BoundingRect()?;
+                        blocks.push(OcrBlock { text: word.Text()?.to_string(), x: rect.X.max(0.0) as u32,
+                            y: rect.Y.max(0.0) as u32, w: rect.Width.max(0.0) as u32, h: rect.Height.max(0.0) as u32 });
+                    }
+                }
+                Ok(blocks)
+            };
+            recognize().map_err(|e| format!("Windows OCR: {e}. Install an OCR language pack in Windows Settings if none is available."))
+        }).join().map_err(|_| "OCR worker failed".to_string())?
     }
 
     /// Build a ScreenContext from OCR only.
     pub fn ocr_context(
         img: &DynamicImage,
         max_chars: usize,
-    ) -> ScreenContext {
+    ) -> Result<ScreenContext, String> {
         let mut ctx = ScreenContext::default();
-        match ocr_image(img) {
-            Ok(blocks) => ctx.ocr = blocks,
-            Err(e) => {
-                // Surface the limitation as a single block.
-                ctx.ocr = vec![OcrBlock {
-                    text: e,
-                    x: 0,
-                    y: 0,
-                    w: 0,
-                    h: 0,
-                }];
-            }
-        }
+        ctx.ocr = ocr_image(img)?;
         let _ = max_chars;
-        ctx
+        Ok(ctx)
     }
 }
 
@@ -184,16 +204,8 @@ pub mod ocr_windows {
         Err("OCR is only supported on Windows in this build".to_string())
     }
 
-    pub fn ocr_context(_img: &DynamicImage, _max_chars: usize) -> ScreenContext {
-        let mut ctx = ScreenContext::default();
-        ctx.ocr = vec![OcrBlock {
-            text: "OCR is only supported on Windows in this build".to_string(),
-            x: 0,
-            y: 0,
-            w: 0,
-            h: 0,
-        }];
-        ctx
+    pub fn ocr_context(_img: &DynamicImage, _max_chars: usize) -> Result<ScreenContext, String> {
+        Err("OCR is only supported on Windows in this build".into())
     }
 }
 
@@ -204,17 +216,34 @@ use tauri::{AppHandle, Manager};
 #[tauri::command]
 pub fn get_vision_settings(app: AppHandle) -> Result<VisionSettings, String> {
     let state = app.state::<VisionState>();
-    let settings = state.settings.lock().unwrap().clone();
-    Ok(settings)
+    let mut settings = state.settings.lock().map_err(|e| e.to_string())?;
+    if !state.loaded.load(Ordering::SeqCst) {
+        let path = crate::app_paths::data_dir(&app)?.join("vision_settings.json");
+        match std::fs::read(path) {
+            Ok(bytes) => *settings = serde_json::from_slice(&bytes).map_err(|e| format!("Load vision settings: {e}"))?,
+            Err(e) if e.kind() == std::io::ErrorKind::NotFound => {},
+            Err(e) => return Err(format!("Read vision settings: {e}")),
+        }
+        state.loaded.store(true, Ordering::SeqCst);
+    }
+    Ok(settings.clone())
 }
 
 #[tauri::command]
 pub fn update_vision_settings(
     app: AppHandle,
-    settings: VisionSettings,
+    mut settings: VisionSettings,
 ) -> Result<(), String> {
     let state = app.state::<VisionState>();
-    *state.settings.lock().unwrap() = settings;
+    settings.max_chars = settings.max_chars.clamp(64, 32000);
+    settings.ui_max_chars = settings.ui_max_chars.clamp(64, 16000);
+    settings.ui_max_depth = settings.ui_max_depth.min(16);
+    let mut current = state.settings.lock().map_err(|e| e.to_string())?;
+    let path = crate::app_paths::data_dir(&app)?.join("vision_settings.json");
+    crate::shell_store::replace_file(&path, &serde_json::to_vec_pretty(&settings).map_err(|e| e.to_string())?)
+        .map_err(|e| e.to_string())?;
+    *current = settings;
+    state.loaded.store(true, Ordering::SeqCst);
     Ok(())
 }
 
@@ -222,12 +251,12 @@ pub fn update_vision_settings(
 /// Called by the frontend when a text-only model is
 /// about to receive a request that includes frames.
 #[tauri::command]
-pub fn build_screen_context(
+pub async fn build_screen_context(
     app: AppHandle,
     frame_base64: Option<String>,
 ) -> Result<String, String> {
-    let state = app.state::<VisionState>();
-    let settings = state.settings.lock().unwrap().clone();
+    let settings = get_vision_settings(app)?;
+    tauri::async_runtime::spawn_blocking(move || {
     let mut ctx = ScreenContext::default();
 
     if let Some(b64) = frame_base64 {
@@ -240,42 +269,52 @@ pub fn build_screen_context(
 
         match settings.mode {
             VisionMode::Ocr => {
-                ctx = ocr_windows::ocr_context(&img, settings.max_chars);
+                ctx = ocr_windows::ocr_context(&img, settings.max_chars)?;
             }
             VisionMode::OcrUi => {
-                ctx = ocr_windows::ocr_context(&img, settings.max_chars);
+                ctx = ocr_windows::ocr_context(&img, settings.max_chars)?;
                 // UI Automation tree of the foreground window.
                 #[cfg(target_os = "windows")]
                 {
                     ctx.ui = super::ui_automation::foreground_tree(
                         settings.ui_max_depth,
                         settings.ui_max_chars,
-                    );
+                    )?;
                 }
             }
             VisionMode::Vlm => {
                 // A vision model describes the frame. The
                 // provider is configured in Phase 4; until
                 // then the description is a placeholder.
-                ctx.vlm_description = Some(
-                    "[VLM description pending provider setup]".to_string(),
-                );
+                return Err("VLM context is built by the configured frontend vision provider".into());
             }
             VisionMode::Full => {
-                ctx = ocr_windows::ocr_context(&img, settings.max_chars);
+                ctx = ocr_windows::ocr_context(&img, settings.max_chars)?;
                 #[cfg(target_os = "windows")]
                 {
                     ctx.ui = super::ui_automation::foreground_tree(
                         settings.ui_max_depth,
                         settings.ui_max_chars,
-                    );
+                    )?;
                 }
-                ctx.vlm_description = Some(
-                    "[VLM description pending provider setup]".to_string(),
-                );
             }
         }
     }
 
     Ok(ctx.to_text(settings.max_chars))
+    }).await.map_err(|e| format!("Vision worker: {e}"))?
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn screen_context_is_unicode_safe_and_obeys_every_character_budget() {
+        let context = ScreenContext { ocr: vec![OcrBlock { text: "Україна 🌻 текст".into(), x: 0, y: 0, w: 1, h: 1 }], ..Default::default() };
+        for budget in 0..80 {
+            let text = context.to_text(budget);
+            assert!(text.chars().count() <= budget, "budget {budget}: {text}");
+        }
+        assert!(context.to_text(80).contains("Україна 🌻 текст"));
+    }
 }

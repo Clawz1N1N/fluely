@@ -1,114 +1,134 @@
-import { useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { getCurrentWindow } from "@tauri-apps/api/window";
-import { X } from "lucide-react";
-import { Markdown } from "@/components";
-import { useShellDrag } from "./useShellDrag";
-import { Shimmer } from "./Shimmer";
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
+import { listen, type UnlistenFn } from '@tauri-apps/api/event';
+import { Pause, Play, Square, X } from 'lucide-react';
+import { Markdown } from '@/components/Markdown';
+import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
+import { useShellDrag } from './useShellDrag';
+import { Shimmer } from './Shimmer';
+import { requestCounts } from './ShellControls';
 
-interface ChatMessage {
-  id: string;
-  role: "user" | "assistant";
-  content: string;
-  side?: string;
-}
-
-/**
- * Central answer window (label "answer").
- * Header + two panes (MAIN / SIDE) + chat input.
- * Movable freely by the header. Reuses the Markdown/KaTeX
- * renderer for both panes.
- */
+/** The answer window is a view of the persistent hidden-main service. */
 export const AnswerWindow: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [input, setInput] = useState("");
-  const [mainText] = useState("");
-  const [sideText] = useState("");
-  const drag = useShellDrag("free");
+  const { snapshot, act, connectionError } = useServiceSnapshot();
+  const [input, setInput] = useState('');
+  const [focusError, setFocusError] = useState<string | null>(null);
+  const [now, setNow] = useState(Date.now());
+  const inputRef = useRef<HTMLInputElement>(null);
+  const mounted = useRef(false);
+  const editing = useRef(false);
+  const focusRevision = useRef(0);
+  const policyQueue = useRef<Promise<unknown>>(Promise.resolve());
+  const drag = useShellDrag('free');
 
-  const sendQuestion = async () => {
-    const text = input.trim();
-    if (!text) return;
-    setInput("");
-    const userMsg: ChatMessage = {
-      id: crypto.randomUUID(),
-      role: "user",
-      content: text,
-    };
-    setMessages((m) => [...m, userMsg]);
-    // The typed question joins the single-request pipeline
-    // (Phase 3); for now emit it so the main app can pick it up.
+  // Serialize policy changes so a delayed enable cannot overtake a blur/close.
+  const setEditing = useCallback((enabled: boolean) => {
+    const next = policyQueue.current.catch(() => {}).then(() => invoke('set_answer_editing', { editing: enabled }));
+    policyQueue.current = next;
+    return next;
+  }, []);
+  const endEditing = useCallback(() => {
+    focusRevision.current++;
+    editing.current = false;
+    void setEditing(false).catch(() => { if (mounted.current) setFocusError('Не вдалося завершити введення.'); });
+  }, [setEditing]);
+  const beginEditing = useCallback(async () => {
+    const revision = ++focusRevision.current;
     try {
-      await invoke("answer_ask", { question: text }).catch(() => {});
-    } catch {
-      // Not yet wired in Phase 2.
-    }
-    // Placeholder: when the model streams a structured
-    // response, parse it and route MAIN/SIDE/SPEAK.
-    // (Phase 5 wiring; the real stream arrives via the
-    // continuous-batch / answer pipeline.)
+      await setEditing(true);
+      if (!mounted.current || revision !== focusRevision.current) return;
+      editing.current = true;
+      setFocusError(null);
+      inputRef.current?.focus();
+    } catch { if (mounted.current) setFocusError('Не вдалося активувати поле запиту.'); }
+  }, [setEditing]);
+  useEffect(() => {
+    mounted.current = true;
+    let disposed = false;
+    let stop: UnlistenFn | undefined;
+    void listen('answer-focus-input', () => { if (!disposed) void beginEditing(); }).then(unlisten => {
+      if (disposed) unlisten(); else stop = unlisten;
+    }).catch(console.error);
+    return () => { disposed = true; mounted.current = false; stop?.(); endEditing(); };
+  }, [beginEditing, endEditing]);
+  useEffect(() => {
+    if (!snapshot.answerVisible) { inputRef.current?.blur(); endEditing(); }
+  }, [snapshot.answerVisible, endEditing]);
+  useEffect(() => {
+    if (!snapshot.nextAllowedAt) return;
+    setNow(Date.now());
+    const timer = window.setInterval(() => setNow(Date.now()), 1000);
+    return () => window.clearInterval(timer);
+  }, [snapshot.nextAllowedAt]);
+
+  const close = async () => {
+    inputRef.current?.blur();
+    endEditing();
+    try { await policyQueue.current; await invoke('close_answer_window'); }
+    catch { setFocusError('Не вдалося закрити вікно.'); }
   };
+  const sendQuestion = async () => {
+    const question = input.trim();
+    if (!question || !snapshot.ready) return;
+    if (await act('ask', question)) setInput('');
+  };
+  const wordStart = Math.max(0, Math.min(snapshot.speak.length, snapshot.tts.wordStart));
+  const wordEnd = Math.max(wordStart, Math.min(snapshot.speak.length, snapshot.tts.wordEnd));
+  const highlight = snapshot.tts.wordStart >= 0 && wordEnd > wordStart && (snapshot.tts.speaking || snapshot.tts.paused);
+  const wait = snapshot.nextAllowedAt ? Math.max(0, Math.ceil((snapshot.nextAllowedAt - now) / 1000)) : 0;
+  const status = !snapshot.ready ? 'Підключення…' : snapshot.neutral ? (wait ? `Очікування: ${wait} с` : 'Запити призупинено') : snapshot.busy ? 'Готуємо відповідь…' : snapshot.currentModel ?? 'Готово';
 
-  return (
-    <div className="flex flex-col w-full h-full bg-neutral-900/95 text-white rounded-lg overflow-hidden">
-      <Shimmer enabled={false} speed={3} />
-      {/* Header (drag region) */}
-      <div
-        className="flex items-center justify-between px-3 py-2 bg-neutral-800 cursor-move"
-        onPointerDown={drag.onPointerDown}
-        onPointerMove={drag.onPointerMove}
-        onPointerUp={drag.onPointerUp}
-      >
-        <span className="text-xs font-medium">Pluely</span>
-        <div className="flex items-center gap-2">
-          <span className="text-[10px] text-white/50" id="rate-limit-status" />
-          <button
-            className="p-1 hover:bg-neutral-700 rounded"
-            onClick={() => {
-              getCurrentWindow().close().catch(() => {});
-            }}
-            aria-label="Close"
-          >
-            <X className="h-4 w-4" />
-          </button>
-        </div>
+  return <div
+    className="relative flex h-full w-full flex-col overflow-hidden rounded-lg text-white"
+    style={{ backgroundColor: `rgba(23,23,23,${snapshot.shell.answer_opacity})` }}
+    data-mode={snapshot.shell.ui_mode}
+    onKeyDown={event => { if (event.key === 'Escape') { inputRef.current?.blur(); endEditing(); } }}
+  >
+    <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
+    <div className="flex cursor-move items-center justify-between bg-neutral-800/80 px-3 py-2" {...drag.handlers}>
+      <span className="text-xs font-medium">Pluely</span>
+      <div className="flex items-center gap-2">
+        <span className="text-[10px] text-white/60" id="rate-limit-status" aria-live="polite" title={requestCounts(snapshot)}>{status} · {requestCounts(snapshot)}</span>
+        <button type="button" className="rounded p-1 hover:bg-neutral-700" onClick={() => void close()} aria-label="Закрити відповідь"><X className="h-4 w-4" /></button>
       </div>
-
-      {/* Two panes */}
-      <div className="flex flex-1 min-h-0 gap-2 p-2">
-        <div className="flex-1 min-w-0 overflow-auto rounded bg-neutral-800/60 p-2">
-          <div className="text-[10px] uppercase text-white/40 mb-1">Main</div>
-          <Markdown>{mainText || "…"}</Markdown>
-        </div>
-        <div className="flex-1 min-w-0 overflow-auto rounded bg-neutral-800/60 p-2">
-          <div className="text-[10px] uppercase text-white/40 mb-1">Side</div>
-          <Markdown>{sideText || "…"}</Markdown>
-        </div>
-      </div>
-
-      {/* Chat input */}
-      <div className="p-2 border-t border-neutral-700">
-        <div className="flex gap-2">
-          <input
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") sendQuestion();
-            }}
-            placeholder="Ask…"
-            className="flex-1 bg-neutral-800 rounded px-2 py-1 text-sm outline-none"
-          />
-          <button
-            onClick={sendQuestion}
-            className="px-3 py-1 bg-blue-600 rounded text-sm"
-          >
-            Send
-          </button>
-        </div>
-      </div>
-
-      {/* Message history (hidden, kept for state) */}
-      <div className="hidden">{messages.length}</div>
     </div>
-  );
+    {(connectionError || focusError || snapshot.error) && <p role="alert" className="px-3 py-1 text-xs text-red-300">{connectionError ?? focusError ?? snapshot.error}</p>}
+    <div className="flex min-h-0 flex-1 gap-2 p-2">
+      <section className="min-w-0 flex-1 overflow-auto rounded bg-neutral-800/60 p-2">
+        <h2 className="mb-1 text-[10px] uppercase text-white/50">Основне · MAIN</h2>
+        <Markdown isStreaming={snapshot.busy}>{snapshot.main || '…'}</Markdown>
+      </section>
+      <section className="min-w-0 flex-1 overflow-auto rounded bg-neutral-800/60 p-2">
+        <h2 className="mb-1 text-[10px] uppercase text-white/50">Додатково · SIDE</h2>
+        <Markdown isStreaming={snapshot.busy}>{snapshot.side || '…'}</Markdown>
+      </section>
+    </div>
+    <section className="max-h-28 overflow-auto border-t border-neutral-700 px-3 py-2">
+      <div className="mb-1 flex items-center justify-between">
+        <h2 className="text-[10px] uppercase text-white/50">Озвучення · SPEAK</h2>
+        <div className="flex gap-2">
+          <button type="button" title="Назад" aria-label="Озвучення назад" onClick={() => void act('tts_seek_back')}>«</button>
+          <button type="button" aria-label={snapshot.tts.paused ? 'Продовжити озвучення' : 'Пауза озвучення'} onClick={() => void act('tts_pause')} disabled={!snapshot.tts.speaking && !snapshot.tts.paused}>{snapshot.tts.paused ? <Play className="h-3 w-3" /> : <Pause className="h-3 w-3" />}</button>
+          <button type="button" aria-label="Зупинити озвучення" onClick={() => void act('tts_stop')}><Square className="h-3 w-3" /></button>
+          <button type="button" title="Вперед" aria-label="Озвучення вперед" onClick={() => void act('tts_seek_forward')}>»</button>
+        </div>
+      </div>
+      <p className="whitespace-pre-wrap text-sm">{highlight ? <>{snapshot.speak.slice(0, wordStart)}<mark className="rounded bg-yellow-300 text-neutral-950">{snapshot.speak.slice(wordStart, wordEnd)}</mark>{snapshot.speak.slice(wordEnd)}</> : snapshot.speak || '…'}</p>
+    </section>
+    <details className="max-h-36 overflow-auto px-3 text-xs">
+      <summary className="cursor-pointer py-1">Історія чату ({snapshot.history.length})</summary>
+      {snapshot.history.map((message, index) => <div key={index} className="border-t border-white/10 py-1"><span className="text-white/50">{message.role === 'user' ? 'Ви' : 'Pluely'}: </span><Markdown>{message.content}</Markdown></div>)}
+    </details>
+    <form className="flex gap-2 border-t border-neutral-700 p-2" onSubmit={event => { event.preventDefault(); void sendQuestion(); }}>
+      <button type="button" className="rounded bg-neutral-700 px-2 text-xs" onClick={() => void beginEditing()}>Ввести запит</button>
+      <input
+        ref={inputRef} value={input} tabIndex={-1} onChange={event => setInput(event.target.value)}
+        onPointerDown={event => { if (!editing.current) { event.preventDefault(); void beginEditing(); } }}
+        onFocus={() => { if (!editing.current) { inputRef.current?.blur(); void beginEditing(); } }}
+        onBlur={endEditing} placeholder="Запитайте…" aria-label="Запит до помічника"
+        className="min-w-0 flex-1 rounded bg-neutral-800 px-2 py-1 text-sm outline-none"
+      />
+      <button type="submit" disabled={!input.trim() || !snapshot.ready} className="rounded bg-blue-600 px-3 py-1 text-sm disabled:opacity-40">Надіслати</button>
+    </form>
+  </div>;
 };

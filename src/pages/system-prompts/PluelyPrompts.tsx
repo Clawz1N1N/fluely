@@ -55,8 +55,12 @@ const LOCAL_PRESETS: PluelyPrompt[] = [
 ];
 
 export const PluelyPrompts = () => {
-  const { setSystemPrompt, setSupportsImages } = useApp();
-  const [prompts] = useState<PluelyPrompt[]>(LOCAL_PRESETS);
+  const { setSystemPrompt } = useApp();
+  const [prompts,setPrompts] = useState<PluelyPrompt[]>(()=>{
+    try{const parsed=JSON.parse(localStorage.getItem('local_default_presets')??'null');if(Array.isArray(parsed)&&parsed.every(p=>typeof p.title==='string'&&typeof p.prompt==='string'&&typeof p.modelId==='string'))return parsed;}catch{}
+    return LOCAL_PRESETS;
+  });
+  const [editing,setEditing]=useState<PluelyPrompt|null>(null);
   const [selectedPluelyPrompt, setSelectedPluelyPrompt] =
     useState<PluelyPrompt | null>(() => {
       const stored = safeLocalStorage.getItem(
@@ -107,8 +111,7 @@ export const PluelyPrompts = () => {
       SELECTED_PLUELY_PROMPT_STORAGE_KEY,
       JSON.stringify(prompt)
     );
-    // Image support is derived from the selected custom provider, not the preset
-    setSupportsImages(true);
+    // Image support belongs to the selected provider/model.
   };
 
   const handleCardClick = (prompt: PluelyPrompt) => {
@@ -156,6 +159,7 @@ export const PluelyPrompts = () => {
                 <CheckCircle2 className="size-5 text-green-500 flex-shrink-0 absolute top-2 right-2" />
               )}
               <CardHeader className="p-0 pb-0 select-none">
+                <button type="button" className="mb-2 self-end text-xs text-primary" onClick={event=>{event.stopPropagation();setEditing({...prompt});}}>Редагувати</button>
                 <div className="flex items-start justify-between gap-2 relative">
                   <div className="flex-1 space-y-1.5">
                     <div className="flex items-center gap-2">
@@ -181,6 +185,16 @@ export const PluelyPrompts = () => {
           );
         })}
       </div>
+      {editing&&<form className="space-y-2 rounded border p-3" onSubmit={event=>{
+        event.preventDefault();const updated=prompts.map(prompt=>prompt.modelId===editing.modelId?editing:prompt);
+        localStorage.setItem('local_default_presets',JSON.stringify(updated));setPrompts(updated);
+        if(selectedPluelyPrompt?.modelId===editing.modelId)handleSelectPluelyPrompt(editing);setEditing(null);
+      }}>
+        <input aria-label="Назва шаблону" className="w-full rounded border p-2" required value={editing.title} onChange={event=>setEditing({...editing,title:event.target.value})}/>
+        <textarea aria-label="Інструкція шаблону" className="min-h-32 w-full rounded border p-2" required value={editing.prompt} onChange={event=>setEditing({...editing,prompt:event.target.value})}/>
+        <button type="submit" className="rounded bg-primary px-3 py-1 text-primary-foreground">Зберегти шаблон</button>
+        <button type="button" className="ml-2" onClick={()=>setEditing(null)}>Скасувати</button>
+      </form>}
     </div>
   );
 };

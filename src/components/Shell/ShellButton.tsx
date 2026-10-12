@@ -1,99 +1,25 @@
-import React, { useEffect, useState } from "react";
-import { invoke } from "@tauri-apps/api/core";
-import { emit } from "@tauri-apps/api/event";
-import {
-  Mic,
-  Camera,
-  Video,
-  MessageSquare,
-  Volume2,
-  LayoutGrid,
-  Settings,
-  Square,
-} from "lucide-react";
-import { useShellDrag } from "./useShellDrag";
-import { Shimmer } from "./Shimmer";
+import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
+import { useShellDrag } from './useShellDrag';
+import { Shimmer } from './Shimmer';
+import { ACTION_LABELS, ActionIcon, actionIsActive, SHELL_ACTIONS, serviceStatus, requestCounts, type ButtonAction } from './ShellControls';
+export type { ShellAction } from '@/lib/overlay/contracts';
 
-export type ShellAction =
-  | "listen"
-  | "screenshot"
-  | "continuous"
-  | "answer"
-  | "chat"
-  | "tts"
-  | "mode"
-  | "settings";
-
-const ACTION_ICONS: Record<ShellAction, React.ReactNode> = {
-  listen: <Mic className="h-5 w-5" />,
-  screenshot: <Camera className="h-5 w-5" />,
-  continuous: <Video className="h-5 w-5" />,
-  answer: <MessageSquare className="h-5 w-5" />,
-  chat: <Square className="h-5 w-5" />,
-  tts: <Volume2 className="h-5 w-5" />,
-  mode: <LayoutGrid className="h-5 w-5" />,
-  settings: <Settings className="h-5 w-5" />,
-};
-
-/**
- * One tiny, freely-draggable window per action (ui_mode = "buttons").
- * Clicking dispatches the same action the main window would.
- */
 export const ShellButton: React.FC = () => {
-  const [active, setActive] = useState(false);
-  const [shimmer, setShimmer] = useState(true);
-  const drag = useShellDrag("free");
-
-  // Determine action from the route (/shell/button/:action).
-  const action = (
-    window.location.pathname.split("/").filter(Boolean).pop() ?? "listen"
-  ) as ShellAction;
-
-  useEffect(() => {
-    invoke<{ shimmer: boolean }>("get_shell_settings")
-      .then((s) => setShimmer(s?.shimmer ?? true))
-      .catch(() => {});
-  }, []);
-
-  const handleClick = async () => {
-    setActive((v) => !v);
-    try {
-      await emit("shell-action", { action });
-    } catch {
-      // Event bus unavailable; fall back to direct invoke.
-    }
-    switch (action) {
-      case "screenshot":
-        await invoke("start_screen_capture").catch(() => {});
-        break;
-      case "settings":
-        await invoke("open_dashboard").catch(() => {});
-        break;
-      case "answer":
-        await invoke("toggle_answer_window").catch(() => {});
-        break;
-      default:
-        break;
-    }
-  };
-
-  return (
-    <div
-      className="relative flex items-center justify-center w-full h-full cursor-move"
-      onPointerDown={drag.onPointerDown}
-      onPointerMove={drag.onPointerMove}
-      onPointerUp={drag.onPointerUp}
-      onClick={handleClick}
-      data-active={active}
-      style={{ userSelect: "none" }}
-    >
-      <Shimmer enabled={shimmer} speed={3} />
-      <div
-        className="flex items-center justify-center w-9 h-9 rounded-lg bg-neutral-800/90 text-white"
-        style={{ pointerEvents: "none" }}
-      >
-        {ACTION_ICONS[action]}
-      </div>
-    </div>
-  );
+  const { snapshot, act, connectionError } = useServiceSnapshot();
+  const drag = useShellDrag('free');
+  const routeAction = window.location.pathname.split('/').filter(Boolean).pop();
+  const action: ButtonAction = SHELL_ACTIONS.find(candidate => candidate === routeAction) ?? 'listen';
+  return <div
+    className="relative flex h-full w-full cursor-move items-center justify-center"
+    {...drag.handlers} style={{ userSelect: 'none' }} data-mode={snapshot.shell.ui_mode}
+  >
+    <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
+    <button
+      type="button" aria-label={ACTION_LABELS[action]} title={connectionError ?? `${ACTION_LABELS[action]} · ${serviceStatus(snapshot)} · ${requestCounts(snapshot)}`}
+      aria-pressed={actionIsActive(action, snapshot)} disabled={!snapshot.ready}
+      data-shell-drag
+      onClick={() => { if (!drag.consumeClick()) void act(action); }}
+      className="relative flex h-full w-full items-center justify-center rounded-lg bg-neutral-800/95 text-white disabled:opacity-40 aria-pressed:bg-blue-700"
+    ><ActionIcon action={action} />{snapshot.neutral && <span role="status" className="absolute bottom-0 right-0 rounded bg-amber-600 px-0.5 text-[8px]">{snapshot.nextAllowedAt?Math.max(0,Math.ceil((snapshot.nextAllowedAt-Date.now())/1000)):'Ⅱ'}</span>}</button>
+  </div>;
 };

@@ -1,29 +1,33 @@
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useShellDrag } from "./useShellDrag";
 import { Shimmer } from "./Shimmer";
+import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
+import { ShellControls, ServiceBadge, SHELL_ACTIONS } from './ShellControls';
 
 /**
- * A tall, narrow strip docked to a screen edge (ui_mode = "side").
+ * A tall, narrow strip docked to a screen edge (ui_mode = "sidestrips").
  * Draggable ONLY horizontally (x changes, y fixed).
  */
 export const ShellSideStrip: React.FC = () => {
   const drag = useShellDrag("x");
+  const { snapshot, act, connectionError } = useServiceSnapshot();
   const side = getCurrentWindow().label === "strip-right" ? "right" : "left";
 
   return (
     <div
-      className="flex flex-col items-center gap-3 w-full h-full py-3 cursor-move"
-      onPointerDown={drag.onPointerDown}
-      onPointerMove={drag.onPointerMove}
-      onPointerUp={drag.onPointerUp}
+      className="relative flex flex-col items-center gap-2 w-full h-full rounded-lg bg-neutral-900/90 py-3 cursor-move overflow-auto"
+      {...drag.handlers}
       style={{ userSelect: "none" }}
       data-side={side}
+      data-mode={snapshot.shell.ui_mode}
+      title={connectionError ?? undefined}
     >
-      <Shimmer enabled={true} speed={3} />
+      <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
       <span className="text-[10px] text-white/60 [writing-mode:vertical-rl] rotate-180">
         PLUELY
       </span>
-      {/* action badges render here in a later phase */}
+      <ShellControls snapshot={snapshot} act={act} actions={side==='left'?SHELL_ACTIONS.slice(0,4):SHELL_ACTIONS.slice(4)} />
+      <ServiceBadge snapshot={snapshot} />
     </div>
   );
 };

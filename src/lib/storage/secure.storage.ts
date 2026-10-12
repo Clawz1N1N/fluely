@@ -9,6 +9,12 @@ import {
   saveItem as keychainSet,
   removeItem as keychainRemove,
 } from "tauri-plugin-keychain";
+import { CredentialStore } from './credential-store';
+
+export const credentialStore = new CredentialStore({
+  getItem: key => localStorage.getItem(key),
+  setItem: (key, value) => localStorage.setItem(key, value),
+}, { save: keychainSet, get: keychainGet });
 
 /** Store a secret in the OS keychain. */
 export async function setSecret(

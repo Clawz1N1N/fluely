@@ -1,0 +1,15 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "dashboard-data",
+  "description": "History, editable prompts and explicit autostart controls belong to the dashboard.",
+  "windows": [
+    "dashboard"
+  ],
+  "permissions": [
+    "sql:default",
+    "sql:allow-execute",
+    "autostart:allow-enable",
+    "autostart:allow-disable",
+    "autostart:allow-is-enabled"
+  ]
+}

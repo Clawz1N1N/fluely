@@ -2,6 +2,16 @@ import { ShortcutAction } from "@/types";
 
 export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
   {
+    id: 'find_buttons', name: 'Знайти кнопки / скинути розташування',
+    description: 'Повернути панелі й кнопки на екран',
+    defaultKey: { macos: 'cmd+shift+r', windows: 'ctrl+shift+r', linux: 'ctrl+shift+r' },
+  },
+  {
+    id: 'ui_mode', name: 'Перемкнути вигляд панелей',
+    description: 'Бічні смуги → верхня/нижня → кнопки',
+    defaultKey: { macos: 'cmd+shift+u', windows: 'ctrl+shift+u', linux: 'ctrl+shift+u' },
+  },
+  {
     id: "toggle_dashboard",
     name: "Toggle Dashboard",
     description: "Open/Close the dashboard window",
@@ -14,7 +24,7 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
   {
     id: "toggle_window",
     name: "Toggle Window",
-    description: "Show/Hide the main window",
+    description: "Show/Hide all overlay windows",
     defaultKey: {
       macos: "cmd+backslash",
       windows: "ctrl+backslash",

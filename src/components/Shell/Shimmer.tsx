@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { listen } from '@tauri-apps/api/event';
 
 /**
  * Animated rainbow/gradient "shimmer" so buttons are hard to lose.
@@ -12,12 +13,18 @@ export const Shimmer: React.FC<{ enabled: boolean; speed: number }> = ({
   speed,
 }) => {
   const [on, setOn] = useState(enabled);
+  const [flash,setFlash]=useState(false);
 
   useEffect(() => setOn(enabled), [enabled]);
+  useEffect(()=>{
+    let disposed=false,off:(()=>void)|undefined,timer:ReturnType<typeof setTimeout>|undefined;
+    void listen('shell-flash',()=>{setFlash(true);clearTimeout(timer);timer=setTimeout(()=>setFlash(false),2500);}).then(stop=>{if(disposed)stop();else off=stop;});
+    return()=>{disposed=true;off?.();clearTimeout(timer);};
+  },[]);
 
-  if (!on) return null;
+  if (!on&&!flash) return null;
 
-  const duration = Math.max(1, 6 / Math.max(1, speed));
+  const duration = flash?0.4:Math.max(1,speed);
   return (
     <div
       aria-hidden
@@ -32,7 +39,8 @@ export const Shimmer: React.FC<{ enabled: boolean; speed: number }> = ({
         backgroundSize: "300% 100%",
         animation: `shimmer-slide ${duration}s linear infinite`,
         filter: "blur(6px)",
-        zIndex: -1,
+        zIndex: 2,
+        opacity: flash?1:0.25,
       }}
     />
   );

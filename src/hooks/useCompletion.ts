@@ -179,7 +179,7 @@ export const useCompletion = () => {
         let fullResponse = "";
 
         // Check if AI provider is configured
-        if (!selectedAIProvider.provider) {
+        if (!selectedAIProvider.provider && !('__TAURI_INTERNALS__' in window)) {
           setState((prev) => ({
             ...prev,
             error: "Please select an AI provider in settings",
@@ -190,7 +190,7 @@ export const useCompletion = () => {
         const provider = allAiProviders.find(
           (p) => p.id === selectedAIProvider.provider
         );
-        if (!provider) {
+        if (!provider && !('__TAURI_INTERNALS__' in window)) {
           setState((prev) => ({
             ...prev,
             error: "Invalid provider selected",

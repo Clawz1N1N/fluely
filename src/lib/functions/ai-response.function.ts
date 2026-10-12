@@ -6,12 +6,12 @@ import {
   getStreamingContent,
 } from "./common.function";
 import { Message, TYPE_PROVIDER } from "@/types";
-import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+import { providerFetch, ProviderHttpError, readEventStream } from "../overlay/network";
 import curl2Json from "@bany/curl-to-json";
 import { getResponseSettings, RESPONSE_LENGTHS, LANGUAGES } from "@/lib";
 import { MARKDOWN_FORMATTING_INSTRUCTIONS } from "@/config/constants";
 
-function buildEnhancedSystemPrompt(baseSystemPrompt?: string): string {
+export function buildEnhancedSystemPrompt(baseSystemPrompt?: string): string {
   const responseSettings = getResponseSettings();
   const prompts: string[] = [];
 
@@ -50,7 +50,14 @@ export async function* fetchAIResponse(params: {
   userMessage: string;
   imagesBase64?: string[];
   signal?: AbortSignal;
+  registryReserved?:boolean;
 }): AsyncIterable<string> {
+  if(!params.registryReserved&&typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window){
+    const {requestServiceAnswer}=await import('../overlay/service-client');
+    const current=localStorage.getItem('system_prompt');
+    const question=params.systemPrompt&&params.systemPrompt!==current?`Додаткові інструкції для цього запиту:\n${params.systemPrompt}\n\nЗапит:\n${params.userMessage}`:params.userMessage;
+    yield await requestServiceAnswer(question,params.imagesBase64,params.signal);return;
+  }
   try {
     const {
       provider,
@@ -157,126 +164,24 @@ export async function* fetchAIResponse(params: {
       }
     }
 
-    const fetchFunction = url?.includes("http") ? fetch : tauriFetch;
-
-    let response;
-    try {
-      response = await fetchFunction(url, {
-        method: curlJson.method || "POST",
-        headers,
-        body: curlJson.method === "GET" ? undefined : JSON.stringify(bodyObj),
-        signal,
-      });
-    } catch (fetchError) {
-      // Check if aborted
-      if (
-        signal?.aborted ||
-        (fetchError instanceof Error && fetchError.name === "AbortError")
-      ) {
-        return; // Silently return on abort
-      }
-      yield `Network error during API request: ${
-        fetchError instanceof Error ? fetchError.message : "Unknown error"
-      }`;
-      return;
-    }
-
-    if (!response.ok) {
-      let errorText = "";
-      try {
-        errorText = await response.text();
-      } catch {}
-      yield `API request failed: ${response.status} ${response.statusText}${
-        errorText ? ` - ${errorText}` : ""
-      }`;
-      return;
-    }
-
-    if (!provider?.streaming) {
-      let json;
-      try {
-        json = await response.json();
-      } catch (parseError) {
-        yield `Failed to parse non-streaming response: ${
-          parseError instanceof Error ? parseError.message : "Unknown error"
-        }`;
-        return;
-      }
-      const content =
-        getByPath(json, provider?.responseContentPath || "") || "";
+    const response = await providerFetch(url, {
+      method: curlJson.method || "POST", headers,
+      body: curlJson.method === "GET" ? undefined : JSON.stringify(bodyObj), signal,
+    });
+    if (!response.ok) throw ProviderHttpError.fromResponse(response);
+    if (!provider.streaming) {
+      const content = getByPath(await response.json(), provider.responseContentPath || "");
+      if (typeof content !== 'string') throw new Error('Провайдер повернув відповідь без тексту.');
       yield content;
       return;
     }
-
-    if (!response.body) {
-      yield "Streaming not supported or response body missing";
-      return;
-    }
-
-    const reader = response.body.getReader();
-    const decoder = new TextDecoder();
-    let buffer = "";
-
-    while (true) {
-      // Check if aborted
-      if (signal?.aborted) {
-        reader.cancel();
-        return;
-      }
-
-      let readResult;
-      try {
-        readResult = await reader.read();
-      } catch (readError) {
-        // Check if aborted
-        if (
-          signal?.aborted ||
-          (readError instanceof Error && readError.name === "AbortError")
-        ) {
-          return; // Silently return on abort
-        }
-        yield `Error reading stream: ${
-          readError instanceof Error ? readError.message : "Unknown error"
-        }`;
-        return;
-      }
-      const { done, value } = readResult;
-      if (done) break;
-
-      // Check if aborted before processing
-      if (signal?.aborted) {
-        reader.cancel();
-        return;
-      }
-
-      buffer += decoder.decode(value, { stream: true });
-
-      const lines = buffer.split("\n");
-      buffer = lines.pop() || "";
-      for (const line of lines) {
-        if (line.startsWith("data:")) {
-          const trimmed = line.substring(5).trim();
-          if (!trimmed || trimmed === "[DONE]") continue;
-          try {
-            const parsed = JSON.parse(trimmed);
-            const delta = getStreamingContent(
-              parsed,
-              provider?.responseContentPath || ""
-            );
-            if (delta) {
-              yield delta;
-            }
-          } catch (e) {
-            // Ignore parsing errors for partial JSON chunks
-          }
-        }
-      }
+    if (!response.body) throw new Error('Провайдер не повернув потік відповіді.');
+    for await (const event of readEventStream(response.body, signal)) {
+      const delta = getStreamingContent(event, provider.responseContentPath || '');
+      if (delta) yield delta;
     }
   } catch (error) {
-    throw new Error(
-      `Error in fetchAIResponse: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`
-    );
+    if (params.signal?.aborted) throw new DOMException('Aborted', 'AbortError');
+    throw error;
   }
 }

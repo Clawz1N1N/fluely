@@ -1,5 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod capture;
+mod app_paths;
 mod db;
 mod shortcuts;
 mod shell;
@@ -11,6 +12,7 @@ mod providers;
 mod structured;
 mod structured_core;
 mod tts;
+mod stt;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
@@ -31,9 +33,60 @@ fn get_app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+fn shortcut_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
+    tauri_plugin_global_shortcut::Builder::new()
+                        .with_handler(move |app, shortcut, event| {
+                            use tauri_plugin_global_shortcut::{Shortcut, ShortcutState};
+
+                            let action_id = {
+                                let state = app.state::<shortcuts::RegisteredShortcuts>();
+                                let registered = match state.shortcuts.lock() {
+                                    Ok(guard) => guard,
+                                    Err(poisoned) => {
+                                        eprintln!("Mutex poisoned in handler, recovering...");
+                                        poisoned.into_inner()
+                                    }
+                                };
+
+                                registered.iter().find_map(|(action_id, shortcut_str)| {
+                                    if let Ok(s) = shortcut_str.parse::<Shortcut>() {
+                                        if &s == shortcut {
+                                            return Some(action_id.clone());
+                                        }
+                                    }
+                                    None
+                                })
+                            };
+
+                            if let Some(action_id) = action_id {
+                                match event.state() {
+                                    ShortcutState::Pressed => {
+                                        if let Some(direction) =
+                                            action_id.strip_prefix("move_window_")
+                                        {
+                                            shortcuts::start_move_window(app, direction);
+                                        } else {
+                                            eprintln!("Shortcut triggered: {}", action_id);
+                                            shortcuts::handle_shortcut_action(app, &action_id);
+                                        }
+                                    }
+                                    ShortcutState::Released => {
+                                        if let Some(direction) =
+                                            action_id.strip_prefix("move_window_")
+                                        {
+                                            shortcuts::stop_move_window(app, direction);
+                                        }
+                                    }
+                                }
+                            }
+                        })
+                        .build()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     let builder = tauri::Builder::default()
+        .plugin(shortcut_plugin())
         .plugin(
             tauri_plugin_sql::Builder::default()
                 .add_migrations("sqlite:pluely.db", db::migrations())
@@ -86,10 +139,14 @@ pub fn run() {
             shell::set_ui_mode,
             shell::get_ui_mode,
             shell::set_shimmer,
+            shell::set_shimmer_speed,
             shell::set_answer_opacity,
             shell::reset_shell_layout,
+            shell::find_shell_buttons,
             shell::get_shell_settings,
             shell::toggle_answer_window,
+            shell::show_answer_window,
+            shell::present_answer_window,
             shell::close_answer_window,
             shell::set_answer_editing,
             shell::answer_ask,
@@ -100,6 +157,9 @@ pub fn run() {
             continuous::start_continuous,
             continuous::stop_continuous,
             continuous::continuous_request_done,
+            continuous::capture_now,
+            continuous::flush_continuous,
+            continuous::continuous_set_audio_pending,
             vision::get_vision_settings,
             vision::update_vision_settings,
             vision::build_screen_context,
@@ -109,18 +169,30 @@ pub fn run() {
             providers::pick_provider,
             providers::report_provider_result,
             providers::set_global_daily_limit,
+            providers::set_global_limits,
+            providers::get_global_limits,
             providers::set_neutral_mode,
             providers::get_providers_status,
             structured::parse_structured,
             tts::get_tts_settings,
             tts::update_tts_settings,
             tts::set_tts_enabled,
+            tts::synthesize_piper,
+            stt::transcribe_system_audio,
             speaker::get_input_devices,
             speaker::get_output_devices,
         ])
         .setup(|app| {
+            // A portable profile also isolates WebView2/localStorage. The main
+            // window is created manually because WindowConfig has no data-dir.
+            if let Some(directory) = app_paths::webview_dir()? {
+                let config = app.config().app.windows.iter().find(|window| window.label == "main")
+                    .ok_or("Main window config unavailable")?.clone();
+                tauri::WebviewWindowBuilder::from_config(app, &config)?.data_directory(directory).build()?;
+            }
             // Keep the legacy webview hidden until it becomes the service host.
             window::setup_service_window(app)?;
+            providers::initialize(app.handle())?;
             let app_handle = app.handle();
             if app_handle.get_webview_window("dashboard").is_none() {
                 if let Err(e) = window::create_dashboard_window(&app_handle) {
@@ -141,58 +213,6 @@ pub fn run() {
                 }
             }
 
-            // Initialize global shortcut plugin with centralized handler
-            app.handle()
-                .plugin(
-                    tauri_plugin_global_shortcut::Builder::new()
-                        .with_handler(move |app, shortcut, event| {
-                            use tauri_plugin_global_shortcut::{Shortcut, ShortcutState};
-
-                            let action_id = {
-                                let state = app.state::<shortcuts::RegisteredShortcuts>();
-                                let registered = match state.shortcuts.lock() {
-                                    Ok(guard) => guard,
-                                    Err(poisoned) => {
-                                        eprintln!("Mutex poisoned in handler, recovering...");
-                                        poisoned.into_inner()
-                                    }
-                                };
-
-                                registered.iter().find_map(|(action_id, shortcut_str)| {
-                                    if let Ok(s) = shortcut_str.parse::<Shortcut>() {
-                                        if &s == shortcut {
-                                            return Some(action_id.clone());
-                                        }
-                                    }
-                                    None
-                                })
-                            };
-
-                            if let Some(action_id) = action_id {
-                                match event.state() {
-                                    ShortcutState::Pressed => {
-                                        if let Some(direction) =
-                                            action_id.strip_prefix("move_window_")
-                                        {
-                                            shortcuts::start_move_window(app, direction);
-                                        } else {
-                                            eprintln!("Shortcut triggered: {}", action_id);
-                                            shortcuts::handle_shortcut_action(app, &action_id);
-                                        }
-                                    }
-                                    ShortcutState::Released => {
-                                        if let Some(direction) =
-                                            action_id.strip_prefix("move_window_")
-                                        {
-                                            shortcuts::stop_move_window(app, direction);
-                                        }
-                                    }
-                                }
-                            }
-                        })
-                        .build(),
-                )
-                .expect("Failed to initialize global shortcut plugin");
             // Build the custom overlay shell windows.
             if let Err(e) = shell::init_shell(app.handle()) {
                 eprintln!("Failed to initialize shell windows: {}", e);
@@ -207,7 +227,11 @@ pub fn run() {
     #[cfg(target_os = "macos")]
     let builder = builder.plugin(tauri_plugin_macos_permissions::init());
 
+    let mut context = tauri::generate_context!();
+    if app_paths::webview_dir().expect("Invalid explicit profile directory").is_some() {
+        for window in &mut context.config_mut().app.windows { if window.label == "main" { window.create = false; } }
+    }
     builder
-        .run(tauri::generate_context!())
+        .run(context)
         .expect("error while running tauri application");
 }

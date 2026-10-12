@@ -5,13 +5,16 @@ import { AppProvider, ThemeProvider } from "./contexts";
 import "./global.css";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import AppRoutes from "./routes";
+import ServiceRuntime from './components/ServiceRuntime';
 
 const currentWindow = getCurrentWindow();
 const windowLabel = currentWindow.label;
 
 // Render different components based on window label
 // Shell overlay windows render their dedicated shell components.
-if (
+if (windowLabel === 'main') {
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<ServiceRuntime />);
+} else if (
   windowLabel.startsWith("strip-") ||
   windowLabel.startsWith("button-") ||
   windowLabel === "answer"
@@ -19,9 +22,7 @@ if (
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <ThemeProvider>
-        <AppProvider>
-          <AppRoutes />
-        </AppProvider>
+        <AppRoutes />
       </ThemeProvider>
     </React.StrictMode>
   );

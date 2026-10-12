@@ -36,7 +36,7 @@ export const GenerateSystemPrompt = ({
       const provider = allAiProviders.find(
         (p) => p.id === selectedAIProvider.provider
       );
-      if (!provider) {
+      if (!provider && !('__TAURI_INTERNALS__' in window)) {
         setError("Please select an AI provider in Dev Space first");
         return;
       }

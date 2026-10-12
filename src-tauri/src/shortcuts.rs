@@ -155,89 +155,15 @@ pub fn stop_all_move_windows<R: Runtime>(app: &AppHandle<R>) {
 
 /// Handle app toggle (hide/show) with input focus and app icon management
 fn handle_toggle_window<R: Runtime>(app: &AppHandle<R>) {
-    // Get the main window
-    let Some(window) = app.get_webview_window("main") else {
-        return;
-    };
-
-    #[cfg(target_os = "windows")]
-    {
-        let state = app.state::<WindowVisibility>();
-        let mut is_hidden = state.is_hidden.lock().unwrap();
-        *is_hidden = !*is_hidden;
-
-        if let Err(e) = window.emit("toggle-window-visibility", *is_hidden) {
-            eprintln!("Failed to emit toggle-window-visibility event: {}", e);
-        }
-
-        if !*is_hidden {
-            if let Err(e) = window.show() {
-                eprintln!("Failed to show window: {}", e);
-            }
-            if let Err(e) = window.set_focus() {
-                eprintln!("Failed to focus window: {}", e);
-            }
-            if let Err(e) = window.emit("focus-text-input", json!({})) {
-                eprintln!("Failed to emit focus-text-input event: {}", e);
-            }
-        }
-        return;
-    }
-
-    #[cfg(not(target_os = "windows"))]
-    match window.is_visible() {
-        Ok(true) => {
-            #[cfg(target_os = "macos")]
-            {
-                let panel = app.get_webview_window("main").unwrap();
-                let _ = panel.hide();
-            }
-            // Window is visible, hide it and handle app icon based on user settings
-            if let Err(e) = window.hide() {
-                eprintln!("Failed to hide window: {}", e);
-            }
-        }
-        Ok(false) => {
-            // Window is hidden, show it and handle app icon based on user settings
-            if let Err(e) = window.show() {
-                eprintln!("Failed to show window: {}", e);
-            }
-
-            if let Err(e) = window.set_focus() {
-                eprintln!("Failed to focus window: {}", e);
-            }
-
-            #[cfg(target_os = "macos")]
-            {
-                let panel = app.get_webview_panel("main").unwrap();
-                panel.show();
-            }
-            // Emit event to focus text input
-            window.emit("focus-text-input", json!({})).unwrap();
-        }
-        Err(e) => {
-            eprintln!("Failed to check window visibility: {}", e);
-        }
+    if let Err(error) = crate::shell::toggle_shell_visibility(app) {
+        eprintln!("Toggle shell visibility: {error}");
     }
 }
 
 /// Handle audio shortcut
 fn handle_audio_shortcut<R: Runtime>(app: &AppHandle<R>) {
-    if let Some(window) = app.get_webview_window("main") {
-        // Ensure window is visible
-        if let Ok(false) = window.is_visible() {
-            if let Err(_e) = window.show() {
-                return;
-            }
-            if let Err(e) = window.set_focus() {
-                eprintln!("Failed to focus window: {}", e);
-            }
-        }
-
-        // Emit event to start audio recording
-        if let Err(e) = window.emit("start-audio-recording", json!({})) {
-            eprintln!("Failed to emit audio recording event: {}", e);
-        }
+    if let Err(error) = app.emit_to("main", "start-audio-recording", json!({})) {
+        eprintln!("Start voice input: {error}");
     }
 }
 
@@ -253,22 +179,8 @@ fn handle_screenshot_shortcut<R: Runtime>(app: &AppHandle<R>) {
 
 /// Handle system audio shortcut
 fn handle_system_audio_shortcut<R: Runtime>(app: &AppHandle<R>) {
-    if let Some(window) = app.get_webview_window("main") {
-        // Ensure window is visible
-        if let Ok(false) = window.is_visible() {
-            if let Err(e) = window.show() {
-                eprintln!("Failed to show window: {}", e);
-                return;
-            }
-            if let Err(e) = window.set_focus() {
-                eprintln!("Failed to focus window: {}", e);
-            }
-        }
-
-        // Emit event to toggle system audio capture - frontend will determine current state
-        if let Err(e) = window.emit("toggle-system-audio", json!({})) {
-            eprintln!("Failed to emit system audio event: {}", e);
-        }
+    if let Err(error) = app.emit_to("main", "toggle-system-audio", json!({})) {
+        eprintln!("Toggle listening: {error}");
     }
 }
 
@@ -551,48 +463,20 @@ fn handle_toggle_dashboard<R: Runtime>(app: &AppHandle<R>) {
 
 /// Handle focus input shortcut
 fn handle_focus_input<R: Runtime>(app: &AppHandle<R>) {
-    if let Some(window) = app.get_webview_window("main") {
-        // Ensure window is visible
-        if let Ok(false) = window.is_visible() {
-            let _ = window.show();
-        }
-
-        let _ = window.set_focus();
-        let _ = window.emit("focus-text-input", json!({}));
+    if let Err(error) = app.emit_to("main", "focus-text-input", json!({})) {
+        eprintln!("Focus answer input: {error}");
     }
 }
 
 fn handle_move_window<R: Runtime>(app: &AppHandle<R>, direction: &str) {
-    if let Some(window) = app.get_webview_window("main") {
-        match window.outer_position() {
-            Ok(current_pos) => {
-                let step = 12;
-                let (new_x, new_y) = match direction {
-                    "up" => (current_pos.x, current_pos.y - step),
-                    "down" => (current_pos.x, current_pos.y + step),
-                    "left" => (current_pos.x - step, current_pos.y),
-                    "right" => (current_pos.x + step, current_pos.y),
-                    _ => {
-                        eprintln!("Invalid direction: {}", direction);
-                        return;
-                    }
-                };
-
-                if let Err(e) =
-                    window.set_position(tauri::Position::Physical(tauri::PhysicalPosition {
-                        x: new_x,
-                        y: new_y,
-                    }))
-                {
-                    eprintln!("Failed to set window position: {}", e);
-                }
-            }
-            Err(e) => {
-                eprintln!("Failed to get window position: {}", e);
-            }
-        }
-    } else {
-        eprintln!("Main window not found");
+    // Arrow movement now targets the answer, never the invisible service host.
+    let Some(window) = app.get_webview_window("answer") else { return; };
+    let Ok(current) = window.outer_position() else { return; };
+    let (dx, dy) = match direction { "up" => (0, -12), "down" => (0, 12),
+        "left" => (-12, 0), "right" => (12, 0), _ => return };
+    if let Err(error) = crate::shell::move_window_locked(app, "answer",
+        current.x.saturating_add(dx), current.y.saturating_add(dy), "free") {
+        eprintln!("Move answer: {error}");
     }
 }
 

@@ -1,0 +1,23 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "service-network",
+  "description": "Only the service and provider editor can access own provider HTTP endpoints and secure credentials.",
+  "windows": [
+    "main",
+    "dashboard"
+  ],
+  "permissions": [
+    "keychain:default",
+    {
+      "identifier": "http:default",
+      "allow": [
+        {
+          "url": "http://*:*/*"
+        },
+        {
+          "url": "https://*:*/*"
+        }
+      ]
+    }
+  ]
+}

@@ -1,307 +1,315 @@
-// Provider registry, ranking/fallback, and request limiting.
-//
-// The single source of truth for:
-//   * the ordered list of brain/STT/TTS providers,
-//   * per-provider limits (per second/minute/hour/day),
-//   * cooldowns and automatic fallback,
-//   * the "neutral mode" global limit.
-//
-// State lives in Rust and is broadcast to all windows.
+//! Provider registry and atomic request reservation shared by all windows.
+//! Persisted metadata contains templates and keychain names, never credentials.
+#[path = "provider_core.rs"]
+mod core;
+#[path = "provider_metadata.rs"]
+mod metadata;
+pub use metadata::{ProviderEntry, RequestLimits};
 
+use core::{Candidate, RegistryCore};
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
+use std::path::PathBuf;
 use std::sync::Mutex;
-use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
+use std::time::{SystemTime, UNIX_EPOCH};
 use tauri::{AppHandle, Emitter, Manager};
 
-/// One configured provider/model.
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProviderEntry {
-    pub id: String,
-    /// "brain" | "stt" | "tts"
-    pub kind: String,
-    /// preset: "openrouter" | "google" | "openai-compatible" | "local" | "custom"
-    pub preset: String,
-    pub base_url: String,
-    pub model: String,
-    pub supports_images: bool,
-    /// lower = tried first
-    pub rank: i32,
-    /// per-minute request cap (0 = unlimited)
-    pub limit_per_minute: u32,
-    /// per-hour request cap (0 = unlimited)
-    pub limit_per_hour: u32,
-    /// per-day request cap (0 = unlimited)
-    pub limit_per_day: u32,
+#[derive(Clone, Default)]
+struct Registry {
+    providers: Vec<ProviderEntry>,
+    core: RegistryCore,
+    path: Option<PathBuf>,
 }
 
-/// Rolling-window limiter for one provider.
-#[derive(Debug, Clone, Default)]
-struct RateWindow {
-    timestamps: Vec<u64>, // epoch seconds
-}
-
-impl RateWindow {
-    fn allow(&mut self, now: u64, window_secs: u64, limit: u32) -> bool {
-        if limit == 0 {
-            return true;
-        }
-        let cutoff = now.saturating_sub(window_secs);
-        self.timestamps.retain(|t| *t > cutoff);
-        if (self.timestamps.len() as u32) < limit {
-            self.timestamps.push(now);
-            true
-        } else {
-            false
-        }
-    }
-}
-
-/// Cooldown for a provider that failed.
-#[derive(Debug, Clone)]
-struct Cooldown {
-    until: Instant,
-    retry_after_secs: u64,
-}
-
-/// The full registry state.
+#[derive(Default)]
 pub struct ProvidersState {
-    pub providers: Mutex<Vec<ProviderEntry>>,
-    pub windows: Mutex<HashMap<String, RateWindow>>,
-    pub cooldowns: Mutex<HashMap<String, Cooldown>>,
-    /// global requests per day (0 = unlimited)
-    pub global_daily_limit: Mutex<u32>,
-    pub global_daily_count: Mutex<HashMap<u64, u32>>, // epoch day -> count
-    /// neutral mode: when true, nothing is sent
-    pub neutral_mode: Mutex<bool>,
+    registry: Mutex<Registry>,
 }
 
-impl Default for ProvidersState {
-    fn default() -> Self {
-        ProvidersState {
-            providers: Mutex::new(Vec::new()),
-            windows: Mutex::new(HashMap::new()),
-            cooldowns: Mutex::new(HashMap::new()),
-            global_daily_limit: Mutex::new(0),
-            global_daily_count: Mutex::new(HashMap::new()),
-            neutral_mode: Mutex::new(false),
-        }
-    }
+/// Versioned on-disk state retains quotas across restarts.
+#[derive(Default, Serialize, Deserialize)]
+#[serde(default, deny_unknown_fields)]
+struct PersistedRegistry {
+    version: u32,
+    providers: Vec<ProviderEntry>,
+    global_limits: RequestLimits,
+    manual_neutral: bool,
+    requests: HashMap<String, Vec<u64>>,
+    global_requests: Vec<u64>,
+    cooldowns: HashMap<String, u64>,
 }
 
-fn epoch_secs() -> u64 {
+fn now_ms() -> u64 {
     SystemTime::now()
         .duration_since(UNIX_EPOCH)
-        .map(|d| d.as_secs())
+        .map(|d| d.as_millis().min(u64::MAX as u128) as u64)
         .unwrap_or(0)
 }
 
-fn epoch_day() -> u64 {
-    epoch_secs() / 86400
+impl Registry {
+    fn transaction<T>(
+        &mut self,
+        now: u64,
+        action: impl FnOnce(&mut Registry, u64) -> Result<T, String>,
+    ) -> Result<T, String> {
+        let mut next = self.clone();
+        next.core.prune(now);
+        let result = action(&mut next, now)?;
+        next.persist()?;
+        *self = next;
+        Ok(result)
+    }
+
+    fn candidates(&self) -> Vec<Candidate> {
+        self.providers
+            .iter()
+            .map(|p| Candidate {
+                id: p.id.clone(),
+                kind: p.kind.clone(),
+                rank: p.rank,
+                enabled: p.enabled,
+                supports_images: p.supports_images,
+                limits: p.limits(),
+            })
+            .collect()
+    }
+
+    fn persist(&self) -> Result<(), String> {
+        let stored = PersistedRegistry {
+            version: 1,
+            providers: self.providers.clone(),
+            global_limits: RequestLimits::from_array(self.core.global_limits),
+            manual_neutral: self.core.manual_neutral,
+            requests: self.core.requests.clone(),
+            global_requests: self.core.global_requests.clone(),
+            cooldowns: self.core.cooldowns.clone(),
+        };
+        let bytes = serde_json::to_vec_pretty(&stored)
+            .map_err(|_| "Could not serialize provider metadata".to_string())?;
+        let path = self
+            .path
+            .as_ref()
+            .ok_or("Provider registry was not initialized")?;
+        crate::shell_store::replace_file(path, &bytes)
+            .map_err(|_| "Could not save provider registry".to_string())
+    }
+
+    fn status(
+        &self,
+        kind: &str,
+        needs_images: bool,
+        exclude_ids: &[String],
+        now: u64,
+    ) -> serde_json::Value {
+        let candidates = self.candidates();
+        let providers: Vec<_> = self
+            .providers
+            .iter()
+            .zip(candidates.iter())
+            .map(|(provider, candidate)| {
+                let mut status = serde_json::to_value(provider)
+                    .expect("Provider metadata serialization is infallible");
+                let requests = self
+                    .core
+                    .requests
+                    .get(&provider.id)
+                    .map(Vec::as_slice)
+                    .unwrap_or(&[]);
+                status["used"] =
+                    serde_json::json!(RequestLimits::from_array(RegistryCore::used(requests, now)));
+                status["nextAllowedAt"] =
+                    serde_json::json!(self.core.next_allowed_at(candidate, now));
+                status["inCooldown"] = serde_json::json!(self
+                    .core
+                    .cooldowns
+                    .get(&provider.id)
+                    .is_some_and(|until| *until > now));
+                status
+            })
+            .collect();
+        let next = self
+            .core
+            .next_available_at(&candidates, kind, needs_images, exclude_ids, now);
+        serde_json::json!({
+            "providers": providers,
+            "neutral": self.core.manual_neutral || next.is_none_or(|until| until > now),
+            "manualNeutral": self.core.manual_neutral,
+            "nextAllowedAt": next.filter(|until| *until > now),
+            "currentProviderId": self.core.current_provider_id,
+            "globalLimits": RequestLimits::from_array(self.core.global_limits),
+            "globalUsed": RequestLimits::from_array(RegistryCore::used(&self.core.global_requests, now)),
+        })
+    }
 }
 
-impl ProvidersState {
-    /// Pick the next provider: highest rank (lowest number),
-    /// not in cooldown, within its limits. Returns None if
-    /// neutral mode is on or all are exhausted/cooling down.
-    pub fn pick(&self, kind: &str, needs_images: bool) -> Option<ProviderEntry> {
-        if *self.neutral_mode.lock().unwrap() {
-            return None;
-        }
-        let mut list = self.providers.lock().unwrap().clone();
-        // Sort by rank ascending.
-        list.sort_by_key(|p| p.rank);
-        let now = epoch_secs();
-        let day = epoch_day();
-
-        // Global daily limit.
-        let global_limit = *self.global_daily_limit.lock().unwrap();
-        if global_limit > 0 {
-            let counts = self.global_daily_count.lock().unwrap();
-            let used = counts.get(&day).copied().unwrap_or(0);
-            if used >= global_limit {
-                return None; // neutral: limits exhausted
+/// Safe to call from setup and commands. Failed/corrupt loads are reported,
+/// rather than silently resetting persisted quotas or provider configuration.
+pub fn initialize(app: &AppHandle) -> Result<(), String> {
+    let state = app.state::<ProvidersState>();
+    let mut registry = state
+        .registry
+        .lock()
+        .map_err(|_| "Provider registry lock unavailable")?;
+    if registry.path.is_some() {
+        return Ok(());
+    }
+    let path = crate::app_paths::data_dir(app)
+        .map_err(|_| "Provider app data directory unavailable")?
+        .join("providers.json");
+    let mut loaded = Registry {
+        path: Some(path.clone()),
+        ..Registry::default()
+    };
+    match std::fs::read(&path) {
+        Ok(bytes) => {
+            let stored: PersistedRegistry = serde_json::from_slice(&bytes)
+                .map_err(|_| "Stored provider registry is invalid")?;
+            if stored.version != 1 {
+                return Err("Stored provider registry version is unsupported".into());
             }
-        }
-
-        for provider in &list {
-            if provider.kind != kind {
-                continue;
-            }
-            // Capability gate: if the request needs images
-            // and this provider cannot take them, skip it
-            // (the caller may use the vision proxy instead).
-            if needs_images && !provider.supports_images {
-                continue;
-            }
-            // Cooldown gate.
-            {
-                let cooldowns = self.cooldowns.lock().unwrap();
-                if let Some(cd) = cooldowns.get(&provider.id) {
-                    if Instant::now() < cd.until {
-                        continue;
-                    }
+            let mut ids = HashSet::new();
+            for provider in &stored.providers {
+                provider.validate()?;
+                if !ids.insert(provider.id.clone()) {
+                    return Err("Stored provider registry contains duplicate IDs".into());
                 }
             }
-            // Per-provider rate limits.
-            let allowed = {
-                let mut windows = self.windows.lock().unwrap();
-                let win = windows
-                    .entry(provider.id.clone())
-                    .or_default();
-                let per_min = win.allow(now, 60, provider.limit_per_minute);
-                let per_hour = win.allow(now, 3600, provider.limit_per_hour);
-                let per_day = win.allow(now, 86400, provider.limit_per_day);
-                per_min && per_hour && per_day
+            loaded.providers = stored.providers;
+            loaded.core = RegistryCore {
+                requests: stored.requests,
+                global_requests: stored.global_requests,
+                cooldowns: stored.cooldowns,
+                global_limits: stored.global_limits.array(),
+                manual_neutral: stored.manual_neutral,
+                current_provider_id: None,
             };
-            if !allowed {
-                continue;
-            }
-            // Global daily count increment.
-            if global_limit > 0 {
-                let mut counts = self.global_daily_count.lock().unwrap();
-                let used = counts.entry(day).or_insert(0);
-                *used += 1;
-            }
-            return Some(provider.clone());
+            loaded.core.requests.retain(|id, _| ids.contains(id));
+            loaded.core.cooldowns.retain(|id, _| ids.contains(id));
+            loaded.core.prune(now_ms());
         }
-        None
+        Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+        Err(_) => return Err("Could not read stored provider registry".into()),
     }
-
-    /// Record a failure: set a cooldown (honouring
-    /// Retry-After when present).
-    pub fn record_failure(
-        &self,
-        provider_id: &str,
-        retry_after_secs: Option<u64>,
-    ) {
-        let secs = retry_after_secs.unwrap_or(60).max(5);
-        let mut cooldowns = self.cooldowns.lock().unwrap();
-        cooldowns.insert(
-            provider_id.to_string(),
-            Cooldown {
-                until: Instant::now() + Duration::from_secs(secs),
-                retry_after_secs: secs,
-            },
-        );
-    }
-
-    /// Record a success: clear any cooldown.
-    pub fn record_success(&self, provider_id: &str) {
-        let mut cooldowns = self.cooldowns.lock().unwrap();
-        cooldowns.remove(provider_id);
-    }
-
-    /// Seconds until the next provider leaves cooldown
-    /// (for the neutral-mode countdown).
-    pub fn next_available_secs(&self, kind: &str) -> Option<u64> {
-        let cooldowns = self.cooldowns.lock().unwrap();
-        let list = self.providers.lock().unwrap();
-        let mut soonest: Option<u64> = None;
-        for p in list.iter().filter(|p| p.kind == kind) {
-            if let Some(cd) = cooldowns.get(&p.id) {
-                let remaining = cd
-                    .until
-                    .saturating_duration_since(Instant::now())
-                    .as_secs();
-                soonest = Some(match soonest {
-                    Some(cur) => cur.min(remaining),
-                    None => remaining,
-                });
-            }
-        }
-        soonest
-    }
+    *registry = loaded;
+    Ok(())
 }
 
-/// Broadcast the current status to all shell windows.
-fn broadcast_status(app: &AppHandle) {
+/// All eligibility gates, consumption and durable writes share one lock. A
+/// failed save never changes live state or authorizes a network request.
+fn update<T>(
+    app: &AppHandle,
+    action: impl FnOnce(&mut Registry, u64) -> Result<T, String>,
+) -> Result<T, String> {
+    initialize(app)?;
     let state = app.state::<ProvidersState>();
-    let providers = state.providers.lock().unwrap().clone();
-    let mut status = serde_json::json!({});
-    let mut arr = Vec::new();
-    for p in &providers {
-        let in_cooldown = {
-            let cooldowns = state.cooldowns.lock().unwrap();
-            cooldowns
-                .get(&p.id)
-                .map(|cd| Instant::now() < cd.until)
-                .unwrap_or(false)
-        };
-        arr.push(serde_json::json!({
-            "id": p.id,
-            "kind": p.kind,
-            "rank": p.rank,
-            "inCooldown": in_cooldown,
-        }));
-    }
-    status["providers"] = serde_json::Value::Array(arr);
-    status["neutral"] = serde_json::json!(*state.neutral_mode.lock().unwrap());
-    app.emit("providers-status", status).ok();
+    let mut registry = state
+        .registry
+        .lock()
+        .map_err(|_| "Provider registry lock unavailable")?;
+    registry.transaction(now_ms(), action)
 }
 
-// --------------------------- Tauri commands ---------------------------
+fn broadcast_status(app: &AppHandle, kind: &str) {
+    let state = app.state::<ProvidersState>();
+    if let Ok(registry) = state.registry.lock() {
+        let _ = app.emit(
+            "providers-status",
+            registry.status(kind, false, &[], now_ms()),
+        );
+    };
+}
+
+fn validate_kind(kind: &str) -> Result<(), String> {
+    if ["brain", "stt", "tts", "vision"].contains(&kind) {
+        Ok(())
+    } else {
+        Err("Unsupported provider kind".into())
+    }
+}
 
 #[tauri::command]
 pub fn list_providers(app: AppHandle) -> Result<Vec<ProviderEntry>, String> {
+    initialize(&app)?;
     let state = app.state::<ProvidersState>();
-    let providers = state.providers.lock().unwrap().clone();
+    let registry = state
+        .registry
+        .lock()
+        .map_err(|_| "Provider registry lock unavailable")?;
+    let mut providers = registry.providers.clone();
+    providers.sort_by(|a, b| a.rank.cmp(&b.rank).then(a.id.cmp(&b.id)));
     Ok(providers)
 }
 
 #[tauri::command]
-pub fn upsert_provider(
-    app: AppHandle,
-    provider: ProviderEntry,
-) -> Result<(), String> {
-    let state = app.state::<ProvidersState>();
-    let mut list = state.providers.lock().unwrap();
-    if let Some(pos) = list.iter().position(|p| p.id == provider.id) {
-        list[pos] = provider;
-    } else {
-        list.push(provider);
-    }
-    drop(list);
-    broadcast_status(&app);
+pub fn upsert_provider(app: AppHandle, provider: ProviderEntry) -> Result<(), String> {
+    provider.validate()?;
+    update(&app, |registry, _| {
+        if let Some(index) = registry.providers.iter().position(|p| p.id == provider.id) {
+            registry.providers[index] = provider;
+        } else {
+            registry.providers.push(provider);
+        }
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
     Ok(())
 }
 
 #[tauri::command]
-pub fn remove_provider(
-    app: AppHandle,
-    id: String,
-) -> Result<(), String> {
-    let state = app.state::<ProvidersState>();
-    let mut list = state.providers.lock().unwrap();
-    list.retain(|p| p.id != id);
-    drop(list);
-    broadcast_status(&app);
+pub fn remove_provider(app: AppHandle, id: String) -> Result<(), String> {
+    update(&app, |registry, _| {
+        registry.providers.retain(|p| p.id != id);
+        registry.core.remove(&id);
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
     Ok(())
 }
 
-/// Try to pick a provider for a request. Returns the
-/// chosen provider or an error when neutral/exhausted.
+/// Reserves one attempted request. Failed sends still consume their reservation;
+/// each retry/fallback must pick with the already attempted IDs excluded.
 #[tauri::command]
 pub fn pick_provider(
     app: AppHandle,
     kind: String,
     needs_images: bool,
+    exclude_ids: Option<Vec<String>>,
 ) -> Result<ProviderEntry, String> {
-    let state = app.state::<ProvidersState>();
-    let entry = state
-        .pick(&kind, needs_images)
-        .ok_or_else(|| {
-            let secs = state.next_available_secs(&kind);
-            match secs {
-                Some(s) => format!(
-                    "Neutral mode: all providers cooling down. Next available in ~{}s",
-                    s
-                ),
-                None => "Neutral mode: no provider available".to_string(),
-            }
-        })?;
-    broadcast_status(&app);
-    Ok(entry)
+    validate_kind(&kind)?;
+    let exclude_ids = exclude_ids.unwrap_or_default();
+    let result = update(&app, |registry, now| {
+        let candidates = registry.candidates();
+        let id = registry
+            .core
+            .pick(&candidates, &kind, needs_images, &exclude_ids, now)
+            .ok_or_else(|| {
+                if registry.core.manual_neutral {
+                    "Neutral mode is enabled".into()
+                } else {
+                    match registry.core.next_available_at(
+                        &candidates,
+                        &kind,
+                        needs_images,
+                        &exclude_ids,
+                        now,
+                    ) {
+                        Some(until) => format!(
+                            "Neutral mode: next provider available in {}s",
+                            until.saturating_sub(now).div_ceil(1_000)
+                        ),
+                        None => "Neutral mode: no matching enabled provider available".into(),
+                    }
+                }
+            })?;
+        registry
+            .providers
+            .iter()
+            .find(|p| p.id == id)
+            .cloned()
+            .ok_or_else(|| "Selected provider no longer exists".into())
+    });
+    broadcast_status(&app, &kind);
+    result
 }
 
 #[tauri::command]
@@ -311,176 +319,195 @@ pub fn report_provider_result(
     ok: bool,
     retry_after_secs: Option<u64>,
 ) -> Result<(), String> {
-    let state = app.state::<ProvidersState>();
-    if ok {
-        state.record_success(&provider_id);
-    } else {
-        state.record_failure(&provider_id, retry_after_secs);
-    }
-    broadcast_status(&app);
+    update(&app, |registry, now| {
+        if !registry.providers.iter().any(|p| p.id == provider_id) {
+            return Err("Provider does not exist".into());
+        }
+        registry
+            .core
+            .record_result(&provider_id, ok, retry_after_secs, now);
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
     Ok(())
 }
 
 #[tauri::command]
-pub fn set_global_daily_limit(
-    app: AppHandle,
-    limit: u32,
-) -> Result<(), String> {
+pub fn set_global_limits(app: AppHandle, limits: RequestLimits) -> Result<(), String> {
+    update(&app, |registry, _| {
+        registry.core.global_limits = limits.array();
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
+    Ok(())
+}
+
+#[tauri::command]
+pub fn get_global_limits(app: AppHandle) -> Result<RequestLimits, String> {
+    initialize(&app)?;
     let state = app.state::<ProvidersState>();
-    *state.global_daily_limit.lock().unwrap() = limit;
+    let registry = state
+        .registry
+        .lock()
+        .map_err(|_| "Provider registry lock unavailable")?;
+    Ok(RequestLimits::from_array(registry.core.global_limits))
+}
+
+/// Compatibility command updates only the daily member of the global budget.
+#[tauri::command]
+pub fn set_global_daily_limit(app: AppHandle, limit: u32) -> Result<(), String> {
+    update(&app, |registry, _| {
+        registry.core.global_limits[3] = limit;
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
     Ok(())
 }
 
 #[tauri::command]
 pub fn set_neutral_mode(app: AppHandle, enabled: bool) -> Result<(), String> {
-    let state = app.state::<ProvidersState>();
-    *state.neutral_mode.lock().unwrap() = enabled;
-    broadcast_status(&app);
+    update(&app, |registry, _| {
+        registry.core.manual_neutral = enabled;
+        Ok(())
+    })?;
+    broadcast_status(&app, "brain");
     Ok(())
 }
 
-/// Status for the UI: providers, cooldowns, neutral mode,
-/// and the countdown to the next available provider.
 #[tauri::command]
 pub fn get_providers_status(
     app: AppHandle,
-    kind: String,
+    kind: Option<String>,
+    needs_images: Option<bool>,
+    exclude_ids: Option<Vec<String>>,
 ) -> Result<serde_json::Value, String> {
+    let kind = kind.unwrap_or_else(|| "brain".into());
+    validate_kind(&kind)?;
+    initialize(&app)?;
     let state = app.state::<ProvidersState>();
-    let providers = state.providers.lock().unwrap().clone();
-    let mut arr = Vec::new();
-    for p in &providers {
-        let (in_cooldown, remaining) = {
-            let cooldowns = state.cooldowns.lock().unwrap();
-            match cooldowns.get(&p.id) {
-                Some(cd) => {
-                    let r = cd
-                        .until
-                        .saturating_duration_since(Instant::now())
-                        .as_secs();
-                    (Instant::now() < cd.until, r)
-                }
-                None => (false, 0),
-            }
-        };
-        arr.push(serde_json::json!({
-            "id": p.id,
-            "kind": p.kind,
-            "rank": p.rank,
-            "model": p.model,
-            "inCooldown": in_cooldown,
-            "cooldownRemainingSecs": remaining,
-        }));
-    }
-    Ok(serde_json::json!({
-        "providers": arr,
-        "neutral": *state.neutral_mode.lock().unwrap(),
-        "nextAvailableSecs": state.next_available_secs(&kind),
-    }))
+    let registry = state
+        .registry
+        .lock()
+        .map_err(|_| "Provider registry lock unavailable")?;
+    Ok(registry.status(
+        &kind,
+        needs_images.unwrap_or(false),
+        &exclude_ids.unwrap_or_default(),
+        now_ms(),
+    ))
 }
-
-// --------------------------- unit tests ---------------------------
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn entry(id: &str, rank: i32, limit_per_minute: u32) -> ProviderEntry {
-        ProviderEntry {
-            id: id.to_string(),
-            kind: "brain".to_string(),
-            preset: "custom".to_string(),
-            base_url: "http://localhost".to_string(),
-            model: "test-model".to_string(),
-            supports_images: true,
-            rank,
-            limit_per_minute,
-            limit_per_hour: 0,
-            limit_per_day: 0,
-        }
+    fn provider() -> ProviderEntry {
+        serde_json::from_str(r#"{"id":"p","kind":"brain","preset":"custom","base_url":"https://example.invalid/v1","model":"test","limit_per_minute":1}"#).unwrap()
     }
 
     #[test]
-    fn pick_returns_highest_rank_first() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            list.push(entry("low", 10, 0));
-            list.push(entry("high", 1, 0));
-        }
-        let picked = state.pick("brain", false).unwrap();
-        assert_eq!(picked.id, "high");
+    fn status_is_neutral_for_limits_and_reports_the_exact_recovery_time() {
+        let mut registry = Registry {
+            providers: vec![provider()],
+            ..Registry::default()
+        };
+        let candidates = registry.candidates();
+        registry.core.pick(&candidates, "brain", false, &[], 100);
+        let blocked = registry.status("brain", false, &[], 101);
+        assert_eq!(blocked["neutral"], true);
+        assert_eq!(blocked["manualNeutral"], false);
+        assert_eq!(blocked["nextAllowedAt"], 60_100);
+        assert_eq!(blocked["currentProviderId"], "p");
+        assert_eq!(blocked["providers"][0]["used"]["per_minute"], 1);
+        assert_eq!(blocked["globalUsed"]["per_minute"], 1);
+        let recovered = registry.status("brain", false, &[], 60_100);
+        assert_eq!(recovered["neutral"], false);
+        assert_eq!(recovered["nextAllowedAt"], serde_json::Value::Null);
+        assert_eq!(registry.core.global_requests, [100]);
     }
 
     #[test]
-    fn pick_skips_cooldown() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            list.push(entry("first", 1, 0));
-            list.push(entry("second", 2, 0));
-        }
-        state.record_failure("first", Some(300));
-        let picked = state.pick("brain", false).unwrap();
-        assert_eq!(picked.id, "second");
+    fn cooldown_status_and_manual_neutral_are_distinct() {
+        let mut registry = Registry {
+            providers: vec![provider()],
+            ..Registry::default()
+        };
+        registry.core.record_result("p", false, Some(5), 100);
+        let blocked = registry.status("brain", false, &[], 101);
+        assert_eq!(blocked["providers"][0]["inCooldown"], true);
+        assert_eq!(blocked["nextAllowedAt"], 5_100);
+        registry.core.manual_neutral = true;
+        let manual = registry.status("brain", false, &[], 101);
+        assert_eq!(manual["manualNeutral"], true);
+        assert_eq!(manual["nextAllowedAt"], serde_json::Value::Null);
     }
 
     #[test]
-    fn pick_skips_rate_limited() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            list.push(entry("limited", 1, 1)); // 1 per minute
-        }
-        // First pick consumes the minute budget.
-        assert!(state.pick("brain", false).is_some());
-        // Second pick is rate limited -> falls through to None.
-        assert!(state.pick("brain", false).is_none());
+    fn registry_persists_metadata_limits_and_usage_through_atomic_store() {
+        let path = std::env::temp_dir().join(format!(
+            "pluely-provider-registry-{}-{}.json",
+            std::process::id(),
+            now_ms()
+        ));
+        let mut registry = Registry {
+            providers: vec![provider()],
+            path: Some(path.clone()),
+            ..Registry::default()
+        };
+        registry.core.global_limits = [1, 2, 3, 4];
+        registry.core.manual_neutral = true;
+        registry.core.requests.insert("p".into(), vec![100]);
+        registry.core.global_requests = vec![100];
+        registry.core.cooldowns.insert("p".into(), 5_100);
+        registry.persist().unwrap();
+        let stored: PersistedRegistry =
+            serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        assert_eq!(stored.version, 1);
+        assert_eq!(stored.providers[0].id, "p");
+        assert_eq!(stored.global_limits.array(), [1, 2, 3, 4]);
+        assert_eq!(stored.requests["p"], [100]);
+        assert_eq!(stored.global_requests, [100]);
+        assert_eq!(stored.cooldowns["p"], 5_100);
+        assert!(stored.manual_neutral);
+        registry.providers[0].model = "replacement".into();
+        registry.persist().unwrap();
+        let replaced: PersistedRegistry =
+            serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
+        assert_eq!(replaced.providers[0].model, "replacement");
+        assert!(!path.with_extension("json.tmp").exists());
+        std::fs::remove_file(&path).unwrap();
     }
 
     #[test]
-    fn pick_neutral_mode_blocks_all() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            list.push(entry("any", 1, 0));
-        }
-        *state.neutral_mode.lock().unwrap() = true;
-        assert!(state.pick("brain", false).is_none());
-    }
-
-    #[test]
-    fn record_success_clears_cooldown() {
-        let state = ProvidersState::default();
-        state.record_failure("p", Some(300));
-        state.record_success("p");
-        assert!(state.next_available_secs("brain").is_none());
-    }
-
-    #[test]
-    fn capability_gate_skips_non_vision() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            let mut p = entry("text-only", 1, 0);
-            p.supports_images = false;
-            list.push(p);
-        }
-        // Request needs images -> text-only provider skipped.
-        assert!(state.pick("brain", true).is_none());
-        // Text request -> allowed.
-        assert!(state.pick("brain", false).is_some());
-    }
-
-    #[test]
-    fn global_daily_limit_enforced() {
-        let state = ProvidersState::default();
-        {
-            let mut list = state.providers.lock().unwrap();
-            list.push(entry("p", 1, 0));
-        }
-        *state.global_daily_limit.lock().unwrap() = 1;
-        assert!(state.pick("brain", false).is_some());
-        assert!(state.pick("brain", false).is_none());
+    fn failed_disk_write_never_authorizes_a_request_or_changes_live_budget() {
+        let root = std::env::temp_dir().join(format!(
+            "pluely-provider-rollback-{}-{}",
+            std::process::id(),
+            now_ms()
+        ));
+        std::fs::create_dir_all(&root).unwrap();
+        let path = root.join("providers.json");
+        let mut registry = Registry {
+            providers: vec![provider()],
+            path: Some(path.clone()),
+            ..Registry::default()
+        };
+        registry.persist().unwrap();
+        let original = std::fs::read(&path).unwrap();
+        std::fs::create_dir(path.with_extension("json.tmp")).unwrap();
+        let result = registry.transaction(100, |next, now| {
+            let candidates = next.candidates();
+            next.core
+                .pick(&candidates, "brain", false, &[], now)
+                .ok_or_else(|| "Unavailable".into())
+        });
+        assert!(result.is_err());
+        assert!(registry.core.global_requests.is_empty());
+        assert!(registry.core.requests.is_empty());
+        assert!(registry.core.current_provider_id.is_none());
+        assert_eq!(std::fs::read(&path).unwrap(), original);
+        std::fs::remove_dir(path.with_extension("json.tmp")).unwrap();
+        std::fs::remove_file(&path).unwrap();
+        std::fs::remove_dir(&root).unwrap();
     }
 }

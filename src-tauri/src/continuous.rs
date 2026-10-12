@@ -1,65 +1,69 @@
-// Continuous capture mode ("mode 3").
-//
-// A Rust interval loop that:
-//   * captures frames from one or all monitors (xcap),
-//   * downscales the long side,
-//   * deduplicates consecutive frames (perceptual diff),
-//   * encodes changed frames as JPEG,
-//   * batches transcript segments + changed frames + typed
-//     questions and sends ONE request when a trigger fires.
-//
-// Triggers (first of):
-//   (a) speech has ended (VAD),
-//   (b) the screen changed and a max wait elapsed,
-//   (c) the user typed a question.
-//
-// Rules: one request in flight at a time; newer context
-// replaces stale queued context; nothing is sent when
-// nothing changed.
-
+//! Continuous capture queues context and emits one acknowledged batch to main.
 use base64::Engine;
 use image::{GenericImageView, ImageEncoder};
 use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::sync::{Mutex, MutexGuard};
+use std::time::{Duration, Instant};
 use tauri::{AppHandle, Emitter, Manager};
 use xcap::Monitor;
 
-/// Capture settings (mirrors the Screen Capture page).
+#[path = "continuous_batch.rs"]
+mod batch_core;
+use batch_core::{capture_due, BatchQueue, RawFrame, RunGeneration};
+
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[serde(default)]
 pub struct CaptureSettings {
-    /// "manual" | "interval" | "after_speech"
     pub mode: String,
-    /// interval in seconds (>= 2)
     pub interval: u64,
-    /// "primary" | "all" | a monitor name
+    /// "primary", "all", or xcap's numeric monitor ID.
     pub monitor: String,
-    /// max frames per request
     pub max_frames: usize,
-    /// downscale the long side to this many px
     pub max_long_side: u32,
-    /// JPEG quality 1..=100
     pub jpeg_quality: u8,
-    /// dedup threshold (0..=1, fraction of differing pixels)
     pub dedup_threshold: f32,
+    pub max_wait_secs: u64,
+    pub microphone: bool,
+    pub system_audio: bool,
 }
 
 impl Default for CaptureSettings {
     fn default() -> Self {
-        CaptureSettings {
-            mode: "manual".to_string(),
+        Self {
+            mode: "manual".into(),
             interval: 5,
-            monitor: "primary".to_string(),
+            monitor: "primary".into(),
             max_frames: 3,
             max_long_side: 1024,
             jpeg_quality: 70,
             dedup_threshold: 0.05,
+            max_wait_secs: 15,
+            microphone: true,
+            system_audio: true,
         }
     }
 }
 
-/// One captured (and possibly downscaled) frame.
+impl CaptureSettings {
+    fn normalized(mut self) -> Result<Self, String> {
+        if !matches!(self.mode.as_str(), "manual" | "interval" | "after_speech") {
+            return Err(format!("Unknown capture mode: {}", self.mode));
+        }
+        if !self.dedup_threshold.is_finite() {
+            return Err("Dedup threshold must be finite".into());
+        }
+        self.interval = self.interval.clamp(2, 3600);
+        self.max_wait_secs = self.max_wait_secs.clamp(2, 3600);
+        self.max_long_side = self.max_long_side.clamp(256, 4096);
+        self.jpeg_quality = self.jpeg_quality.clamp(1, 100);
+        self.dedup_threshold = self.dedup_threshold.clamp(0.0, 1.0);
+        self.max_frames = self.max_frames.clamp(1, 10);
+        Ok(self)
+    }
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Frame {
     pub monitor: String,
@@ -68,451 +72,396 @@ pub struct Frame {
     pub height: u32,
 }
 
-/// A transcript segment with a channel label.
 #[derive(Debug, Clone, Serialize)]
 pub struct TranscriptSegment {
-    pub channel: String, // "[system]" | "[mic]"
+    pub channel: String,
     pub text: String,
 }
 
-/// The batched context sent in ONE request.
-#[derive(Debug, Clone, Serialize, Default)]
-pub struct BatchContext {
-    pub frames: Vec<Frame>,
-    pub transcript: Vec<TranscriptSegment>,
-    pub question: Option<String>,
+#[derive(Serialize)]
+struct BatchContext<'a> {
+    request_id: u64,
+    frames: &'a [Frame],
+    transcript: &'a [TranscriptSegment],
+    questions: &'a [String],
+    client_ids: &'a [String],
+    // Compatibility for consumers migrating from the single-question payload.
+    question: Option<String>,
 }
 
-/// Shared state for the continuous capture loop.
 pub struct ContinuousState {
     pub settings: Mutex<CaptureSettings>,
-    pub running: Arc<AtomicBool>,
-    pub last_frame: Mutex<Option<Vec<u8>>>, // raw previous frame (RGBA)
-    pub pending: Mutex<BatchContext>,
-    pub in_flight: Arc<AtomicBool>,
+    loaded: AtomicBool,
+    run: RunGeneration,
+    lifecycle: Mutex<()>,
+    capture: Mutex<()>,
+    previous: Mutex<HashMap<u32, RawFrame>>,
+    pending: Mutex<BatchQueue<Frame, TranscriptSegment>>,
 }
 
 impl Default for ContinuousState {
     fn default() -> Self {
-        ContinuousState {
+        Self {
             settings: Mutex::new(CaptureSettings::default()),
-            running: Arc::new(AtomicBool::new(false)),
-            last_frame: Mutex::new(None),
-            pending: Mutex::new(BatchContext::default()),
-            in_flight: Arc::new(AtomicBool::new(false)),
+            loaded: AtomicBool::new(false),
+            run: RunGeneration::default(),
+            lifecycle: Mutex::new(()),
+            capture: Mutex::new(()),
+            previous: Mutex::new(HashMap::new()),
+            pending: Mutex::new(BatchQueue::default()),
         }
     }
 }
 
-/// Downscale an image so its long side is <= max_long_side.
-fn downscale(
-    img: &image::DynamicImage,
-    max_long_side: u32,
-) -> image::DynamicImage {
-    let (w, h) = img.dimensions();
-    let long = w.max(h);
-    if long <= max_long_side {
-        return img.clone();
-    }
-    let scale = max_long_side as f32 / long as f32;
-    let nw = ((w as f32) * scale).max(1.0) as u32;
-    let nh = ((h as f32) * scale).max(1.0) as u32;
-    img.resize(nw, nh, image::imageops::FilterType::Lanczos3)
+fn lock<T>(mutex: &Mutex<T>) -> Result<MutexGuard<'_, T>, String> {
+    mutex
+        .lock()
+        .map_err(|_| "Continuous capture state lock was poisoned".into())
 }
 
-/// Encode an image to JPEG with the given quality.
-fn encode_jpeg(
-    img: &image::DynamicImage,
-    quality: u8,
-) -> Result<Vec<u8>, String> {
-    let rgb = img.to_rgb8();
-    let mut buf = Vec::new();
-    let encoder =
-        image::codecs::jpeg::JpegEncoder::new_with_quality(&mut buf, quality);
-    encoder
+fn settings_path(app: &AppHandle) -> Result<std::path::PathBuf, String> {
+    crate::app_paths::data_dir(app)
+        .map(|path| path.join("capture_settings.json"))
+        .map_err(|error| format!("Capture settings directory: {error}"))
+}
+
+#[tauri::command]
+pub fn get_capture_settings(app: AppHandle) -> Result<CaptureSettings, String> {
+    let state = app.state::<ContinuousState>();
+    let mut settings = lock(&state.settings)?;
+    if !state.loaded.load(Ordering::SeqCst) {
+        match std::fs::read(settings_path(&app)?) {
+            Ok(bytes) => {
+                *settings = serde_json::from_slice::<CaptureSettings>(&bytes)
+                    .map_err(|error| format!("Load capture settings: {error}"))?
+                    .normalized()?;
+            }
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
+            Err(error) => return Err(format!("Read capture settings: {error}")),
+        }
+        state.loaded.store(true, Ordering::SeqCst);
+    }
+    Ok(settings.clone())
+}
+
+#[tauri::command]
+pub fn update_capture_settings(app: AppHandle, settings: CaptureSettings) -> Result<(), String> {
+    let settings = settings.normalized()?;
+    let state = app.state::<ContinuousState>();
+    let mut current = lock(&state.settings)?;
+    let bytes = serde_json::to_vec_pretty(&settings)
+        .map_err(|error| format!("Serialize capture settings: {error}"))?;
+    crate::shell_store::replace_file(&settings_path(&app)?, &bytes)
+        .map_err(|error| format!("Save capture settings: {error}"))?;
+    *current = settings;
+    state.loaded.store(true, Ordering::SeqCst);
+    Ok(())
+}
+
+fn downscale(img: &image::DynamicImage, limit: u32) -> image::DynamicImage {
+    let (width, height) = img.dimensions();
+    let long = width.max(height);
+    if long <= limit {
+        return img.clone();
+    }
+    let scale = limit as f32 / long as f32;
+    img.resize(
+        (width as f32 * scale).max(1.0) as u32,
+        (height as f32 * scale).max(1.0) as u32,
+        image::imageops::FilterType::Lanczos3,
+    )
+}
+
+fn encode_jpeg(img: &image::RgbaImage, quality: u8) -> Result<Vec<u8>, String> {
+    let rgb = image::DynamicImage::ImageRgba8(img.clone()).to_rgb8();
+    let mut bytes = Vec::new();
+    image::codecs::jpeg::JpegEncoder::new_with_quality(&mut bytes, quality)
         .write_image(
             rgb.as_raw(),
             rgb.width(),
             rgb.height(),
             image::ColorType::Rgb8.into(),
         )
-        .map_err(|e| format!("JPEG encode failed: {}", e))?;
-    Ok(buf)
+        .map_err(|error| format!("JPEG encode failed: {error}"))?;
+    Ok(bytes)
 }
 
-/// Simple perceptual diff: fraction of differing pixels
-/// (sampled for speed). Returns 0.0 (identical) ..= 1.0.
-fn frame_diff(a: &image::RgbaImage, b: &image::RgbaImage) -> f32 {
-    if a.dimensions() != b.dimensions() {
-        return 1.0;
-    }
-    let (w, h) = a.dimensions();
-    // Sample every 8th pixel in each dimension.
-    let step = 8u32;
-    let mut total = 0u32;
-    let mut diff = 0u32;
-    for y in (0..h).step_by(step as usize) {
-        for x in (0..w).step_by(step as usize) {
-            total += 1;
-            let pa = a.get_pixel(x, y);
-            let pb = b.get_pixel(x, y);
-            // Threshold per channel to ignore tiny noise.
-            if (pa[0] as i32 - pb[0] as i32).abs() > 16
-                || (pa[1] as i32 - pb[1] as i32).abs() > 16
-                || (pa[2] as i32 - pb[2] as i32).abs() > 16
-            {
-                diff += 1;
-            }
-        }
-    }
-    if total == 0 {
-        return 0.0;
-    }
-    diff as f32 / total as f32
-}
-
-/// Capture one frame from a monitor, downscale, return raw RGBA + dims.
-fn capture_monitor_frame(
-    monitor: &Monitor,
-    max_long_side: u32,
-) -> Result<(image::RgbaImage, u32, u32), String> {
-    let img = monitor.capture_image().map_err(|e| format!("capture: {}", e))?;
-    let scaled = downscale(&image::DynamicImage::ImageRgba8(img), max_long_side);
-    let rgba = scaled.to_rgba8();
-    let (w, h) = rgba.dimensions();
-    Ok((rgba, w, h))
-}
-
-/// Build the list of monitors to capture based on settings.
 fn select_monitors(setting: &str) -> Result<Vec<Monitor>, String> {
-    let all = Monitor::all().map_err(|e| format!("monitors: {}", e))?;
-    match setting {
-        "all" => Ok(all),
-        _ => {
-            // primary (default)
-            let primary = all
-                .into_iter()
-                .find(|m| m.is_primary())
-                .ok_or("no primary monitor".to_string())?;
-            Ok(vec![primary])
+    let all = Monitor::all().map_err(|error| format!("Enumerate monitors: {error}"))?;
+    if all.is_empty() {
+        return Err("No monitors available".into());
+    }
+    if setting == "all" {
+        return Ok(all);
+    }
+    let numeric_id = setting
+        .strip_prefix("monitor:")
+        .unwrap_or(setting)
+        .parse::<u32>()
+        .ok();
+    let selected = all
+        .into_iter()
+        .find(|monitor| {
+            if setting == "primary" {
+                monitor.is_primary()
+            } else if let Some(id) = numeric_id {
+                monitor.id() == id
+            } else {
+                monitor.name() == setting
+            }
+        })
+        .ok_or_else(|| format!("Selected monitor is unavailable: {setting}"))?;
+    Ok(vec![selected])
+}
+
+fn generation_is_active(state: &ContinuousState, token: u64) -> bool {
+    state.run.is_active(token)
+}
+
+fn capture_frames(app: &AppHandle, force: bool, token: Option<u64>) -> Result<(), String> {
+    let settings = get_capture_settings(app.clone())?;
+    let state = app.state::<ContinuousState>();
+    let _capture = lock(&state.capture)?;
+    if token.is_some_and(|token| !generation_is_active(&state, token)) {
+        return Ok(());
+    }
+    let monitors = select_monitors(&settings.monitor)?;
+    let mut changed = Vec::new();
+    let mut new_previous = Vec::new();
+    let mut previous = lock(&state.previous)?;
+    // Remove disconnected monitors so the cache is bounded by attached displays.
+    previous.retain(|id, _| monitors.iter().any(|monitor| monitor.id() == *id));
+    for monitor in monitors {
+        let image = monitor
+            .capture_image()
+            .map_err(|error| format!("Capture monitor {}: {error}", monitor.id()))?;
+        let rgba = downscale(
+            &image::DynamicImage::ImageRgba8(image),
+            settings.max_long_side,
+        )
+        .to_rgba8();
+        let raw = RawFrame {
+            width: rgba.width(),
+            height: rgba.height(),
+            rgba: rgba.as_raw().clone(),
+        };
+        let differs = previous.get(&monitor.id()).is_none_or(|last| {
+            let diff = last.difference(&raw);
+            diff > 0.0 && diff >= settings.dedup_threshold
+        });
+        if force || differs {
+            let jpeg = encode_jpeg(&rgba, settings.jpeg_quality)?;
+            changed.push(Frame {
+                monitor: monitor.id().to_string(),
+                jpeg_base64: base64::engine::general_purpose::STANDARD.encode(jpeg),
+                width: rgba.width(),
+                height: rgba.height(),
+            });
+            new_previous.push((monitor.id(), raw));
         }
     }
-}
-
-// --------------------------- Tauri commands ---------------------------
-
-#[tauri::command]
-pub fn get_capture_settings(
-    app: AppHandle,
-) -> Result<CaptureSettings, String> {
-    let state = app.state::<ContinuousState>();
-    let settings = state.settings.lock().unwrap().clone();
-    Ok(settings)
-}
-
-#[tauri::command]
-pub fn update_capture_settings(
-    app: AppHandle,
-    settings: CaptureSettings,
-) -> Result<(), String> {
-    let mut s = settings;
-    if s.interval < 2 {
-        s.interval = 2;
+    let _lifecycle = lock(&state.lifecycle)?;
+    if token.is_some_and(|token| !generation_is_active(&state, token)) {
+        return Ok(());
     }
-    s.max_long_side = s.max_long_side.clamp(256, 4096);
-    s.jpeg_quality = s.jpeg_quality.clamp(1, 100);
-    s.dedup_threshold = s.dedup_threshold.clamp(0.0, 1.0);
-    s.max_frames = s.max_frames.clamp(1, 10);
-    let state = app.state::<ContinuousState>();
-    *state.settings.lock().unwrap() = s;
+    previous.extend(new_previous);
+    lock(&state.pending)?.frames(changed, settings.max_frames, Instant::now());
     Ok(())
 }
 
-/// Add a typed question to the pending batch (from the
-/// answer window chat). Triggers a send if idle.
 #[tauri::command]
-pub fn continuous_add_question(
-    app: AppHandle,
-    question: String,
-) -> Result<(), String> {
+pub fn continuous_add_question(app: AppHandle, question: String, client_id:Option<String>, images:Option<Vec<String>>) -> Result<(), String> {
+    if client_id.as_ref().is_some_and(|id|id.len()>128) {return Err("Client ID is too long".into());}
+    let settings=get_capture_settings(app.clone())?;
+    let mut frames=Vec::new();
+    if let Some(images)=images {
+        for encoded in images.into_iter().take(settings.max_frames) {
+            if encoded.len()>24*1024*1024 {return Err("Attached image exceeds 24 MiB".into());}
+            let raw=base64::engine::general_purpose::STANDARD.decode(encoded).map_err(|_|"Invalid image encoding")?;
+            let image=image::load_from_memory(&raw).map_err(|_|"Invalid attached image")?;
+            let image=downscale(&image,settings.max_long_side).to_rgba8();
+            frames.push(Frame{monitor:"attachment".into(),width:image.width(),height:image.height(),
+                jpeg_base64:base64::engine::general_purpose::STANDARD.encode(encode_jpeg(&image,settings.jpeg_quality)?)});
+        }
+    }
     let state = app.state::<ContinuousState>();
     {
-        let mut pending = state.pending.lock().unwrap();
-        pending.question = Some(question);
+        let mut pending=lock(&state.pending)?;
+        pending.question(question,Instant::now())?;
+        if let Some(id)=client_id {pending.client(id);}
+        pending.frames(frames,settings.max_frames,Instant::now());
     }
-    // Best-effort immediate send.
-    let app2 = app.clone();
-    std::thread::spawn(move || {
-        let _ = try_send_batch(&app2);
-    });
-    Ok(())
+    try_send_batch(&app)
 }
 
-/// Add a transcript segment (from the STT pipeline).
 #[tauri::command]
 pub fn continuous_add_transcript(
     app: AppHandle,
     channel: String,
     text: String,
 ) -> Result<(), String> {
+    if !matches!(channel.as_str(), "[mic]" | "[system]" | "mic" | "system") {
+        return Err(format!("Unknown transcript channel: {channel}"));
+    }
+    if text.trim().is_empty() {
+        return Ok(());
+    }
+    if text.len() > 32_768 {
+        return Err("Transcript segment exceeds 32768 bytes".into());
+    }
     let state = app.state::<ContinuousState>();
-    let mut pending = state.pending.lock().unwrap();
-    pending.transcript.push(TranscriptSegment { channel, text });
+    lock(&state.pending)?.transcript(TranscriptSegment { channel, text }, Instant::now());
     Ok(())
 }
 
-/// Start the continuous loop (mode 3).
+/// Counted STT barrier: each started transcription pairs true with one false.
+/// Releasing the barrier queues only; callers explicitly flush after ingestion.
+#[tauri::command]
+pub fn continuous_set_audio_pending(app: AppHandle, pending: bool) -> Result<(), String> {
+    let state = app.state::<ContinuousState>();
+    let result = lock(&state.pending)?.audio(pending);
+    result
+}
+
+#[tauri::command]
+pub fn capture_now(app: AppHandle) -> Result<(), String> {
+    capture_frames(&app, true, None)?;
+    try_send_batch(&app)
+}
+
+#[tauri::command]
+pub fn flush_continuous(app: AppHandle) -> Result<(), String> {
+    try_send_batch(&app)
+}
+
+fn report_loop_error(app: &AppHandle, error: &str) {
+    eprintln!("Continuous capture: {error}");
+    if let Err(emit_error) = app.emit_to("main", "continuous-error", error) {
+        eprintln!("Report continuous capture error: {emit_error}");
+    }
+}
+
 #[tauri::command]
 pub fn start_continuous(app: AppHandle) -> Result<(), String> {
+    get_capture_settings(app.clone())?;
     let state = app.state::<ContinuousState>();
-    if state
-        .running
-        .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
-        .is_err()
-    {
-        return Ok(()); // already running
-    }
+    let _lifecycle = lock(&state.lifecycle)?;
+    let Some(token) = state.run.start() else {
+        return Ok(());
+    };
     let app2 = app.clone();
-    let running = state.running.clone();
-    let in_flight = state.in_flight.clone();
-    std::thread::spawn(move || {
-        loop {
-            if !running.load(Ordering::SeqCst) {
-                break;
-            }
-            let interval = {
-                let s = app2.state::<ContinuousState>();
-                let st = s.settings.lock().unwrap();
-                if st.mode == "manual" {
-                    // In manual mode the loop still polls but only
-                    // sends when a trigger arrives; sleep longer.
-                    Duration::from_secs(1)
-                } else {
-                    Duration::from_secs(st.interval.max(2))
+    if let Err(error) = std::thread::Builder::new()
+        .name("continuous-capture".into())
+        .spawn(move || {
+            let mut last_capture = Instant::now();
+            loop {
+                std::thread::sleep(Duration::from_millis(200));
+                let state = app2.state::<ContinuousState>();
+                if !generation_is_active(&state, token) {
+                    break;
                 }
-            };
-            std::thread::sleep(interval);
-            if !running.load(Ordering::SeqCst) {
-                break;
+                let result = (|| -> Result<(), String> {
+                    let settings = get_capture_settings(app2.clone())?;
+                    if capture_due(&settings.mode, last_capture.elapsed(), settings.interval) {
+                        last_capture = Instant::now();
+                        capture_frames(&app2, false, Some(token))?;
+                        if settings.mode == "interval" {
+                            let _lifecycle = lock(&state.lifecycle)?;
+                            if generation_is_active(&state, token) {
+                                try_send_batch(&app2)?;
+                            }
+                        }
+                    }
+                    let max_wait_elapsed = {
+                        let pending = lock(&state.pending)?;
+                        pending.max_wait_elapsed(
+                            Instant::now(),
+                            Duration::from_secs(settings.max_wait_secs),
+                        )
+                    };
+                    if settings.mode == "after_speech" && max_wait_elapsed {
+                        let _lifecycle = lock(&state.lifecycle)?;
+                        if generation_is_active(&state, token) {
+                            try_send_batch(&app2)?;
+                        }
+                    }
+                    Ok(())
+                })();
+                if let Err(error) = result {
+                    report_loop_error(&app2, &error);
+                }
             }
-            let _ = capture_and_maybe_send(&app2, &in_flight);
-        }
-    });
+        })
+    {
+        state.run.stop();
+        return Err(format!("Start capture thread: {error}"));
+    }
     Ok(())
 }
 
-/// Stop the continuous loop.
 #[tauri::command]
 pub fn stop_continuous(app: AppHandle) -> Result<(), String> {
     let state = app.state::<ContinuousState>();
-    state.running.store(false, Ordering::SeqCst);
+    let _lifecycle = lock(&state.lifecycle)?;
+    state.run.stop();
     Ok(())
 }
 
-/// Capture frames, dedup, and send if the screen changed.
-fn capture_and_maybe_send(
-    app: &AppHandle,
-    in_flight: &Arc<AtomicBool>,
-) -> Result<(), String> {
-    let state = app.state::<ContinuousState>();
-    let settings = state.settings.lock().unwrap().clone();
-
-    let monitors = select_monitors(&settings.monitor)?;
-    let mut changed_frames: Vec<Frame> = Vec::new();
-
-    for monitor in &monitors {
-        let name = format!(
-            "{}x{}",
-            monitor.width(),
-            monitor.height()
-        );
-        let (rgba, w, h) =
-            capture_monitor_frame(monitor, settings.max_long_side)?;
-
-        // Dedup against the previous frame.
-        let is_changed = {
-            let last = state.last_frame.lock().unwrap();
-            match &*last {
-                Some(prev) => {
-                    let prev_img =
-                        image::load_from_memory(prev).map_err(|e| e.to_string())?;
-                    let prev_rgba = prev_img.to_rgba8();
-                    let diff = frame_diff(&prev_rgba, &rgba);
-                    diff >= settings.dedup_threshold
-                }
-                None => true, // first capture always "changed"
-            }
-        };
-
-        if is_changed {
-            let jpeg =
-                encode_jpeg(&image::DynamicImage::ImageRgba8(rgba.clone()), settings.jpeg_quality)?;
-            let b64 = base64::engine::general_purpose::STANDARD.encode(&jpeg);
-            changed_frames.push(Frame {
-                monitor: name,
-                jpeg_base64: b64,
-                width: w,
-                height: h,
-            });
-            // Store the new raw frame for the next comparison.
-            let raw =
-                image::DynamicImage::ImageRgba8(rgba).to_rgba8().into_raw();
-            *state.last_frame.lock().unwrap() = Some(raw);
-        }
-    }
-
-    if changed_frames.is_empty() {
-        // Nothing changed: do not send.
-        return Ok(());
-    }
-
-    // Add changed frames to the pending batch (capped).
-    {
-        let mut pending = state.pending.lock().unwrap();
-        pending.frames.extend(changed_frames);
-        // Keep only the most recent max_frames frames.
-        let excess = pending.frames.len().saturating_sub(settings.max_frames);
-        if excess > 0 {
-            pending.frames.drain(0..excess);
-        }
-    }
-
-    // In "after_speech" mode we wait for the VAD "speech ended"
-    // event; in "interval" mode we send now if not already in flight.
-    if settings.mode == "interval" {
-        try_send_batch(app)?;
-    } else {
-        // after_speech / manual: emit an event so the frontend
-        // (which owns VAD) decides when to flush.
-        app.emit("continuous-frames-ready", true).ok();
-    }
-    let _ = in_flight;
-    Ok(())
-}
-
-/// Send ONE request with the pending batch (if anything changed
-/// and no request is in flight).
 pub fn try_send_batch(app: &AppHandle) -> Result<(), String> {
     let state = app.state::<ContinuousState>();
-    if state
-        .in_flight
-        .compare_exchange(false, true, Ordering::SeqCst, Ordering::SeqCst)
-        .is_err()
-    {
-        return Ok(()); // a request is already in flight
-    }
-    let batch = {
-        let mut pending = state.pending.lock().unwrap();
-        if pending.frames.is_empty()
-            && pending.transcript.is_empty()
-            && pending.question.is_none()
-        {
-            // nothing to send
-            state
-                .in_flight
-                .store(false, Ordering::SeqCst);
-            return Ok(());
-        }
-        let b = pending.clone();
-        // Newer context replaces stale queued context.
-        *pending = BatchContext::default();
-        b
+    let mut queue = lock(&state.pending)?;
+    let Some(batch) = queue.dispatch() else {
+        return Ok(());
     };
-
-    let app2 = app.clone();
-    let in_flight = state.in_flight.clone();
-    // Emit to the frontend, which builds the actual AI request
-    // using the existing local provider engine.
-    app.emit("continuous-batch", &batch).ok();
-    // The send itself happens on the frontend (it owns the AI
-    // request plumbing). Mark in-flight cleared after a short
-    // window to avoid hammering; the frontend sets the real
-    // completion via continuous_request_done.
-    std::thread::spawn(move || {
-        std::thread::sleep(Duration::from_millis(2000));
-        in_flight.store(false, Ordering::SeqCst);
-        let _ = app2;
-    });
+    let payload = BatchContext {
+        request_id: batch.request_id,
+        frames: &batch.frames,
+        transcript: &batch.transcript,
+        questions: &batch.questions,
+        client_ids: &batch.client_ids,
+        question: if batch.questions.is_empty() {
+            None
+        } else {
+            Some(batch.questions.join("\n\n"))
+        },
+    };
+    if let Err(error) = app.emit_to("main", "continuous-batch", &payload) {
+        queue.restore(batch, Instant::now());
+        return Err(format!("Deliver continuous batch to main: {error}"));
+    }
     Ok(())
 }
 
-/// Frontend calls this when the AI request for the batch
-/// completes, clearing the in-flight flag immediately.
 #[tauri::command]
-pub fn continuous_request_done(app: AppHandle) -> Result<(), String> {
+pub fn continuous_request_done(app: AppHandle, request_id: u64) -> Result<(), String> {
     let state = app.state::<ContinuousState>();
-    state.in_flight.store(false, Ordering::SeqCst);
-    Ok(())
+    lock(&state.pending)?.acknowledge(request_id)?;
+    try_send_batch(&app)
 }
-
-// --------------------------- unit tests ---------------------------
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
-    fn solid(color: [u8; 4], w: u32, h: u32) -> image::RgbaImage {
-        image::RgbaImage::from_fn(w, h, |_, _| {
-            image::Rgba(color)
-        })
+    #[test]
+    fn old_capture_settings_restore_with_new_defaults() {
+        let settings: CaptureSettings =
+            serde_json::from_str(r#"{"mode":"interval","interval":5}"#).unwrap();
+        assert_eq!(settings.max_wait_secs, 15);
+        assert!(settings.microphone && settings.system_audio);
+        assert_eq!(settings.normalized().unwrap().mode, "interval");
     }
 
     #[test]
-    fn frame_diff_identical_is_zero() {
-        let a = solid([10, 20, 30, 255], 64, 64);
-        let b = solid([10, 20, 30, 255], 64, 64);
-        assert_eq!(frame_diff(&a, &b), 0.0);
+    fn invalid_settings_do_not_enter_loop() {
+        let mut settings = CaptureSettings::default();
+        settings.mode = "unknown".into();
+        assert!(settings.normalized().is_err());
     }
 
     #[test]
-    fn frame_diff_different_is_high() {
-        let a = solid([0, 0, 0, 255], 64, 64);
-        let b = solid([255, 255, 255, 255], 64, 64);
-        let d = frame_diff(&a, &b);
-        assert!(d > 0.9, "expected high diff, got {}", d);
-    }
-
-    #[test]
-    fn frame_diff_small_noise_below_threshold() {
-        // One differing pixel in a 64x64 image sampled every 8px:
-        // sampled grid is 8x8 = 64 samples, 1 differs -> ~0.0156.
-        let mut a = solid([0, 0, 0, 255], 64, 64);
-        let b = solid([0, 0, 0, 255], 64, 64);
-        a.put_pixel(0, 0, image::Rgba([200, 200, 200, 255]));
-        let d = frame_diff(&a, &b);
-        assert!(d < 0.05, "expected low diff, got {}", d);
-    }
-
-    #[test]
-    fn batch_context_default_is_empty() {
-        let b = BatchContext::default();
-        assert!(b.frames.is_empty());
-        assert!(b.transcript.is_empty());
-        assert!(b.question.is_none());
-    }
-
-    #[test]
-    fn capture_settings_clamped() {
-        // interval min 2
-        let mut s = CaptureSettings::default();
-        s.interval = 0;
-        assert_eq!(s.interval, 0); // raw value kept; clamp happens in command
-    }
-
-    #[test]
-    fn downscale_respects_long_side() {
-        let img = image::DynamicImage::new_rgba8(2000, 1000);
-        let scaled = downscale(&img, 1024);
-        let (w, h) = scaled.dimensions();
-        assert!(w <= 1024 && h <= 1024, "got {}x{}", w, h);
-        // aspect ratio preserved
-        assert!((w as f32 / h as f32 - 2.0).abs() < 0.01);
-    }
-
-    #[test]
-    fn downscale_small_image_unchanged() {
-        let img = image::DynamicImage::new_rgba8(100, 100);
-        let scaled = downscale(&img, 1024);
-        assert_eq!(scaled.dimensions(), (100, 100));
+    fn downscale_preserves_aspect_ratio() {
+        let scaled = downscale(&image::DynamicImage::new_rgba8(2000, 1000), 1024);
+        assert_eq!(scaled.dimensions(), (1024, 512));
     }
 }

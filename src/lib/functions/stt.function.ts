@@ -3,7 +3,7 @@ import {
   getByPath,
   blobToBase64,
 } from "./common.function";
-import { fetch as tauriFetch } from "@tauri-apps/plugin-http";
+import { providerFetch, ProviderHttpError } from "../overlay/network";
 
 import { TYPE_PROVIDER } from "@/types";
 import curl2Json from "@bany/curl-to-json";
@@ -15,12 +15,17 @@ export interface STTParams {
     variables: Record<string, string>;
   };
   audio: File | Blob;
+  signal?: AbortSignal;
+  registryReserved?:boolean;
 }
 
 /**
  * Transcribes audio and returns either the transcription or an error/warning message as a single string.
  */
 export async function fetchSTT(params: STTParams): Promise<string> {
+  if(!params.registryReserved&&typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window){
+    const {transcribeRanked}=await import('../overlay/provider-engine');return transcribeRanked(params.audio,params.signal);
+  }
   let warnings: string[] = [];
 
   try {
@@ -151,7 +156,7 @@ export async function fetchSTT(params: STTParams): Promise<string> {
       body = JSON.stringify(deepVariableReplacer(dataObj, allVariables));
     }
 
-    const fetchFunction = url?.includes("http") ? fetch : tauriFetch;
+    const fetchFunction = providerFetch;
 
     // Send request
     let response: Response;
@@ -160,25 +165,13 @@ export async function fetchSTT(params: STTParams): Promise<string> {
         method: curlJson.method || "POST",
         headers: finalHeaders,
         body: curlJson.method === "GET" ? undefined : body,
+        signal: params.signal,
       });
     } catch (e) {
       throw new Error(`Network error: ${e instanceof Error ? e.message : e}`);
     }
 
-    if (!response.ok) {
-      let errText = "";
-      try {
-        errText = await response.text();
-      } catch {}
-      let errMsg: string;
-      try {
-        const errObj = JSON.parse(errText);
-        errMsg = errObj.message || errText;
-      } catch {
-        errMsg = errText || response.statusText;
-      }
-      throw new Error(`HTTP ${response.status}: ${errMsg}`);
-    }
+    if (!response.ok) throw ProviderHttpError.fromResponse(response);
 
     const responseText = await response.text();
     let data: any;
@@ -200,6 +193,7 @@ export async function fetchSTT(params: STTParams): Promise<string> {
     // Return transcription with any warnings
     return [...warnings, transcription].filter(Boolean).join("; ");
   } catch (err) {
+    if (err instanceof Error) throw err;
     const msg = err instanceof Error ? err.message : String(err);
     throw new Error(msg);
   }

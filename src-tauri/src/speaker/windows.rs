@@ -94,9 +94,6 @@ fn find_device_by_id(direction: &Direction, device_id: &str) -> Option<wasapi::D
         if let Ok(device) = collection.get_device_at_index(i) {
             if let Ok(id) = device.get_id() {
                 if id == device_id {
-                    let name = device
-                        .get_friendlyname()
-                        .unwrap_or_else(|_| "Unknown".to_string());
                     return Some(device);
                 }
             }
@@ -192,21 +189,14 @@ impl SpeakerStream {
             let device = match device_id {
                 Some(ref id) => match find_device_by_id(&Direction::Render, id) {
                     Some(d) => {
-                        let name = d
-                            .get_friendlyname()
-                            .unwrap_or_else(|_| "Unknown".to_string());
                         d
                     }
                     None => {
-                        get_default_device(&Direction::Render).expect("No default render device")
+                        get_default_device(&Direction::Render)?
                     }
                 },
                 None => get_default_device(&Direction::Render)?,
             };
-
-            let device_name = device
-                .get_friendlyname()
-                .unwrap_or_else(|_| "Unknown".to_string());
 
             let mut audio_client = device.get_iaudioclient()?;
 

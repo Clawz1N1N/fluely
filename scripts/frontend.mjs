@@ -1,6 +1,7 @@
 import { spawn } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
+import './prepare-vad.mjs';
 
 const mode = process.argv[2] ?? 'dev';
 if (!['dev', 'build', 'preview'].includes(mode)) throw new Error('Unknown frontend mode');

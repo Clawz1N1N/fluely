@@ -1,25 +1,20 @@
 import {
   Theme,
-  AlwaysOnTopToggle,
-  AppIconToggle,
   AutostartToggle,
 } from "./components";
 import { PageLayout } from "@/layouts";
+import { OverlaySettings } from './components/OverlaySettings';
 
 const Settings = () => {
   return (
     <PageLayout title="Settings" description="Manage your settings">
       {/* Theme */}
       <Theme />
+      <OverlaySettings />
 
       {/* Autostart Toggle */}
       <AutostartToggle />
 
-      {/* App Icon Toggle */}
-      <AppIconToggle />
-
-      {/* Always On Top Toggle */}
-      <AlwaysOnTopToggle />
     </PageLayout>
   );
 };

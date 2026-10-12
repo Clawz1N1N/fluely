@@ -19,6 +19,7 @@ import {
 import { IContextType, ScreenshotConfig, TYPE_PROVIDER } from "@/types";
 import curl2Json from "@bany/curl-to-json";
 import { invoke } from "@tauri-apps/api/core";
+import { credentialStore } from '@/lib/storage/secure.storage';
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import { enable, disable } from "@tauri-apps/plugin-autostart";
@@ -69,6 +70,8 @@ const AppContext = createContext<IContextType | undefined>(undefined);
 
 // Create the provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  const [credentialsLoaded, setCredentialsLoaded] = useState(false);
+  const [securityWarning, setSecurityWarning] = useState<string | null>(null);
   const [systemPrompt, setSystemPrompt] = useState<string>(
     safeLocalStorage.getItem(STORAGE_KEYS.SYSTEM_PROMPT) ||
       DEFAULT_SYSTEM_PROMPT
@@ -192,20 +195,17 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setCustomSttProviders(sttList);
 
     // Load selected AI provider
-    const savedSelectedAi = safeLocalStorage.getItem(
-      STORAGE_KEYS.SELECTED_AI_PROVIDER
-    );
-    if (savedSelectedAi) {
-      setSelectedAIProvider(JSON.parse(savedSelectedAi));
-    }
-
-    // Load selected STT provider
-    const savedSelectedStt = safeLocalStorage.getItem(
-      STORAGE_KEYS.SELECTED_STT_PROVIDER
-    );
-    if (savedSelectedStt) {
-      setSelectedSttProvider(JSON.parse(savedSelectedStt));
-    }
+    void Promise.all([
+      credentialStore.load(STORAGE_KEYS.SELECTED_AI_PROVIDER),
+      credentialStore.load(STORAGE_KEYS.SELECTED_STT_PROVIDER),
+    ]).then(([ai, stt]) => {
+      if (ai) setSelectedAIProvider(ai);
+      if (stt) setSelectedSttProvider(stt);
+      setSecurityWarning(null);
+      setCredentialsLoaded(true);
+    }).catch(error => {
+      setSecurityWarning(error instanceof Error ? error.message : 'Захищене сховище недоступне.');
+    });
 
     // Load customizable state
     const customizableState = getCustomizableState();
@@ -400,23 +400,19 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
   // Sync selected AI to localStorage
   useEffect(() => {
-    if (selectedAIProvider.provider) {
-      safeLocalStorage.setItem(
-        STORAGE_KEYS.SELECTED_AI_PROVIDER,
-        JSON.stringify(selectedAIProvider)
-      );
+    if (credentialsLoaded && selectedAIProvider.provider) {
+      void credentialStore.save(STORAGE_KEYS.SELECTED_AI_PROVIDER, selectedAIProvider)
+        .catch(error => setSecurityWarning(error.message));
     }
-  }, [selectedAIProvider]);
+  }, [selectedAIProvider, credentialsLoaded]);
 
   // Sync selected STT to localStorage
   useEffect(() => {
-    if (selectedSttProvider.provider) {
-      safeLocalStorage.setItem(
-        STORAGE_KEYS.SELECTED_STT_PROVIDER,
-        JSON.stringify(selectedSttProvider)
-      );
+    if (credentialsLoaded && selectedSttProvider.provider) {
+      void credentialStore.save(STORAGE_KEYS.SELECTED_STT_PROVIDER, selectedSttProvider)
+        .catch(error => setSecurityWarning(error.message));
     }
-  }, [selectedSttProvider]);
+  }, [selectedSttProvider, credentialsLoaded]);
 
   // Computed all AI providers
   const allAiProviders: TYPE_PROVIDER[] = [
@@ -548,7 +544,10 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setSupportsImages,
   };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={value}>
+    {securityWarning && <div role="alert" className="p-3 bg-destructive/15 text-destructive text-sm">{securityWarning}</div>}
+    {children}
+  </AppContext.Provider>;
 };
 
 // Create a hook to access the context
