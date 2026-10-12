@@ -2887,3 +2887,18 @@ Encoding: 302 text files checked; 0 failures.
 ```
 
 Full log: logs/r4-final-encoding.log
+
+## codex-loop preparation — 2026-10-12T07:58:09.108Z
+
+Command: `node --require ./scripts/loop-os-compat.cjs C:/Users/broma/.codex/plugins/cache/fnine59/codex-loop/0.2.0+codex.20260823143747/scripts/loopctl.mjs start --until "The existing Pluely takeover is fully implemented and verified, a Windows release is built and launch-tested in RELEASE, and the completion checklist and final evidence are complete." -- "Continue the existing Pluely takeover in this same conversation and repository on custom-overlay. Preserve prior work and all user constraints. Execute a concrete implementation group per adaptive pass, test and fix it, update _research evidence and state, and commit after encoding checks. Resume R4 then R5-R8. Do not push, force, expose secrets, or claim native success without evidence. On usage limits or HTTP429 let Codex Loop wait for reset and retry the same conversation; do not start a replacement loop. Use token-optimizer if callable; otherwise use focused outputs and independent scoped agents."`
+
+Exit code: 0
+
+Last output lines:
+
+```text
+Codex Loop prepared: adaptive 1m-1h (30m fallback), lifetime 1d.
+Start marker emitted for loop ID 5b3e213f8577.
+```
+
+Pending config independently read: correct ID, adaptive mode, immediate first pass, TTL 86400000ms. Runtime binding follows the final response marker. Prior direct invocation failed uv_os_get_passwd ENOMEM; CLI-only profile-scope fallback changed no permissions or installed plugin files.
