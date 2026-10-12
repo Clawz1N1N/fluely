@@ -21,6 +21,10 @@ export async function resolve(specifier, context, nextResolve) {
   return nextResolve(specifier, context);
 }
 export async function load(url, context, nextLoad) {
+  // Node SSR verifies markup; styles remain loaded normally in Vite/WebView.
+  if (url.startsWith('file:') && new URL(url).pathname.endsWith('.css')) {
+    return { format: 'module', source: 'export {};', shortCircuit: true };
+  }
   if (url.startsWith('file:') && /\.tsx?$/.test(url) && !url.includes('/node_modules/')) {
     const filename = fileURLToPath(url);
     const { outputText } = ts.transpileModule(readFileSync(filename, 'utf8'), {

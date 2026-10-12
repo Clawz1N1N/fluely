@@ -2035,3 +2035,855 @@ ok 7 - only exact lowercase protocol tags are special and unmatched closers rema
 ```
 
 Full log: logs/r3-review-parser-green.log
+
+## r4-config-tests — 2026-10-12T07:09:01.096Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --test tests/tauri-config.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+TAP version 13
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 1 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 0.8552
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 78.4804
+```
+
+Full log: logs/r4-config-tests.log
+
+## r4-cargo-retry — 2026-10-12T07:09:19.400Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+
+Command: `call ..\scripts\rust-env.cmd cargo check --offline`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+   Compiling vswhom-sys v0.1.3
+    Checking icu_provider v2.0.0
+   Compiling time-core v0.1.4
+   Compiling num-conv v0.1.0
+   Compiling rustc_version v0.4.1
+   Compiling windows-sys v0.60.2
+   Compiling winreg v0.55.0
+    Checking icu_properties_data v2.0.1
+error: failed to run custom build command for `vswhom-sys v0.1.3`
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/r4-cargo-retry.log
+
+## r4-shell-store-red-compile — 2026-10-12T07:11:46.726Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+```
+
+Full log: logs/r4-shell-store-red-compile.log
+
+## r4-shell-store-red-tests — 2026-10-12T07:11:49.503Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\shell-store-tests.exe`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+
+failures:
+
+---- tests::creates_parent_directory_and_preserves_utf8 stdout ----
+
+thread 'tests::creates_parent_directory_and_preserves_utf8' (8688) panicked at src-tauri\src\shell_store.rs:27:67:
+called `Result::unwrap()` on an `Err` value: Os { code: 3, kind: NotFound, message: "Системе не удается найти указанный путь." }
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+---- tests::failed_temporary_write_keeps_the_last_good_layout stdout ----
+
+thread 'tests::failed_temporary_write_keeps_the_last_good_layout' (8636) panicked at src-tauri\src\shell_store.rs:49:9:
+assertion failed: replace_file(&path, b"new-layout").is_err()
+
+
+failures:
+    tests::creates_parent_directory_and_preserves_utf8
+    tests::failed_temporary_write_keeps_the_last_good_layout
+
+test result: FAILED. 1 passed; 2 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/r4-shell-store-red-tests.log
+
+## r4-tauri-start — 2026-10-12T07:11:14.306Z
+
+Command: `call scripts\rust-env.cmd npm run tauri dev`
+
+Observation: 60.1s; native exit: 101; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 631 bytes; /src/main.tsx HTTP200, 6991 bytes; probe: fetch failed
+
+Last 20 lines:
+
+```text
+
+  VITE v7.1.2  ready in 823 ms
+
+  ➜  Local:   http://localhost:1420/
+     Running DevCommand (`cargo  run --no-default-features --color always --`)
+warn: could not canonicalize path C:\Users\broma
+        Info Watching C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri for changes...
+   Compiling vswhom-sys v0.1.3
+error: failed to run custom build command for `vswhom-sys v0.1.3`
+note: To improve backtraces for build dependencies, set the CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG=true environment variable to enable debug information generation.
+
+Caused by:
+  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+warning: build failed, waiting for other jobs to finish...
+Get-CimInstance : Отказано в доступе
+At line:1 char:41
++ ...  Kill-Tree { Param([int]$ppid); Get-CimInstance Win32_Process | Where ...
++                                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : PermissionDenied: (root\cimv2:Win32_Process:String) [Get-CimInstance], CimException
+    + FullyQualifiedErrorId : HRESULT 0x80041003,Microsoft.Management.Infrastructure.CimCmdlets.GetCimInstanceCommand
+```
+
+Full log: logs/r4-tauri-start.log
+
+## r4-browser-doctor — 2026-10-12T07:12:35.755Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `browser-harness --doctor`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ERROR: Access denied
+browser-harness doctor
+  platform          Windows 11
+  python            3.12.14
+  version           0.1.13 (pypi)
+  latest release    (could not reach PyPI)
+  [FAIL] chrome running — start chrome/edge
+  [FAIL] daemon alive — see install.md
+  [FAIL] active browser connections — 0
+  [FAIL] Browser Use cloud auth — optional: browser-harness auth login
+```
+
+Full log: logs/r4-browser-doctor.log
+
+## r4-shell-store-green-compile — 2026-10-12T07:12:41.950Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+```
+
+Full log: logs/r4-shell-store-green-compile.log
+
+## r4-shell-store-green-tests — 2026-10-12T07:12:44.892Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 4 tests
+test tests::failed_temporary_write_keeps_the_last_good_layout ... ok
+test tests::creates_parent_directory_and_preserves_utf8 ... ok
+test tests::recovers_from_a_stale_partial_temporary_file ... ok
+test tests::repeated_writes_replace_the_complete_previous_layout ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+```
+
+Full log: logs/r4-shell-store-green-tests.log
+
+## r4-config-encoding — 2026-10-12T07:17:42.729Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node scripts/check-encoding.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Encoding: 297 text files checked; 0 failures.
+```
+
+Full log: logs/r4-config-encoding.log
+
+## r5-math-red — 2026-10-12T07:19:32.716Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: '<div class="space-y-4 whitespace-normal"></div>'
+  operator: 'match'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/math.test.mjs:61:10)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 0
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1803.027
+```
+
+Full log: logs/r5-math-red.log
+
+## r4-shell-metadata — 2026-10-12T07:19:35.203Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 57 warnings emitted
+```
+
+Full log: logs/r4-shell-metadata.log
+
+## r5-math-red — 2026-10-12T07:20:28.497Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 5 - Markdown preserves all math delimiters inside inline code
+  ---
+  duration_ms: 3.9147
+  type: 'test'
+  ...
+# Subtest: Markdown preserves all math delimiters inside fenced code
+ok 6 - Markdown preserves all math delimiters inside fenced code
+  ---
+  duration_ms: 130.3826
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 3
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1781.6116
+```
+
+Full log: logs/r5-math-red.log
+
+## r4-precommit-tests — 2026-10-12T07:23:18.332Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs tests/tauri-config.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:4768) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 8 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 1.0708
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 687.6592
+```
+
+Full log: logs/r4-precommit-tests.log
+
+## r4-shell-metadata-final — 2026-10-12T07:25:01.961Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 57 warnings emitted
+```
+
+Full log: logs/r4-shell-metadata-final.log
+
+## r4-shell-metadata-reviewed — 2026-10-12T07:28:36.497Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 58 warnings emitted
+```
+
+Full log: logs/r4-shell-metadata-reviewed.log
+
+## r4-shell-store-reviewed-compile — 2026-10-12T07:28:42.896Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path C:\Users\broma
+```
+
+Full log: logs/r4-shell-store-reviewed-compile.log
+
+## r4-shell-store-reviewed-tests — 2026-10-12T07:28:49.379Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 4 tests
+test tests::failed_temporary_write_keeps_the_last_good_layout ... ok
+test tests::creates_parent_directory_and_preserves_utf8 ... ok
+test tests::recovers_from_a_stale_partial_temporary_file ... ok
+test tests::repeated_writes_replace_the_complete_previous_layout ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.02s
+```
+
+Full log: logs/r4-shell-store-reviewed-tests.log
+
+## r4-stop-session-red — 2026-10-12T07:30:23.457Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node _research\temp\stop-session.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+PASS creation-time mismatch preserves owned and unrelated processes
+Stop returned 1: {"rootProcessId":2244,"startedUtc":"2026-10-12T07:30:23.755Z"}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: cleanup must terminate owned children, grandchildren, then root
+
+true !== false
+
+    at file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/_research/temp/stop-session.test.mjs:52:10 {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: true,
+  expected: false,
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2
+```
+
+Full log: logs/r4-stop-session-red.log
+
+## r4-stop-session-green — 2026-10-12T07:33:45.454Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node _research\temp\stop-session.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+PASS creation-time mismatch preserves owned and unrelated processes
+PASS bottom-first owned tree cleanup; unrelated control survives
+```
+
+Full log: logs/r4-stop-session-green.log
+
+## r4-stop-session-guards-green — 2026-10-12T07:35:38.888Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node _research\temp\stop-session.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+PASS creation-time mismatch preserves owned and unrelated processes
+PASS unqueryable root fails without terminating any fixture process
+PASS bottom-first owned tree cleanup; unrelated control survives
+```
+
+Full log: logs/r4-stop-session-guards-green.log
+
+## r4-cleanup-vite — 2026-10-12T07:47:16.482Z
+
+Command: `npm run dev`
+
+Observation: 21.9s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 631 bytes; /src/main.tsx HTTP200, 6991 bytes
+
+Last 20 lines:
+
+```text
+npm notice run pluely@0.1.9 dev
+npm notice run node scripts/frontend.mjs dev
+
+  VITE v7.1.2  ready in 1219 ms
+
+  ➜  Local:   http://localhost:1420/
+Owned-process cleanup: {"rootProcessId":6280,"startedUtc":"2026-10-12T07:47:16.4881805Z","terminatedProcessIds":[6844,9888,3208,10568,4844,11168,13300,6280],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/r4-cleanup-vite.log
+
+## r4-shell-policy-ui-metadata — 2026-10-12T07:48:10.017Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 58 warnings emitted
+```
+
+Full log: logs/r4-shell-policy-ui-metadata.log
+
+## r4-shell-policy-ui-tests-metadata — 2026-10-12T07:48:51.841Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_tests_metadata --test --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation-tests.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 45 warnings emitted
+```
+
+Full log: logs/r4-shell-policy-ui-tests-metadata.log
+
+## r4-precommit-store — 2026-10-12T07:50:19.004Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\shell-store-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 4 tests
+test tests::failed_temporary_write_keeps_the_last_good_layout ... ok
+test tests::creates_parent_directory_and_preserves_utf8 ... ok
+test tests::recovers_from_a_stale_partial_temporary_file ... ok
+test tests::repeated_writes_replace_the_complete_previous_layout ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+```
+
+Full log: logs/r4-precommit-store.log
+
+## r4-precommit-parser — 2026-10-12T07:50:19.121Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `src-tauri\target\structured-core-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 14 tests
+test tests::parse_missing_side ... ok
+test tests::parse_partial_main_visible_before_close ... ok
+test tests::closed_secondary_section_does_not_publish_later_unclosed_content ... ok
+test tests::finish_publishes_unclosed_sections_and_literal_prefixes ... ok
+test tests::parse_exact_tag_names_only ... ok
+test tests::parse_latex_angle_brackets_untouched ... ok
+test tests::parse_tag_split_across_chunks_streaming ... ok
+test tests::parse_all_three_tags ... ok
+test tests::parse_unclosed_tag_takes_rest ... ok
+test tests::parse_untagged_goes_to_main ... ok
+test tests::preserves_section_order_and_repeated_tags ... ok
+test tests::preserves_untagged_unicode ... ok
+test tests::stream_does_not_leak_split_tag_prefixes ... ok
+test tests::streaming_matches_literal_output_at_every_character_split ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/r4-precommit-parser.log
+
+## r4-stop-guards-final — 2026-10-12T07:52:14.299Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node _research/temp/stop-session.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+PASS creation-time mismatch preserves owned and unrelated processes
+PASS unqueryable root fails without terminating any fixture process
+PASS bottom-first owned tree cleanup; unrelated control survives
+```
+
+Full log: logs/r4-stop-guards-final.log
+
+## r4-precommit-tsc — 2026-10-12T07:52:19.988Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npx tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 npx
+npm notice run tsc --noEmit
+```
+
+Full log: logs/r4-precommit-tsc.log
+
+## r4-precommit-node — 2026-10-12T07:52:26.767Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs tests/tauri-config.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:10504) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 8 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 0.9947
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 639.4253
+```
+
+Full log: logs/r4-precommit-node.log
+
+## r4-final-policy-metadata — 2026-10-12T07:53:28.182Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call _research\logs\r4-shell-policy-ui-metadata-launch.cmd`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+warning: function `position_window_top_center` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:26:8
+   |
+26 | pub fn position_window_top_center(
+   |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+warning: function `set_window_height` is never used
+  --> _research\temp\..\..\src-tauri\src\window.rs:68:8
+   |
+68 | pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<(), String> {
+   |        ^^^^^^^^^^^^^^^^^
+
+warning: function `move_window` is never used
+   --> _research\temp\..\..\src-tauri\src\window.rs:117:8
+    |
+117 | pub fn move_window(app: tauri::AppHandle, direction: String, step: i32) -> Result<(), String> {
+    |        ^^^^^^^^^^^
+
+warning: 58 warnings emitted
+```
+
+Full log: logs/r4-final-policy-metadata.log
+
+## r4-owned-process-tests — 2026-10-12T07:54:40.514Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node tests/stop-session.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+PASS creation-time mismatch preserves owned and unrelated processes
+PASS unqueryable root fails without terminating any fixture process
+PASS bottom-first owned tree cleanup; unrelated control survives
+```
+
+Full log: logs/r4-owned-process-tests.log
+
+## r4-final-encoding — 2026-10-12T07:54:46.181Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node scripts/check-encoding.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Encoding: 302 text files checked; 0 failures.
+```
+
+Full log: logs/r4-final-encoding.log

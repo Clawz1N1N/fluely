@@ -72,7 +72,7 @@ DONE має доказ; BLOCKED має причину й обхідний шля
 | R1 | Encoding/policy check+group commit | DONE | commit63a22ac; r1-encoding0, tests2/2 |
 | R2 | tsc/build0, Vite30s, commit, frontend-green | DONE | r2-tsc0, r2-build-final0, r2-vite-preserve30.1s HTTP200 no errors |
 | R3 | cargo check/test/clippy, commit, rust-green | BLOCKED | B02; source API repairs reviewed, metadata0+Rustparser14+TS7; no rust-green without Cargo proof |
-| R4 | runtime60s/backtrace/logs/inspect, commit, runs | TODO | BUILD_LOG |
+| R4 | runtime60s/backtrace/logs/inspect, commit, runs | BLOCKED | B02; tauri dev60.1s exit101 before app. Source startup/CSP/focus fixes metadata0; store4/4; owned-tree cleanup verified. No runs tag |
 | R5 | P0/P1/P2 integrated+tests, group commits, wiring-done | TODO | BUILD_LOG |
 | R6 | Parser/limiter/fallback/packer/dedup/axis tests, build/check/test0, quality-green | TODO | BUILD_LOG |
 | R7 | Installer/exe build, RELEASE+SHA/notes, runtime30-60s+inspect, release-candidate | TODO | BUILD_LOG |

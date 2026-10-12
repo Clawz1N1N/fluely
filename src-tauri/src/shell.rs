@@ -3,34 +3,28 @@
 // Creates and manages the "shell" windows: side/top/bottom strips,
 // individual buttons, and the central answer window.
 //
-// Design (see _research/REPORT.md section 4):
-//  * Every shell window is created TIGHT (window rect == visible UI) so
-//   that there are no large transparent hit areas.
-//  * `set_ignore_cursor_events` is a whole-window toggle in Tauri, so it
-//   is used only for windows that are purely decorative (a glow margin)
-//   and is toggled dynamically by a cursor-polling watchdog in Rust.
-//  * On Windows every shell window is WS_EX_TOPMOST | WS_EX_TOOLWINDOW |
-//   WS_EX_NOACTIVATE and a watchdog thread re-asserts
-//   SetWindowPos(HWND_TOPMOST, SWP_NOACTIVATE|SWP_NOMOVE|SWP_NOSIZE)
-//   roughly once a second so the overlay stays above other topmost
-//   windows. (Exclusive fullscreen is a hard OS limit: a true exclusive
-//   fullscreen app owns the display and nothing can stay on top.)
-//  * Positions are persisted per-monitor in a Rust-side JSON file in the
-//   app data dir (not localStorage, because several windows share it).
+// Windows start hidden and nonactivating. Their native policy is applied before
+// showing UI, then reasserted by a watchdog. Only answer chat editing permits
+// activation; focus loss restores nonactivation. Capture affinity is explicitly
+// set to WDA_EXCLUDEFROMCAPTURE. Exclusive fullscreen remains an OS limit.
+// Layout mutations and file replacements are serialized in managed Rust state.
+// Per-monitor layout/DPI handling and transparent-margin hit testing are pending.
 
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
-use std::time::Duration;
+use std::time::{Duration, Instant};
 use tauri::{AppHandle, Manager, PhysicalPosition, Position, Runtime};
 
 #[cfg(target_os = "windows")]
-use windows::Win32::Foundation::HWND;
+use windows::Win32::Foundation::{GetLastError, SetLastError, ERROR_SUCCESS, HWND};
 #[cfg(target_os = "windows")]
 use windows::Win32::UI::WindowsAndMessaging::{
-    GetWindowLongPtrW, SetWindowLongPtrW, SetWindowPos, GWL_EXSTYLE,
-    WS_EX_TOPMOST, WS_EX_TOOLWINDOW, WS_EX_NOACTIVATE,
-    GetWindowDisplayAffinity, HWND_TOPMOST, SWP_NOMOVE, SWP_NOSIZE, SWP_NOACTIVATE,
+    GetForegroundWindow, GetWindowDisplayAffinity, GetWindowLongPtrW, IsWindow,
+    SetForegroundWindow, SetWindowDisplayAffinity, SetWindowLongPtrW, SetWindowPos, GWL_EXSTYLE,
+    HWND_TOPMOST, SWP_NOACTIVATE, SWP_NOMOVE, SWP_NOSIZE, WDA_EXCLUDEFROMCAPTURE, WS_EX_NOACTIVATE,
+    WS_EX_TOOLWINDOW, WS_EX_TOPMOST,
 };
 
 /// The UI mode of the shell.
@@ -45,6 +39,16 @@ pub enum UiMode {
 impl Default for UiMode {
     fn default() -> Self {
         UiMode::SideStrips
+    }
+}
+
+impl UiMode {
+    fn as_str(self) -> &'static str {
+        match self {
+            Self::SideStrips => "sidestrips",
+            Self::TopBottomStrips => "topbottomstrips",
+            Self::Buttons => "buttons",
+        }
     }
 }
 
@@ -81,6 +85,10 @@ impl ShellLayout {
 pub struct ShellState {
     pub layout: Mutex<ShellLayout>,
     pub watchdog_active: Arc<Mutex<bool>>,
+    lifecycle: Mutex<()>,
+    answer_editing: AtomicBool,
+    #[cfg(target_os = "windows")]
+    previous_foreground: Mutex<Option<isize>>,
 }
 
 impl Default for ShellState {
@@ -88,13 +96,20 @@ impl Default for ShellState {
         ShellState {
             layout: Mutex::new(ShellLayout::default_for_mode(UiMode::default())),
             watchdog_active: Arc::new(Mutex::new(false)),
+            lifecycle: Mutex::new(()),
+            answer_editing: AtomicBool::new(false),
+            #[cfg(target_os = "windows")]
+            previous_foreground: Mutex::new(None),
         }
     }
 }
 
 /// Path of the persisted layout file (app data dir / shell_layout.json).
 fn layout_path<R: Runtime>(app: &AppHandle<R>) -> Option<std::path::PathBuf> {
-    app.path().app_data_dir().ok().map(|dir| dir.join("shell_layout.json"))
+    app.path()
+        .app_data_dir()
+        .ok()
+        .map(|dir| dir.join("shell_layout.json"))
 }
 
 /// Load the persisted layout, or the default for the current mode.
@@ -111,12 +126,28 @@ pub fn load_layout<R: Runtime>(app: &AppHandle<R>) -> ShellLayout {
 }
 
 /// Persist the layout to disk.
-pub fn save_layout<R: Runtime>(app: &AppHandle<R>, layout: &ShellLayout) {
-    if let Some(path) = layout_path(app) {
-        if let Ok(content) = serde_json::to_string_pretty(layout) {
-            let _ = std::fs::write(&path, content);
-        }
-    }
+fn save_layout<R: Runtime>(app: &AppHandle<R>, layout: &ShellLayout) -> Result<(), String> {
+    let path = layout_path(app).ok_or_else(|| "App data directory is unavailable".to_string())?;
+    let bytes = serde_json::to_vec_pretty(layout).map_err(|e| format!("Layout JSON: {e}"))?;
+    crate::shell_store::replace_file(&path, &bytes).map_err(|e| format!("Save shell layout: {e}"))
+}
+
+/// Mutations and atomic file replacements are serialized by the layout lock.
+/// Only publish the new managed snapshot after its file replacement succeeds.
+fn update_layout<R: Runtime>(
+    app: &AppHandle<R>,
+    update: impl FnOnce(&mut ShellLayout),
+) -> Result<ShellLayout, String> {
+    let state = app.state::<ShellState>();
+    let mut current = state
+        .layout
+        .lock()
+        .map_err(|e| format!("Layout lock: {e}"))?;
+    let mut next = current.clone();
+    update(&mut next);
+    save_layout(app, &next)?;
+    *current = next.clone();
+    Ok(next)
 }
 
 /// Default strip/button geometry.
@@ -136,47 +167,63 @@ pub fn create_shell_window<R: Runtime>(
     x: i32,
     y: i32,
 ) -> Result<tauri::WebviewWindow<R>, String> {
-    let window = tauri::WebviewWindowBuilder::new(
-        app,
-        label,
-        tauri::WebviewUrl::App(route.into()),
-    )
-    .title(label)
-    .inner_size(width, height)
-    .position(x as f64, y as f64)
-    .transparent(true)
-    .always_on_top(true)
-    .decorations(false)
-    .skip_taskbar(true)
-    .resizable(false)
-    .minimizable(false)
-    .maximizable(false)
-    .closable(false)
-    .accept_first_mouse(true)
-    .shadow(false)
-    .content_protected(true)
-    .build()
-    .map_err(|e| format!("Failed to create shell window {}: {}", label, e))?;
+    let window = tauri::WebviewWindowBuilder::new(app, label, tauri::WebviewUrl::App(route.into()))
+        .title(label)
+        .inner_size(width, height)
+        .position(x as f64, y as f64)
+        .transparent(true)
+        .always_on_top(true)
+        .decorations(false)
+        .skip_taskbar(true)
+        .resizable(label == "answer")
+        .minimizable(false)
+        .maximizable(false)
+        .closable(label == "answer")
+        .accept_first_mouse(true)
+        .shadow(false)
+        .content_protected(true)
+        .visible(false)
+        .focused(false)
+        .focusable(false)
+        .visible_on_all_workspaces(true)
+        .build()
+        .map_err(|e| format!("Failed to create shell window {}: {}", label, e))?;
 
-    // Non-focusable so clicking the strip does not steal focus.
-    let _ = window.set_focusable(false);
+    // Apply native nonactivation/capture policy before the window is shown.
+    if let Err(error) = apply_window_policy(app, label) {
+        let _ = window.destroy();
+        return Err(error);
+    }
+    if label == "answer" {
+        setup_answer_window(app, &window);
+    } else {
+        window.show().map_err(|e| format!("Show {label}: {e}"))?;
+    }
 
     Ok(window)
 }
 #[cfg(target_os = "windows")]
-pub fn apply_windows_shell_style(hwnd: HWND) {
+pub fn apply_windows_shell_style(hwnd: HWND, editing: bool) -> Result<(), String> {
     unsafe {
         // Read current extended style and add TOPMOST | TOOLWINDOW | NOACTIVATE.
         let current = GetWindowLongPtrW(hwnd, GWL_EXSTYLE) as u32;
-        let new = current
-            | WS_EX_TOPMOST.0
-            | WS_EX_TOOLWINDOW.0
-            | WS_EX_NOACTIVATE.0;
+        let base = current | WS_EX_TOPMOST.0 | WS_EX_TOOLWINDOW.0;
+        let new = if editing {
+            base & !WS_EX_NOACTIVATE.0
+        } else {
+            base | WS_EX_NOACTIVATE.0
+        };
         if new != current {
-            SetWindowLongPtrW(hwnd, GWL_EXSTYLE, new as isize);
+            SetLastError(ERROR_SUCCESS);
+            if SetWindowLongPtrW(hwnd, GWL_EXSTYLE, new as isize) == 0 {
+                let error = GetLastError();
+                if error != ERROR_SUCCESS {
+                    return Err(format!("SetWindowLongPtrW failed: {}", error.0));
+                }
+            }
         }
         // Re-assert topmost without activating / moving / resizing.
-        let _ = SetWindowPos(
+        SetWindowPos(
             hwnd,
             Some(HWND_TOPMOST),
             0,
@@ -184,8 +231,48 @@ pub fn apply_windows_shell_style(hwnd: HWND) {
             0,
             0,
             SWP_NOMOVE | SWP_NOSIZE | SWP_NOACTIVATE,
-        );
+        )
+        .map_err(|e| format!("SetWindowPos: {e}"))?;
+        SetWindowDisplayAffinity(hwnd, WDA_EXCLUDEFROMCAPTURE)
+            .map_err(|e| format!("SetWindowDisplayAffinity: {e}"))?;
     }
+    Ok(())
+}
+
+/// Tauri/Wry executes the closure inline on the UI thread, including setup,
+/// and queues it when called by a worker. Return the native result in both cases.
+/// Native policy runs only here, without mutex guards across GUI calls.
+fn run_shell_policy_on_main_thread<R: Runtime>(
+    app: &AppHandle<R>,
+    policy: impl FnOnce(&AppHandle<R>) -> Result<(), String> + Send + 'static,
+) -> Result<(), String> {
+    let app_handle = app.clone();
+    let (sender, receiver) = std::sync::mpsc::sync_channel(1);
+    app.run_on_main_thread(move || {
+        let _ = sender.send(policy(&app_handle));
+    })
+    .map_err(|e| format!("Dispatch shell policy: {e}"))?;
+    receiver
+        .recv()
+        .map_err(|e| format!("Receive shell policy result: {e}"))?
+}
+
+fn apply_window_policy<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<(), String> {
+    let label = label.to_string();
+    run_shell_policy_on_main_thread(app, move |app| {
+        #[cfg(target_os = "windows")]
+        {
+            let hwnd = hwnd_for_label(app, &label).ok_or_else(|| format!("No HWND for {label}"))?;
+            let state = app.state::<ShellState>();
+            // Read on the UI thread so a queued watchdog task never restores
+            // an editing policy captured before a focus transition.
+            let editing = label == "answer" && state.answer_editing.load(Ordering::SeqCst);
+            apply_windows_shell_style(hwnd, editing)?;
+        }
+        #[cfg(not(target_os = "windows"))]
+        let _ = (app, label);
+        Ok(())
+    })
 }
 
 /// Report the real display affinity of a window (Windows).
@@ -229,22 +316,29 @@ pub fn move_window_locked<R: Runtime>(
 
     let (final_x, final_y) = match axis {
         "x" => {
-            let cur = window.outer_position().unwrap_or(PhysicalPosition { x: 0, y: 0 });
+            let cur = window
+                .outer_position()
+                .unwrap_or(PhysicalPosition { x: 0, y: 0 });
             (clamped_x, cur.y)
         }
         "y" => {
-            let cur = window.outer_position().unwrap_or(PhysicalPosition { x: 0, y: 0 });
+            let cur = window
+                .outer_position()
+                .unwrap_or(PhysicalPosition { x: 0, y: 0 });
             (cur.x, clamped_y)
         }
         _ => (clamped_x, clamped_y),
     };
 
     window
-        .set_position(Position::Physical(PhysicalPosition { x: final_x, y: final_y }))
+        .set_position(Position::Physical(PhysicalPosition {
+            x: final_x,
+            y: final_y,
+        }))
         .map_err(|e| format!("Failed to move window {}: {}", label, e))?;
 
     // Persist the placement.
-    persist_placement(app, label, final_x, final_y);
+    persist_placement(app, label, final_x, final_y)?;
 
     Ok(())
 }
@@ -306,23 +400,21 @@ fn clamp_to_monitor<R: Runtime>(
 }
 
 /// Persist a single window placement.
-fn persist_placement<R: Runtime>(app: &AppHandle<R>, label: &str, x: i32, y: i32) {
-    let state = app.state::<ShellState>();
-    if let Ok(mut layout) = state.layout.lock() {
+fn persist_placement<R: Runtime>(
+    app: &AppHandle<R>,
+    label: &str,
+    x: i32,
+    y: i32,
+) -> Result<(), String> {
+    update_layout(app, |layout| {
         layout
             .placements
             .insert(label.to_string(), WindowPlacement { x, y });
-        let layout_clone = layout.clone();
-        let app_clone = app.clone();
-        // Save async-ish (best effort, synchronous write is fine for a small file).
-        std::thread::spawn(move || {
-            save_layout(&app_clone, &layout_clone);
-        });
-    };
+    })?;
+    Ok(())
 }
 
-/// Start the watchdog thread that re-asserts always-on-top for all shell
-/// windows and toggles cursor-event handling for purely decorative windows.
+/// Reassert native shell policy without revoking answer chat editing.
 pub fn start_watchdog<R: Runtime>(app: &AppHandle<R>) {
     let state = app.state::<ShellState>();
     {
@@ -342,20 +434,14 @@ pub fn start_watchdog<R: Runtime>(app: &AppHandle<R>) {
         let labels: Vec<String> = app_handle
             .webview_windows()
             .keys()
-            .filter(|l| {
-                l.starts_with("strip-") || l.starts_with("button-") || *l == "answer"
-            })
+            .filter(|l| l.starts_with("strip-") || l.starts_with("button-") || *l == "answer")
             .cloned()
             .collect();
         for label in &labels {
-            #[cfg(target_os = "windows")]
-            {
-                if let Some(hwnd) = hwnd_for_label(&app_handle, label) {
-                    apply_windows_shell_style(hwnd);
-                }
+            if let Err(error) = apply_window_policy(&app_handle, label) {
+                eprintln!("Shell policy for {label}: {error}");
             }
-            // On macOS the nspanel level + collectionBehavior handles topmost;
-            // on Linux best-effort via always_on_top already set at creation.
+            // macOS/Linux currently use the creation flags as best effort.
         }
         std::thread::sleep(Duration::from_millis(1000));
     });
@@ -368,14 +454,10 @@ pub fn stop_watchdog<R: Runtime>(app: &AppHandle<R>) {
     *active = false;
 }
 
-/// Reset all shell windows to their default positions and raise them.
+/// Clear saved placements and raise existing windows. Rebuilding/reset geometry
+/// is handled separately by reset_shell_layout.
 pub fn reset_layout<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
-    let state = app.state::<ShellState>();
-    let mut layout = state.layout.lock().unwrap();
-    layout.placements.clear();
-    let layout_clone = layout.clone();
-    save_layout(app, &layout_clone);
-    drop(layout);
+    update_layout(app, |layout| layout.placements.clear())?;
 
     // Raise every shell window to the top.
     let labels: Vec<String> = app
@@ -386,13 +468,10 @@ pub fn reset_layout<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
         .collect();
     for label in &labels {
         if let Some(window) = app.get_webview_window(label) {
-            let _ = window.set_always_on_top(true);
-            #[cfg(target_os = "windows")]
-            {
-                if let Some(hwnd) = hwnd_for_label(app, label) {
-                    apply_windows_shell_style(hwnd);
-                }
-            }
+            window
+                .set_always_on_top(true)
+                .map_err(|e| format!("Raise {label}: {e}"))?;
+            apply_window_policy(app, label)?;
         }
     }
     Ok(())
@@ -403,8 +482,8 @@ pub fn reset_layout<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
 pub fn get_window_display_affinity(app: AppHandle, label: String) -> Result<u32, String> {
     #[cfg(target_os = "windows")]
     {
-        let hwnd = hwnd_for_label(&app, &label)
-            .ok_or_else(|| format!("No HWND for window {}", label))?;
+        let hwnd =
+            hwnd_for_label(&app, &label).ok_or_else(|| format!("No HWND for window {}", label))?;
         get_display_affinity(hwnd)
     }
     #[cfg(not(target_os = "windows"))]
@@ -428,19 +507,15 @@ pub fn move_shell_window(
 
 /// Tauri command: set the UI mode and rebuild the shell.
 #[tauri::command]
-pub fn set_ui_mode(app: AppHandle, mode: String) -> Result<(), String> {
+pub async fn set_ui_mode(app: AppHandle, mode: String) -> Result<(), String> {
     let parsed = match mode.as_str() {
-        "side" => UiMode::SideStrips,
-        "top" => UiMode::TopBottomStrips,
+        "sidestrips" | "side" => UiMode::SideStrips,
+        "topbottomstrips" | "top" => UiMode::TopBottomStrips,
         "buttons" => UiMode::Buttons,
         _ => return Err(format!("Unknown ui_mode: {}", mode)),
     };
-    let state = app.state::<ShellState>();
-    let mut layout = state.layout.lock().unwrap();
-    layout.ui_mode = parsed;
-    let clone = layout.clone();
-    save_layout(&app, &clone);
-    Ok(())
+    update_layout(&app, |layout| layout.ui_mode = parsed)?;
+    rebuild_shell(&app)
 }
 
 /// Tauri command: get the current UI mode.
@@ -448,21 +523,13 @@ pub fn set_ui_mode(app: AppHandle, mode: String) -> Result<(), String> {
 pub fn get_ui_mode(app: AppHandle) -> Result<String, String> {
     let state = app.state::<ShellState>();
     let layout = state.layout.lock().unwrap();
-    Ok(match layout.ui_mode {
-        UiMode::SideStrips => "side".to_string(),
-        UiMode::TopBottomStrips => "top".to_string(),
-        UiMode::Buttons => "buttons".to_string(),
-    })
+    Ok(layout.ui_mode.as_str().to_string())
 }
 
 /// Tauri command: toggle shimmer.
 #[tauri::command]
 pub fn set_shimmer(app: AppHandle, enabled: bool) -> Result<(), String> {
-    let state = app.state::<ShellState>();
-    let mut layout = state.layout.lock().unwrap();
-    layout.shimmer = enabled;
-    let clone = layout.clone();
-    save_layout(&app, &clone);
+    update_layout(&app, |layout| layout.shimmer = enabled)?;
     Ok(())
 }
 
@@ -475,44 +542,61 @@ pub fn set_answer_opacity(app: AppHandle, opacity: f64) -> Result<(), String> {
     Err("Answer opacity is not implemented yet".to_string())
 }
 
-/// Tauri command: reset the shell layout to defaults and re-create
-/// all shell windows for the (optionally new) mode.
+/// Reset layout settings and recreate strips/buttons, retaining the answer.
 #[tauri::command]
-pub fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
-    let state = app.state::<ShellState>();
-    {
-        let mut layout = state.layout.lock().unwrap();
-        *layout = ShellLayout::default_for_mode(layout.ui_mode);
-        let clone = layout.clone();
-        save_layout(&app, &clone);
-    }
+pub async fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
+    update_layout(&app, |layout| {
+        *layout = ShellLayout::default_for_mode(layout.ui_mode)
+    })?;
     // Re-create the shell from the (reset) layout.
     crate::shell::rebuild_shell(&app)?;
     Ok(())
 }
 
 // ---------------------------------------------------------------------------
-fn close_shell_windows<R: Runtime>(app: &AppHandle<R>) {
+fn close_strip_windows<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     let labels: Vec<String> = app
         .webview_windows()
         .keys()
-        .filter(|l| {
-            l.starts_with("strip-") || l.starts_with("button-") || *l == "answer"
-        })
+        .filter(|l| l.starts_with("strip-") || l.starts_with("button-"))
         .cloned()
         .collect();
-    for label in labels {
-        if let Some(window) = app.get_webview_window(&label) {
-            let _ = window.close();
+    for label in &labels {
+        if let Some(window) = app.get_webview_window(label) {
+            window
+                .destroy()
+                .map_err(|e| format!("Destroy {label}: {e}"))?;
         }
     }
+    // destroy() queues a native event. Wait on this worker thread until labels
+    // are released before reusing them; the persistent answer is never destroyed.
+    let deadline = Instant::now() + Duration::from_secs(3);
+    while labels
+        .iter()
+        .any(|label| app.get_webview_window(label).is_some())
+    {
+        if Instant::now() >= deadline {
+            return Err("Timed out waiting for old shell windows to close".to_string());
+        }
+        std::thread::sleep(Duration::from_millis(10));
+    }
+    Ok(())
 }
 
-/// Rebuild all shell windows for the current ui_mode, restoring
+/// Rebuild strips/buttons for the current ui_mode, restoring
 /// the persisted per-window placements (or sensible defaults).
 pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
-    close_shell_windows(app);
-    let layout = load_layout(app);
+    let state = app.state::<ShellState>();
+    let _lifecycle = state
+        .lifecycle
+        .lock()
+        .map_err(|e| format!("Shell lifecycle: {e}"))?;
+    close_strip_windows(app)?;
+    let layout = state
+        .layout
+        .lock()
+        .map_err(|e| format!("Layout lock: {e}"))?
+        .clone();
 
     // Primary monitor geometry for defaults.
     let (mon_w, mon_h) = app
@@ -534,20 +618,34 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
         let (px, py) = placement(label);
         let x = if px == 0 && py == 0 { dx } else { px };
         let y = if px == 0 && py == 0 { dy } else { py };
-        let _ = create_shell_window(app, label, route, w, h, x, y);
+        create_shell_window(app, label, route, w, h, x, y).map(|_| ())
     };
 
     match layout.ui_mode {
         UiMode::SideStrips => {
             // Left and right tall strips. Default width 56, ~60% height.
             let sh = (mon_h as f64 * 0.6) as f64;
-            mk("strip-left", "/shell/side-strip", 56.0, sh, 0, mon_h / 5);
-            mk("strip-right", "/shell/side-strip", 56.0, sh, mon_w - 56, mon_h / 5);
+            mk("strip-left", "/shell/side-strip", 56.0, sh, 0, mon_h / 5)?;
+            mk(
+                "strip-right",
+                "/shell/side-strip",
+                56.0,
+                sh,
+                mon_w - 56,
+                mon_h / 5,
+            )?;
         }
         UiMode::TopBottomStrips => {
             let sw = (mon_w as f64 * 0.6) as f64;
-            mk("strip-top", "/shell/top-strip", sw, 56.0, mon_w / 5, 0);
-            mk("strip-bottom", "/shell/top-strip", sw, 56.0, mon_w / 5, mon_h - 56);
+            mk("strip-top", "/shell/top-strip", sw, 56.0, mon_w / 5, 0)?;
+            mk(
+                "strip-bottom",
+                "/shell/top-strip",
+                sw,
+                56.0,
+                mon_w / 5,
+                mon_h - 56,
+            )?;
         }
         UiMode::Buttons => {
             // One small window per action; default in a column on the left edge.
@@ -563,16 +661,30 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
             ];
             let mut yy = mon_h / 6;
             for (label, action) in actions.iter() {
-                mk(label, &format!("/shell/button/{}", action), 44.0, 44.0, 16, yy);
+                mk(
+                    label,
+                    &format!("/shell/button/{}", action),
+                    44.0,
+                    44.0,
+                    16,
+                    yy,
+                )?;
                 yy += 56;
             }
         }
     }
+    ensure_answer_window(app)?;
     Ok(())
 }
 
 /// Initialize the shell: rebuild on startup and start the watchdog.
 pub fn init_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
+    let loaded = load_layout(app);
+    let state = app.state::<ShellState>();
+    *state
+        .layout
+        .lock()
+        .map_err(|e| format!("Layout lock: {e}"))? = loaded;
     rebuild_shell(app)?;
     start_watchdog(app);
     Ok(())
@@ -587,42 +699,167 @@ pub fn get_shell_settings(app: AppHandle) -> Result<serde_json::Value, String> {
         "shimmer": layout.shimmer,
         "shimmer_speed": layout.shimmer_speed,
         "answer_opacity": layout.answer_opacity,
-        "ui_mode": match layout.ui_mode {
-            UiMode::SideStrips => "side",
-            UiMode::TopBottomStrips => "top",
-            UiMode::Buttons => "buttons",
-        },
+        "ui_mode": layout.ui_mode.as_str(),
     }))
 }
 
-/// Tauri command: toggle the answer window (create if closed).
-#[tauri::command]
-pub fn toggle_answer_window(app: AppHandle) -> Result<(), String> {
-    if let Some(window) = app.get_webview_window("answer") {
-        let visible = window.is_visible().unwrap_or(false);
-        if visible {
-            let _ = window.hide();
-        } else {
-            let _ = window.show();
+fn setup_answer_window<R: Runtime>(app: &AppHandle<R>, window: &tauri::WebviewWindow<R>) {
+    let app_handle = app.clone();
+    window.on_window_event(move |event| match event {
+        tauri::WindowEvent::CloseRequested { api, .. } => {
+            api.prevent_close();
+            if let Err(error) = hide_answer(&app_handle) {
+                eprintln!("Hide answer: {error}");
+            }
         }
-        return Ok(());
+        tauri::WindowEvent::Focused(false) => {
+            if let Err(error) = set_editing_policy(&app_handle, false) {
+                eprintln!("Restore answer nonactivation: {error}");
+            }
+        }
+        _ => {}
+    });
+}
+
+fn ensure_answer_window<R: Runtime>(app: &AppHandle<R>) -> Result<tauri::WebviewWindow<R>, String> {
+    if let Some(window) = app.get_webview_window("answer") {
+        return Ok(window);
     }
-    // Create it centered on the primary monitor.
     let (mon_w, mon_h) = app
         .primary_monitor()
         .ok()
         .flatten()
         .map(|m| (m.size().width as i32, m.size().height as i32))
         .unwrap_or((1920, 1080));
-    let _ = create_shell_window(
-        &app,
-        "answer",
-        "/shell/answer",
-        720.0,
-        480.0,
-        (mon_w - 720) / 2,
-        (mon_h - 480) / 2,
-    );
+    let placement = app
+        .state::<ShellState>()
+        .layout
+        .lock()
+        .map_err(|e| format!("Layout lock: {e}"))?
+        .placements
+        .get("answer")
+        .cloned();
+    let (x, y) = placement
+        .map(|p| (p.x, p.y))
+        .unwrap_or(((mon_w - 720) / 2, (mon_h - 480) / 2));
+    create_shell_window(app, "answer", "/shell/answer", 720.0, 480.0, x, y)
+}
+
+fn set_editing_policy<R: Runtime>(app: &AppHandle<R>, editing: bool) -> Result<(), String> {
+    run_shell_policy_on_main_thread(app, move |app| set_editing_policy_on_main_thread(app, editing))
+}
+
+fn set_editing_policy_on_main_thread<R: Runtime>(
+    app: &AppHandle<R>,
+    editing: bool,
+) -> Result<(), String> {
+    let window = app
+        .get_webview_window("answer")
+        .ok_or_else(|| "Answer window is unavailable".to_string())?;
+    let state = app.state::<ShellState>();
+    if !editing && !state.answer_editing.load(Ordering::SeqCst) {
+        return Ok(());
+    }
+    #[cfg(target_os = "windows")]
+    let hwnd = hwnd_for_label(app, "answer").ok_or_else(|| "No answer HWND".to_string())?;
+    #[cfg(target_os = "windows")]
+    if editing {
+        let foreground = unsafe { GetForegroundWindow() };
+        if foreground != hwnd && !foreground.0.is_null() {
+            let mut previous = state
+                .previous_foreground
+                .lock()
+                .map_err(|e| format!("Foreground lock: {e}"))?;
+            *previous = Some(foreground.0 as isize);
+        }
+    }
+    // Publish before focusability/style calls can emit focus callbacks. A
+    // repeated focus-loss notification must observe nonediting and return.
+    state.answer_editing.store(editing, Ordering::SeqCst);
+    let policy_result = (|| {
+        window
+            .set_focusable(editing)
+            .map_err(|e| format!("Answer focusability: {e}"))?;
+        #[cfg(target_os = "windows")]
+        apply_windows_shell_style(hwnd, editing)?;
+        Ok::<(), String>(())
+    })();
+    if let Err(error) = policy_result {
+        state.answer_editing.store(false, Ordering::SeqCst);
+        let _ = window.set_focusable(false);
+        let _ = apply_window_policy(app, "answer");
+        return Err(error);
+    }
+    // Take the saved handle after native policy succeeds, then release its
+    // guard before foreground/focus calls can emit callbacks.
+    #[cfg(target_os = "windows")]
+    let restore_previous = if editing {
+        None
+    } else {
+        state
+            .previous_foreground
+            .lock()
+            .map_err(|e| format!("Foreground lock: {e}"))?
+            .take()
+            .map(|handle| HWND(handle as _))
+    };
+    #[cfg(target_os = "windows")]
+    if let Some(target) = restore_previous {
+        unsafe {
+            if GetForegroundWindow() == hwnd && IsWindow(Some(target)).as_bool() {
+                if !SetForegroundWindow(target).as_bool() {
+                    eprintln!("Windows did not restore the previous foreground window");
+                }
+            }
+        }
+    }
+    if editing {
+        if let Err(error) = window.set_focus() {
+            let _ = set_editing_policy(app, false);
+            return Err(format!("Focus answer: {error}"));
+        }
+    }
+    Ok(())
+}
+
+fn hide_answer<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
+    set_editing_policy(app, false)?;
+    app.get_webview_window("answer")
+        .ok_or_else(|| "Answer window is unavailable".to_string())?
+        .hide()
+        .map_err(|e| format!("Hide answer: {e}"))
+}
+
+/// Enable activation only while the answer chat is being edited.
+#[tauri::command]
+pub fn set_answer_editing(app: AppHandle, editing: bool) -> Result<(), String> {
+    set_editing_policy(&app, editing)
+}
+
+/// Keep answer/history/streaming state alive when closing the visible pane.
+#[tauri::command]
+pub fn close_answer_window(app: AppHandle) -> Result<(), String> {
+    hide_answer(&app)
+}
+
+/// Tauri command: toggle the persistent answer window, creating it if needed.
+#[tauri::command]
+pub async fn toggle_answer_window(app: AppHandle) -> Result<(), String> {
+    let state = app.state::<ShellState>();
+    let _lifecycle = state
+        .lifecycle
+        .lock()
+        .map_err(|e| format!("Shell lifecycle: {e}"))?;
+    let window = ensure_answer_window(&app)?;
+    if window
+        .is_visible()
+        .map_err(|e| format!("Answer visibility: {e}"))?
+    {
+        hide_answer(&app)?;
+    } else {
+        apply_window_policy(&app, "answer")?;
+        window.show().map_err(|e| format!("Show answer: {e}"))?;
+    }
     Ok(())
 }
 

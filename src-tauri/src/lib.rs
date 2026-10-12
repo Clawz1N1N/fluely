@@ -3,6 +3,7 @@ mod capture;
 mod db;
 mod shortcuts;
 mod shell;
+mod shell_store;
 mod continuous;
 mod vision;
 mod ui_automation;
@@ -13,16 +14,10 @@ mod tts;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
-#[cfg(target_os = "macos")]
-use tauri::{AppHandle, WebviewWindow};
 use tokio::task::JoinHandle;
 mod speaker;
 use capture::CaptureState;
 use speaker::VadConfig;
-
-#[cfg(target_os = "macos")]
-#[allow(deprecated)]
-use tauri_nspanel::{cocoa::appkit::NSWindowCollectionBehavior, panel_delegate, WebviewWindowExt};
 
 #[derive(Default)]
 pub struct AudioState {
@@ -95,6 +90,8 @@ pub fn run() {
             shell::reset_shell_layout,
             shell::get_shell_settings,
             shell::toggle_answer_window,
+            shell::close_answer_window,
+            shell::set_answer_editing,
             shell::answer_ask,
             continuous::get_capture_settings,
             continuous::update_capture_settings,
@@ -122,10 +119,8 @@ pub fn run() {
             speaker::get_output_devices,
         ])
         .setup(|app| {
-            // Setup main window positioning
-            window::setup_main_window(app).expect("Failed to setup main window");
-            #[cfg(target_os = "macos")]
-            init(app.app_handle());
+            // Keep the legacy webview hidden until it becomes the service host.
+            window::setup_service_window(app)?;
             let app_handle = app.handle();
             if app_handle.get_webview_window("dashboard").is_none() {
                 if let Err(e) = window::create_dashboard_window(&app_handle) {
@@ -215,33 +210,4 @@ pub fn run() {
     builder
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
-}
-
-#[cfg(target_os = "macos")]
-#[allow(deprecated, unexpected_cfgs)]
-fn init(app_handle: &AppHandle) {
-    let window: WebviewWindow = app_handle.get_webview_window("main").unwrap();
-
-    let panel = window.to_panel().unwrap();
-
-    let delegate = panel_delegate!(MyPanelDelegate {
-        window_did_become_key,
-        window_did_resign_key
-    });
-
-    let handle = app_handle.to_owned();
-
-    delegate.set_listener(Box::new(move |delegate_name: String| {
-        match delegate_name.as_str() {
-            "window_did_become_key" => {
-                let app_name = handle.package_info().name.to_owned();
-
-                println!("[info]: {:?} panel becomes key window!", app_name);
-            }
-            "window_did_resign_key" => {
-                println!("[info]: panel resigned from key window!");
-            }
-            _ => {}
-        }
-    }));
 }

@@ -22,7 +22,7 @@
         "resizable": false,
         "visibleOnAllWorkspaces": true,
         "skipTaskbar": true,
-        "visible": true,
+        "visible": false,
         "center": false,
         "contentProtected": true,
         "focus": false,
@@ -31,7 +31,8 @@
       }
     ],
     "security": {
-      "csp": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; connect-src 'self' http://localhost:* https://*; font-src 'self' data:; frame-ancestors 'none'"
+      "csp": "default-src 'self' asset: http://asset.localhost; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost http: https:; font-src 'self' data:; media-src 'self' data: blob:; worker-src 'self' blob:; frame-ancestors 'none'",
+      "devCsp": "default-src 'self' asset: http://asset.localhost; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' asset: http://asset.localhost data: blob:; connect-src 'self' ipc: http://ipc.localhost https://ipc.localhost http: https: ws://localhost:* ws://127.0.0.1:*; font-src 'self' data:; media-src 'self' data: blob:; worker-src 'self' blob:; frame-ancestors 'none'"
     }
   },
   "bundle": {
@@ -44,12 +45,19 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ],
-    "resources": ["info.plist", "pluely.desktop"],
-    "macOS": { "minimumSystemVersion": "10.13" }
+    "resources": [
+      "info.plist",
+      "pluely.desktop"
+    ],
+    "macOS": {
+      "minimumSystemVersion": "10.13"
+    }
   },
   "plugins": {
     "sql": {
-      "preload": ["sqlite:pluely.db"]
+      "preload": [
+        "sqlite:pluely.db"
+      ]
     }
   }
 }

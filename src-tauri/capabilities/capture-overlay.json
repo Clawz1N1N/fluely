@@ -1,0 +1,11 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "capture-overlay",
+  "description": "Screen region selection windows; no network or credential access.",
+  "windows": [
+    "capture-overlay-*"
+  ],
+  "permissions": [
+    "core:default"
+  ]
+}

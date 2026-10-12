@@ -2,11 +2,8 @@
 use tauri::LogicalPosition;
 use tauri::{App, AppHandle, Manager, Runtime, WebviewWindow, WebviewWindowBuilder};
 
-// The offset from the top of the screen to the window
-const TOP_OFFSET: i32 = 54;
-
-/// Sets up the main window with custom positioning
-pub fn setup_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
+/// The legacy webview is a hidden service host; shell windows own visible UI.
+pub fn setup_service_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>> {
     // Try different possible window labels
     let window = app
         .get_webview_window("main")
@@ -17,13 +14,10 @@ pub fn setup_main_window(app: &mut App) -> Result<(), Box<dyn std::error::Error>
         })
         .ok_or("No window found")?;
 
-    position_window_top_center(&window, TOP_OFFSET)?;
-
-    // Set window as non-focusable on Windows
-    // #[cfg(target_os = "windows")]
-    // {
-    //     let _ = window.set_focusable(false);
-    // }
+    window.hide()?;
+    window.set_focusable(false)?;
+    window.set_skip_taskbar(true)?;
+    window.set_content_protected(true)?;
 
     Ok(())
 }
@@ -84,12 +78,12 @@ pub fn set_window_height(window: tauri::WebviewWindow, height: u32) -> Result<()
 }
 
 #[tauri::command]
-pub fn open_dashboard(app: tauri::AppHandle) -> Result<(), String> {
+pub async fn open_dashboard(app: tauri::AppHandle) -> Result<(), String> {
     show_dashboard_window(&app)
 }
 
 #[tauri::command]
-pub fn toggle_dashboard(app: tauri::AppHandle) -> Result<(), String> {
+pub async fn toggle_dashboard(app: tauri::AppHandle) -> Result<(), String> {
     if let Some(dashboard_window) = app.get_webview_window("dashboard") {
         match dashboard_window.is_visible() {
             Ok(true) => {
@@ -163,7 +157,8 @@ pub fn create_dashboard_window<R: Runtime>(
         .hidden_title(true)
         .title_bar_style(tauri::TitleBarStyle::Overlay)
         .content_protected(true)
-        .visible(true)
+        .visible(false)
+        .focused(false)
         .traffic_light_position(LogicalPosition::new(14.0, 18.0));
 
     #[cfg(not(target_os = "macos"))]
@@ -174,7 +169,8 @@ pub fn create_dashboard_window<R: Runtime>(
         .inner_size(800.0, 600.0)
         .min_inner_size(800.0, 600.0)
         .content_protected(true)
-        .visible(false);
+        .visible(false)
+        .focused(false);
 
     let window = base_builder.build()?;
 
