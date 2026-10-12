@@ -1,71 +1,72 @@
-# Pluely Fork (custom-overlay)
+# Pluely Overlay — Windows fork
 
-Це форк Pluely (GPL-3.0) з кастомним оверлеєм, безплатними функціями, локальними провайдерами та без telemetry/updater.
+Локальний форк Pluely 0.1.9 (Tauri 2, React 19, GPL-3.0). Замість платного сервісу Pluely використовує ваші незалежні провайдери мислення, STT, TTS та аналізу зображень. Телеметрію, платіжні перевірки й updater прибрано.
 
-## Що змінено
+## Запуск
 
-- **Вилучено все платне/віддалене/telemetry**: ліцензії, квоти, Pluely API, PostHog, auto-updater. Маршрутизатор завжди локальний.
-- **Новий shell оверлей**: замість одного вікна 600x54 — кілька вікон (strips / buttons / answer), завжди зверху, захищені від захоплення екрана (`contentProtected` > `WDA_EXCLUDEFROMCAPTURE` на Windows).
-- **Три стани UI** (`ui_mode`): `side` (бічні смуги), `top` (верх/низ), `buttons` (окремі кнопки).
-- **Неперервний режим (mode 3)**: Rust-цикл захоплення кадрів + dedup + батчер (один запит).
-- **Vision для текстових моделей**: OCR (Windows.Media.Ocr), UI Automation, VLM.
-- **Провайдери**: реєстр з ранжуванням, fallback, лімітами запитів, neutral mode.
-- **Структурована відповідь**: `<main>`, `<side>`, `<speak>` теги + стримінг парсер.
-- **TTS**: системні голоси (Web Speech API) з підсвіткою слів.
+Відкрийте `..\RELEASE\START_PLUELY.cmd`. Потрібен Windows x64 із Microsoft Edge WebView2 Runtime. Портативний запуск зберігає налаштування, SQLite та WebView2 у `RELEASE\profile`. Ключі зберігаються окремо у Windows Credential Manager. Альтернатива — інсталятор `Pluely_0.1.9_x64-setup.exe`; MSI також додано. Прохід майстра встановлення потребує фізичної перевірки; запуск EXE із чистим профілем уже перевірено.
 
-## Як запустити / зібрати
+Не запускайте дві копії одночасно: вони конкуруватимуть за глобальні гарячі клавіші. Відкрийте панель налаштувань кнопкою шестерні або Ctrl+Shift+D.
 
-Потрібні: Node.js 18+, Rust (stable), Windows 10/11, Tauri deps (https://tauri.app/start/prerequisites).
+## Прозорість і чат
 
+Чат у звичайному режимі має прозорий фон, тонку рамку й повністю пропускає кліки до програми під ним. Натисніть **Shift+\ один раз**: чат стане непрозорим, можна перетягнути заголовок, змінити розмір і ввести питання. Повторне натискання або Escape повертає пасивний режим. Ctrl+Shift+I відкриває чат і фокусує введення. Кнопка «Чат» також дозволяє введення.
+
+У **Налаштування → Вигляд накладеного інтерфейсу** окремі повзунки прозорості чату, смуг і кожної з восьми кнопок. Вища цифра означає більшу прозорість; у режимі взаємодії чат завжди непрозорий. Режими: бічні смуги рухаються по X, верхня/нижня — по Y, окремі кнопки — вільно. Чат рухається по всій робочій площі монітора, виключаючи панель задач. Рамка лишається видимою; переливання вимкнено типово й за бажанням малюється лише на рамці.
+
+У **Гарячі клавіші → Переміщення та взаємодія з чатом** можна змінити окремий бінд. Зміна прозорості не змінює захист від захоплення екрана.
+
+## Провайдери
+
+У **Налаштування → Провайдери й моделі** оберіть тип і «Додати провайдера». Укажіть шаблон, власний base URL, модель, ключ, пріоритет і ліміти. Нижчий пріоритет перевіряється першим. Доступні Google, OpenRouter, OpenAI-compatible, Ollama/LM Studio та редагований cURL. Не кожний сервіс підтримує всі типи запитів: для STT потрібен transcription API/Whisper, для TTS — speech API або відповідний шаблон. «Отримати моделі» читає модельний список вашого сервісу.
+
+Ключі не вставляйте безпосередньо в cURL — використовуйте змінні. Метадані й несекретні змінні зберігаються у профілі, секрети — у сховищі Windows. Міграція старих ключів перевіряє запис і читання перед видаленням відкритої копії; помилка сховища показується користувачу.
+
+Провайдери для STT/TTS/vision незалежні від brain. Ліміти за секунду/хвилину/годину/добу спільні для вікон і зберігаються після перезапуску; 0 означає без обмеження. Після 429/помилки активується cooldown і fallback. Коли доступних бюджетів немає, нейтральний режим показує відлік і відновлює запит після скидання.
+
+## Екран, аудіо й відповіді
+
+У «Знімки й аудіо» налаштуйте manual/interval/after-speech, монітор, інтервал, max frames, JPEG-якість, розмір і dedup, мікрофон та системний звук. Listen керує аудіо, кнопка continuous — автоматичними знімками. Обидва канали позначені [mic]/[system]. Завершені транскрипції, змінені JPEG та питання збираються в одну чергу; один запит виконується за раз.
+
+Для text-only brain увімкніть OCR, OCR+UI, VLM або full у «Екран для текстових моделей». Windows OCR потребує мовного пакета; VLM потребує окремої vision-моделі. Full виконує незалежні OCR/UI та VLM паралельно. Контекст обмежено за розміром.
+
+MAIN — основна відповідь; SIDE — додаткова; SPEAK — просте пояснення й озвучення. Системна інструкція та протокол тегів редагуються. Підтримуються математичні $…$, $$…$$, \(…\), \[…\]. Історія dashboard-чатів передається як обмежений UTF-8 контекст у спільну чергу.
+
+## Озвучення
+
+Системні голоси, локальний Piper і хмарний TTS. Для Piper установіть програму й укажіть `.onnx` голос; його модель не входить у реліз. На перевіреному ПК доступні Microsoft Irina та Pavel (ru-RU); українського системного голосу й офлайн-розпізнавача немає. Для української використайте власний локальний Whisper/Piper або хмарний провайдер. Підсвічування слів використовує boundary events, а для аудіофайлів — оцінку за тривалістю, без обіцянки точної синхронізації.
+
+## Типові гарячі клавіші Windows
+
+| Комбінація | Дія |
+|---|---|
+| Shift+\ | Перемкнути взаємодію/переміщення чату |
+| Ctrl+\ | Показати/сховати весь overlay |
+| Ctrl+Shift+R | Знайти кнопки, скинути розташування |
+| Ctrl+Shift+U | Наступний режим оболонки |
+| Ctrl+Shift+I | Відкрити чат і фокусувати введення |
+| Ctrl+Shift+D | Панель налаштувань/історії |
+| Ctrl+Shift+M / A | Listen / голосове введення |
+| Ctrl+Shift+S | Знімок екрана |
+| Ctrl+Shift+T / O / P | Увімкнути TTS / stop / pause-resume |
+| Ctrl+Shift+← / → | Попереднє / наступне речення TTS |
+
+## Збірка й відновлення роботи
+
+Потрібні Node 22+, Rust MSVC, Visual Studio C++ та Windows SDK. У каталозі репозиторію:
+
+```powershell
+npm ci
+npm run check
+npm test
+cmd /c "call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml"
+cmd /c "call scripts\rust-env.cmd npm run tauri build"
 ```
-npm install
-npm run dev          # або: npm run tauri dev
-npm run build        # tsc + vite
-cd src-tauri
-cargo check
-npm run tauri build  # Windows installer (MSI/NSIS) у src-tauri/target/release/bundle
-```
 
-## Де знаходяться налаштування
+`rust-env.cmd` налаштовано під наявний Visual Studio 2026/SDK22621; на іншому ПК змініть його шлях. Генератор локальних VAD assets запускається автоматично. Жодного CDN для мікрофонного VAD не потрібно. Для керованого Codex-термінала native команда може потребувати схваленого виконання; в обмеженому режимі історично був DLL-init failure.
 
-- **Режим UI / shimmer / прозорість answer**: `shell_layout.json` (директорія даних додатку); команди `set_ui_mode`, `set_shimmer`, `set_answer_opacity`.
-- **Захоплення (continuous)**: `get_capture_settings` / `update_capture_settings` (режим, інтервал, монітор, max_frames, downscale, JPEG quality, dedup threshold).
-- **Vision**: `get_vision_settings` / `update_vision_settings` (mode: ocr/ocr+ui/vlm/full).
-- **Провайдери / ліміти / neutral**: `list_providers`, `upsert_provider`, `pick_provider`, `set_global_daily_limit`, `set_neutral_mode`.
-- **TTS**: `get_tts_settings` / `update_tts_settings` / `set_tts_enabled`.
-- **Користувацькі провайдери**: сторінка "Dev space" (шаблони curl).
+Актуальний стан і докази: `_research/FINAL_REPORT.md`, `COMPLETION_CHECKLIST.md`, `BUILD_LOG.md`, `BLOCKED.md`, `MANUAL_TESTS.md`. Гілка `custom-overlay`; push не виконувався. Вбудовані Windows OCR/UIA, Credential Manager і SQL data-dir override мають локальні реалізації/вендорні патчі в `src-tauri/vendor`.
 
-## Горячі клавіші (типові)
+## Межі перевірки
 
-- Toggle Dashboard: `Ctrl+Shift+D`
-- Toggle Window: `Ctrl+\`
-- System Audio: `Ctrl+Shift+M`
-- Voice Input: `Ctrl+Shift+A`
-- Screenshot: `Ctrl+Shift+S`
-- TTS Toggle: `Ctrl+Shift+T`
-- TTS Stop: `Ctrl+Shift+O`
-- TTS Pause: `Ctrl+Shift+P`
-- TTS Seek Back/Forward: `Ctrl+Shift+<` / `Ctrl+Shift+>`
-
-(Налаштовується на сторінці "Cursor & Shortcuts".)
-
-## Як додати провайдер
-
-1. Сторінка "Dev space" > "Add Custom Provider".
-2. Вставте шаблон curl з місцями `{{API_KEY}}`, `{{MODEL}}`, `{{SYSTEM_PROMPT}}`, `{{TEXT}}`, `{{IMAGE}}`.
-3. Вкажіть `responseContentPath` (шлях JSON до відповіді).
-4. Для текстових моделей вимкніть `supportsImages` — тоді використовується Vision pipeline (OCR/UI/VLM).
-
-## Відомі обмеження
-
-- **Linux/Wayland**: захоплення екрана та завжди-верху обмежені (Wayland не дозволяє произвольні topmost вікна).
-- **Exclusive fullscreen**: справжній exclusive fullscreen (наприклад, гра) володіє дисплеєм — нічого не може бути зверху.
-- **OCR / UI Automation**: потребують увімкнення feature `Media_Ocr` / `Accessibility` crates `windows` та встановленого OCR language pack (Windows). Зараз заглушки з TODO (див. `_research/BLOCKED.md`).
-- **VLM mode**: потребує налаштування vision-провайдера (Phase 4); зараз placeholder.
-- **KaTeX**: `remark-math` + `rehype-katex` встановлені; рендеринг через Streamdown — потребує ручної перевірки `[NEEDS HUMAN CHECK]`.
-
-## Як продовжити роботу
-
-Див. `_research/IMPLEMENTATION_STATE.md`, `_research/PHASES_SPEC.md`, `_research/DECISIONS.md`, `_research/BLOCKED.md`, `_research/MANUAL_TESTS.md`.
-
-Це форк під GPL-3.0. LICENSE збережено.
+Нативний прапорець захисту — `WDA_EXCLUDEFROMCAPTURE = 0x11`; перевірено для оболонки й чату. Він не гарантує поведінку кожного рекордера або старого Windows. OBS, PrintScreen, Win+Shift+S, exclusive fullscreen, кілька фізичних моніторів, звук і реальні хмарні API винесено в ручну перевірку. Windows10, Linux/Wayland, macOS і мобільні збірки в цьому сеансі не тестувалися; форк орієнтований на Windows x64.

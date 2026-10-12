@@ -1,93 +1,70 @@
-# FINAL REPORT — Pluely Fork Customization (custom-overlay)
+# Фінальний звіт — Pluely Overlay, 2026-10-12
 
-## Summary
+## Результат
 
-All 6 phases implemented on branch `custom-overlay`. Code is complete and correct-by-construction, but **compilation is NOT verified** in this sandbox (no network, no cargo registry, no node_modules — see BLOCKED.md). The user must run `npm install && npm run build && cargo check && npm run tauri build` on a networked machine.
+Готовий Windows x64 release candidate у `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\RELEASE`: `pluely.exe`, NSIS `Pluely_0.1.9_x64-setup.exe`, MSI `Pluely_0.1.9_x64_en-US.msi`, `START_PLUELY.cmd`, SHA256, українські інструкції й ліцензії. Повна збірка має exit0. Runtime source checkpoint — `a8b063c` на `custom-overlay`; commit `0cbb9c6` інтегрував попередній WIP. Push/merge не виконувалися. Старі phase-* та final теги не використовуються як новий доказ.
 
-## What was done per phase
+Доставка реалізації завершена; фізичний acceptance не оголошено успішним. У checklist немає TODO: автоматично перевірене — DONE, конкретні фізичні/зовнішні перевірки — BLOCKED. Список у BLOCKED.md та MANUAL_TESTS.md. Текст старого звіту «all phases complete/correct-by-construction» замінено цим звітом.
 
-### Phase 1 — remove paid/remote/telemetry (commit dbc77aa, tag phase-1-done)
-- Deleted: `src-tauri/src/activate.rs`, `src-tauri/src/api.rs`, `src/lib/functions/pluely.api.ts`, paywall components (GetLicense/Promote/PluelyApiSetup/Usage/Contribute), `src/lib/analytics.ts`, `fix_report*.py`.
-- `hasActiveLicense = true` constant; `pluelyApiEnabled = false` constant (fields kept in `IContextType` to avoid rewriting ~20 consumers).
-- Router unconditionally local (`shouldUsePluelyAPI`/`fetchPluelyAIResponse`/`fetchPluelySTT` deleted).
-- Local presets in `src/pages/system-prompts/PluelyPrompts.tsx`.
-- Auto-updater disabled (`updater/index.tsx` = null); removed from Cargo.toml/package.json/tauri.conf.json/capabilities.
-- Telemetry removed (posthog, machine-uid). Unused crates removed (reqwest, uuid, once_cell).
-- §3d grep: 0 disallowed hits.
+## Нові уточнення про прозорість і переміщення
 
-### Phase 2 — new window shell (commit 6e67d70, tag phase-2-done)
-- `src-tauri/src/shell.rs`: ShellState/ShellLayout/UiMode, layout persistence (shell_layout.json), create_shell_window (content_protected, always_on_top, skip_taskbar, transparent, focusable=false), WS_EX_TOPMOST|TOOLWINDOW|NOACTIVATE + watchdog (~1s), axis-locked move_shell_window with monitor clamping, rebuild_shell for 3 UI modes, 13 commands.
-- Frontend `src/components/Shell/`: ShellSideStrip, ShellTopStrip, ShellButton, AnswerWindow (MAIN/SIDE panes + chat), Shimmer, useShellDrag.
-- Routes `/shell/*`; main.tsx routing by window label.
-- Capabilities: added strip-*/button-*/answer labels.
+- Знято непрозорий global body для shell; html/body/root прозорі. Root займає реальну висоту viewport, без невидимих вертикальних полів.
+- Чат: рівномірний alpha0.32 типово, видима рамка, без вкладених майже непрозорих панелей. Смуги alpha0.28; кожна кнопка має окремий persisted alpha. Settings повзунки показують прозорість у відсотках. Старий вигляд міг мати alpha1/gradient; appearance-version migration встановлює нові типові значення.
+- Shimmer типово вимкнено; якщо ввімкнути, він малюється тільки на тонкій рамці, а не на всій поверхні. Для чату surface shimmer прибрано.
+- Пасивний чат повністю ігнорує cursor events і не активується. Окремий бінд Shift+\ (налаштовується) одним натисканням перемикає непрозорий режим взаємодії; можна рухати заголовок, resize, вводити. Повторне натискання/Escape повертає passive. Focus-loss не вимикає режим посеред переміщення. Ctrl+Shift+I/кнопка Чат — явне введення.
+- Геометрія фізична, MONITORINFO.rcWork виключає taskbar; chat рухається вільно, незалежно від смуг. Збереження позицій per-monitor; X/Y constraints нативні для смуг.
 
-### Phase 3 — capture, continuous mode, vision (commit, tag phase-3-done)
-- `src-tauri/src/continuous.rs`: CaptureSettings, ContinuousState, frame capture+downscale+JPEG, perceptual frame_diff dedup, batcher (BatchContext), start/stop_continuous loop, continuous_add_question/transcript, try_send_batch (one-in-flight, newer-replaces-stale), continuous_request_done. Unit tests for dedup/downscale/batch.
-- `src-tauri/src/vision.rs`: VisionMode (ocr/ocr+ui/vlm/full), VisionSettings, OcrBlock/UiNode/ScreenContext, build_screen_context command.
-- `src-tauri/src/ui_automation.rs`: foreground_tree.
-- Frontend: TYPE_PROVIDER.supportsImages.
-- **OCR and UI Automation are STUBS** (windows crate features Media_Ocr / Accessibility not enabled — see BLOCKED.md). Batcher, dedup, capture loop, settings fully implemented.
+Нативний доказ `resume-final-native-ui-verified`, exit0: body/root rgba0; chat rgba(23,23,23,0.32); CSSheight480=viewport480; workarea1536x816; native chat900x600; кути (0,0)/(636,216). Зареєстровано `answer_interaction: shift+backslash`.
 
-### Phase 4 — providers, limits, fallback (commit, tag phase-4-done)
-- `src-tauri/src/providers.rs`: ProviderEntry, ProvidersState, rolling-window limiter (per minute/hour/day), cooldowns with Retry-After, pick (rank + capability + cooldown + rate gates), record_failure/success, global daily limit, neutral mode, next_available_secs countdown, broadcast to all windows. 8 Tauri commands. Unit tests for limiter/fallback state machine.
+## Функціональність
 
-### Phase 5 — structured output, KaTeX, TTS (commit, tag phase-5-done)
-- `src-tauri/src/structured.rs`: parse (tolerant, exact-tag-names, unclosed/missing tags, untagged>MAIN), StreamingParser (tags split across chunks, SIDE/SPEAK only when closed, MAIN streams immediately). parse_structured command. Unit tests.
-- KaTeX: `remark-math` + `rehype-katex` installed; Markdown/index.tsx imports katex CSS and uses Streamdown. **Rendering NOT verified** `[NEEDS HUMAN CHECK]`.
-- `src-tauri/src/tts.rs`: TtsSettings (backend/enabled/voice/language/rate/stream), get/update/set_enabled commands.
-- `src/hooks/useTts.ts`: Web Speech API, boundary-event word highlighting, pause/resume/stop/seek-by-sentence/rate, master toggle.
-- TTS keybinds added to shortcuts.ts (tts_toggle/stop/pause/seek_back/seek_forward).
+Прихований main — єдиний executor capture/STT/AI/TTS/history. Rust acknowledged batcher збирає [mic]/[system] тексти, JPEG changed frames, питання й client IDs, має counted transcription barrier та один запит in-flight. Старі dashboard запити теж проходять цю чергу; їхня історія обмежена 32768 UTF-8 bytes. Клієнти отримують correlated requestError окремо від глобальних TTS/capture помилок; скасування під час встановлення listener не виконує новий запит.
 
-### Phase 6 — hardening (commit, tag phase-6-done)
-- `src/lib/storage/secure.storage.ts`: keychain-backed secret storage (tauri-plugin-keychain) with localStorage fallback + migrateToKeychain. **Plugin JS API shape NOT verified** `[NEEDS HUMAN CHECK]`.
-- CSP set in tauri.conf.json (default-src self, script/style inline, img data/blob, connect self+localhost+https, frame-ancestors none).
-- `sql:allow-execute` KEPT (used by chat-history.action.ts — spec said remove "if unused").
-- README_FORK.md (Ukrainian).
-- MANUAL_TESTS.md (Ukrainian, 15 tests).
+Провайдери brain/STT/TTS/vision незалежні, editable presets/cURL/model list, supportsImages toggle, ключі у Windows Credential Manager. Registry atomic persistence: global/per-provider s/m/h/d бюджети, ранги, cooldown/Retry-After, fallback та нейтральне очікування. Traversal не зациклюється після auth/5xx/timeout; stream inactivity timeout припиняє завислий transport.
 
-## Decisions
-See `_research/DECISIONS.md`. Key ones:
-- BrowserRouter paths for shell routes (matches existing router).
-- Custom pointer-event drag (data-tauri-drag-region cannot lock an axis).
-- Answer window created lazily (toggle_answer_window), not on startup.
-- 8 button actions: listen/screenshot/continuous/answer/chat/tts/mode/settings.
-- OCR/UIA/VLM stubbed (crate features not enabled) — batcher/dedup/loop are real.
-- sql:allow-execute kept (in use).
+MAIN/SIDE/SPEAK розбираються tolerant streaming parser і транслюються без IPC на кожний токен. KaTeX підтримує всі чотири delimiters. HTML sanitization проходить перед trusted KaTeX generation; окрема XSS regression. Speech sentence queue, word highlighting, pause/stop/seek/disable та live settings. Системні voices, Piper subprocess і Google/OpenAI/custom TTS реалізовано. Для файлів оцінка слова приблизна.
 
-## BLOCKED items (see _research/BLOCKED.md)
-1. **No network / no cargo registry / no node_modules** > `npm install`, `cargo check`, `npm run build`, `npm run tauri build` cannot run here. User must run on a networked machine.
-2. **OCR** (Windows.Media.Ocr): needs `windows` crate feature `Media_Ocr` + OCR language pack. Currently a stub returning a clear error.
-3. **UI Automation**: needs `windows` crate feature `Accessibility`. Currently a stub.
-4. **VLM mode**: needs a configured vision provider (Phase 4); currently a placeholder.
-5. **Keychain JS API shape** (tauri-plugin-keychain): assumed setItem/getItem/removeItem; not verified. Falls back to localStorage safely.
+Windows.Media.Ocr та foreground UI Automation реально викликаються через windows0.61; COM thread, depth/char/node/time caps, password values виключені. VLM виконується frontend vision registry; full запускає незалежні OCR/UI та VLM паралельно. Нативний VLM-only OCR command повертає чесне повідомлення, не вигаданий placeholder. Native vision fixture: OCR HELLO/123 і bounded UI tree — true.
 
-## [NEEDS HUMAN CHECK]
-- How strips/buttons/answer window LOOK on screen.
-- Always-on-top over Task Manager / borderless fullscreen / exclusive fullscreen.
-- Click-through outside shell UI.
-- Win+Shift+S / PrintScreen / OBS do not show the overlay; get_window_display_affinity returns WDA_EXCLUDEFROMCAPTURE (17).
-- Axis-locked drag behavior.
-- OCR quality; VLM descriptions.
-- KaTeX rendering through Streamdown.
-- TTS sound, available voices (Ukrainian), word highlighting.
-- Keychain storage on this machine.
+Платні Pluely paths/license gates, телеметрію та updater видалено. Capability scopes звужено: мережа й keychain лише main/dashboard; SQL лише dashboard; shell не має мережевих/secret прав. Custom HTTP base URLs із портами підтримані. HTTP cookies вимкнено, бо API авторизація явними headers і непотрібний global cache блокував startup.
 
-## How to run / where the installer is
-On a networked machine, in `pluely/`:
-```
-npm install
-npm run tauri dev     # dev
-npm run tauri build   # installer -> src-tauri/target/release/bundle/msi|nsis
-```
-Installer location: `src-tauri/target/release/bundle/`.
+## Збірка і перевірки
 
-## Known risks
-1. **Not compiled** — type/compile errors are possible (low confidence without cargo/tsc). Highest-risk: generic `Runtime` bounds in shell.rs, the keychain JS API, the streaming parser edge cases.
-2. **OCR/UIA/VLM are stubs** — vision pipeline returns placeholder text until crate features are enabled.
-3. **CSP** may block the dev server or provider base URLs — adjust `connect-src` if requests fail.
-4. **Exclusive fullscreen** cannot be covered by any topmost window (OS limit).
-5. **Wayland** (Linux) limits capture and topmost windows.
+| Перевірка | Фактичний результат | Доказ BUILD_LOG |
+|---|---|---|
+| Encoding + TypeScript | exit0, без BOM/invalidUTF8/replacement/mixedEOL | resume-final-gates, final encoding |
+| Node suite | 59 PASS /0 FAIL | resume-final-tests59 |
+| Cargo check | exit0 | resume-handoff-rust-check |
+| Cargo test | 61 PASS /0 FAIL | resume-handoff-rust-tests61 |
+| Cargo clippy all-targets | exit0; 8 lib/10 test style warnings, не zero-warning claim | resume-delivery-clippy |
+| Tauri build | exit0, EXE+NSIS+MSI | resume-transparent-release |
+| Vite dev | 46.2s, root/main HTTP200, no import/type errors | resume-handoff-vite-host |
+| npm audit | exit0, усі severity0 | resume-release-audit-final |
+| Native combined API request | JPEG+[mic]+[system]+Q1+Q2 одним batch, 429 primary→fallback, MAIN/SIDE/SPEAK, modes | resume-final-native-batch0 |
+| Native keychain | save→get→remove синтетичного ключа, true | resume-final-native-batch0 |
+| Native UI/cursor/geometry/WASM | passive/interaction styles, transparent canvas, corners, local module+WASM compile | resume-final-native-ui-verified0 |
+| Native OCR/UI Automation | own JPEG recognized, UI=true, bounded=true | resume-final-native-vision0 |
+| RELEASE EXE clean profile | 301.5s alive, no panic; owned tree stopped by timer | resume-release-delivery-run |
+| Portable launcher clean profile | 66.8s alive, shortcuts registered, no panic | resume-portable-launcher-clean |
+| MSI extraction/payload | WiX dark0, extracted actual EXE66.3s alive clean profile | resume-msi-payload-extract, resume-msi-payload-sequential |
+| Independent code review | no remaining substantive defects; reviewer21 focused regressions PASS | integration_review verdict |
 
-## Answers to spec questions
-- **Which flag protects against capture?** `contentProtected: true` > Windows `SetWindowDisplayAffinity(WDA_EXCLUDEFROMCAPTURE)`; macOS `NSWindow.sharingType = .none`. Verified in shell.rs (apply_windows_shell_style) and create_shell_window (.content_protected()).
-- **Which tests passed?** Rust unit tests authored (continuous dedup/downscale/batch; providers limiter/fallback; structured parser). NOT RUN (no cargo). `[NEEDS HUMAN CHECK]` via `cargo test`.
+Bounded runtime runner exit0 означає успішне спостереження й прибирання. Native process exit1 після навмисного taskkill таймером не є exit0 застосунку і не використовується як доказ його штатного завершення. Одна невдала MSI payload спроба запущена паралельно з portable тестом і отримала HotKey already registered; повторна послідовна спроба успішна. `msiexec /a`1603 залишається B07; його не приховано успішним read-only extraction.
+
+## Захист від захоплення
+
+Для shell/answer встановлено й нативно прочитано `WDA_EXCLUDEFROMCAPTURE = 0x11`, також TOPMOST/TOOLWINDOW. Пасивний chat: NOACTIVATE/LAYERED/TRANSPARENT; interaction: NOACTIVATE/TRANSPARENT прибрані, WDA0x11 лишився. Це точний Windows flag, не WDA_MONITOR0x01 і не доказ усіх recorder modes. Реальні OBS, PrintScreen, Win+Shift+S, topmost-over-topmost та exclusive fullscreen — [NEEDS HUMAN CHECK].
+
+## Що лишається BLOCKED
+
+B05: реальні власні API/local models та українське аудіо. На ПК лише Microsoft Irina/Pavel (ru-RU); System.Speech recognizers []; Piper/Whisper/models не включені. B06: фізичні кліки/right-Shift hotkey, читабельність на вашому фоні, рекордери/fullscreen, кілька моніторів/DPI, Windows10 та інші ОС. B07: повний NSIS/MSI wizard/install/uninstall у звичайному Windows-профілі; administrative MSI service не зміг писати системний Installer state. Windows/mobile/cross-platform заглушки не видаються за реалізований fallback: Windows-path працює, інші платформи поза перевіреним релізом.
+
+Окремі історичні plugin blockers B03 Auto Resume runtime absent та B04 Mem0 не є залежностями продукту. Жодних даних Pluely не відправляли до Mem0; scheduler/default model не змінювалися. B01npm та B02compile/runtime вирішено схваленим виконанням та portable профілем.
+
+Бінарники не підписано Authenticode. Завеликий Vite chunk warning лишився; основний bundle ≈1.99MB minified, це не build failure. Два vendor patches потрібні для нативних keychain handlers та optional PLUELY_DATA_DIR у SQL; ліцензії збережено. Cargo rlib орієнтовано на desktop executable, mobile artifact build не заявляється.
+
+## Файли та відновлення
+
+Повний список змінених/видалених/доданих файлів — CHANGED_FILES.md (Git diff від takeover-start). Основні групи: src/components/ServiceRuntime та Shell, lib/overlay, secure storage, provider/settings/shortcuts, src-tauri continuous/providers/shell/vision/UIA/STT/TTS/vendor, tests/scripts/config/locks/docs. Старі remote services/imports/hooks/dependencies видалено; точний D-перелік у списку.
+
+Для наступної роботи почніть із COMPLETION_CHECKLIST/BLOCKED/MANUAL_TESTS. Не відновлюйте старі звіти й не встановлюйте теги успіху на підставі історичних phase tags. Release manifest перевіряється `node scripts/verify-release.mjs`. Портативний тестовий профіль збережено у _research/temp, не змішано з профілем користувача.

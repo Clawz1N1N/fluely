@@ -1,37 +1,33 @@
-# Поточні блокування
+# Стан блокувань — 2026-10-12
 
-Історичний текст про відсутність Node/Rust/кешів належав іншому середовищу й не чинний.
+Цей документ замінює попередні твердження про неможливість збірки. DONE означає підтверджену дію; BLOCKED — конкретну перевірку, яка ще потребує зовнішньої умови або фізичної участі.
 
-## B01 — актуальний npm security audit / завантаження нових npm-пакетів
+## B01 — RESOLVED: npm security audit
 
-Доказ: `npm audit --json --fetch-retries=0 --fetch-timeout=20000` exit1, registry advisory endpoint недоступний. Install Vitest dry-run з writable cache exit1 EALLOWREMOTE: remote fetch disabled. Докази у BUILD_LOG.
+Перший актуальний аудит дав 37 vulnerabilities (2 critical). Сумісний `npm audit fix --ignore-scripts`, цільове оновлення VAD до 0.0.37, KaTeX 0.18.2+ і видалення зайвого JS keychain build-chain прибрали всі знайдені advisories. `resume-security-zero` exit0: total0; `resume-sanitize-direct` також total0. `audit fix --force` не використовувався. KaTeX sanitizer перенесено перед генерацією формул; math/XSS регресії проходять.
 
-Обхід: наявні залежності та вбудований runner Node22; без `npm audit fix --force`. Це не блокує frontend build. Актуальність advisory не підтверджена.
+## B02 — RESOLVED для збірки й native runtime
 
-Поза обмеженим середовищем: PowerShell у `pluely`, виконати `npm audit --json`; оцінити точні advisories перед безпечним оновленням. Залежності не оновлювалися навмання.
+У початковому обмеженому терміналі DLL initialization не працював. Схвалене native execution дозволило повний Cargo check/test/clippy та EXE/MSI/NSIS build. Нативний release працює з явно заданим PLUELY_DATA_DIR; без override Rust-запис до AppData у керованому середовищі давав PermissionDenied. Це не є доказом несправності AppData у звичайному Windows-профілі. Портативний launcher використовує власний profile каталог. Не змінювали глобальні захисти, політики чи наявну базу користувача.
 
-## B02 — Windows native DLL initialization у середовищі виконання
+## B03 — історична перевірка Codex Auto Resume
 
-Cargo check/test/clippy exit101: vswhom-sys build-script exit0xc0000142 (STATUS_DLL_INIT_FAILED). Мінімальний executable з Ole32 імпортом також падає до main. Прямий rustc працює, rustc як дочірній процес мінімальної Rust-програми — ні.
+CLI bootstrap у попередньому сеансі failed download. Плагін зараз присутній у каталозі desktop Codex; попередній висновок «нічого не встановлено» стосувався лише того запуску. Поточний read-only inventory: C:/Users/broma/.codex-auto-resume/runtime/python.exe не існує; статус продукту недоступний без runtime. Попередній офіційний bootstrap failed download. [Codex Auto Resume SKILL.md](C:/Users/broma/.codex/plugins/cache/codex-auto-resume-windows/codex-auto-resume/0.6.15-beta/skills/codex-auto-resume/SKILL.md) прямо вимагає: "If it reports that it could not download, say so and stop." Ручне складання інсталяції не використовувалося. Впливу на зібраний Pluely немає; scheduler цього чату не створювався.
 
-Read-only DLL probe: Ole32 LoadLibraryExW → Win32 error1114; User32 → error8. Абсолютний шлях/System32 flags, зміни PATH/TEMP, SDK/developer environment, прямий запуск і Node/cmd не виправили збій. Start-Process Hidden також не допоміг. DELAYLOAD запускає main, але фактичний COM-виклик падає; ці прапорці не внесені у продукт. Захисти/дозволи/глобальні політики не змінювалися. Докази: BUILD_LOG r3-cargo-baseline/test/clippy, logs/r3-dll-native-cmd.log, r3-dll-mitigations.log, r3-start-process-probe.json.
+## B04 — Mem0
 
-Обхід для незалежної роботи: прямий rustc для реальних core-тестів і metadata-перевірок із наявними залежностями; TypeScript/Node тести й frontend build. Це не еквівалент cargo check/test або запуску Tauri.
+Пакет 0.3.3 був на диску, але python3 hook не знайдено, status/doctor отримували WinError5 для C:/Users/broma/.mem0, ключ не був доступний. Деталі у PLUGIN_SETUP.md. Дані проєкту й секрети до Mem0 не надсилалися. Для перевірки потрібен власний ключ та працездатне зовнішнє середовище Mem0; це окрема інтеграція, не залежність Pluely.
 
-Необхідна фізична дія: відкрити звичайний PowerShell з меню Windows, поза керованим терміналом цього агента. Виконати:
+## B05 — українські офлайн-мовні компоненти / реальні API
 
-```powershell
-Set-Location 'C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely'
-cmd /c "call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml"
-```
+Нативна команда списку System.Speech recognizers повернула [] (exit0). WebView2 бачить лише Microsoft Irina та Pavel, ru-RU. Piper executable/українська .onnx модель і локальний Whisper server не встановлені як частина цього форка. Власні хмарні ключі не використано. Код system STT, Piper, Google/OpenAI/custom TTS і STT підключено; реальну українську транскрипцію й звук треба перевірити після налаштування доступного провайдера. Synthetic brain API + 429 fallback + JPEG/мікрофонний/системний текст перевірено нативно. Windows OCR та UI Automation на тестовому JPEG працюють.
 
-Після успішного check виконати test тією самою командою, замінивши check на test; для release — `cmd /c "call scripts\rust-env.cmd npm run tauri build"`. Докладний відтворюваний локальний launcher буде доданий на R7. Якщо та сама DLL-помилка повториться у звичайному PowerShell, спочатку перезавантажити Windows і повторити: це потребує перевірки native середовища, а не видалення випадкових прапорців ring.
+## B06 — фізична перевірка [NEEDS HUMAN CHECK]
 
-До такого запуску повна Rust-компіляція, native runtime, capture/COM/IPC на реальному застосунку та release executable не підтверджені. Робота над рештою вимог продовжується.
+Нативно підтверджено TOPMOST/TOOLWINDOW/NOACTIVATE, click-through TRANSPARENT, affinity0x11, alpha0.32, прозорий body/root, activation toggle і рух до обох кутів робочої області. Ці прапорці не доводять поведінку OBS/PrintScreen/Win+Shift+S, пріоритет над Task Manager/відео, exclusive fullscreen, фізичні кліки поза інтерфейсом, кілька DPI/моніторів або якість аудіо. Потрібні очі, вуха й відповідне обладнання; кроки у MANUAL_TESTS.md. Windows10/macOS/Linux/Wayland та мобільні артефакти не тестувалися.
 
+## B07 — майстер встановлення / Windows Installer service
 
-## B03 — Codex Auto Resume setup (2026-10-12)
-Official absolute-path bootstrap exit1: HTTPS GitHub release download failed; output says Nothing was installed. Runtime python.exe absent; watcher/automatic recovery unverified. Defaults/model selection were not changed. Installed skill explicitly requires stopping after a download failure. Physical workaround: run the same official bootstrap in ordinary PowerShell with network access, then the bundled runtime's doctor/status; exact commands in PLUGIN_SETUP.md. No alternative download or hand-built installation.
+EXE, NSIS та MSI успішно зібрано. Release EXE запущено з новим порожнім профілем. `msiexec /a ... /qn` exit1603: у журналі доступ до C:/Windows/Installer/inprogressinstallinfo.ipi відхилено (-2147287035), потім errors2503/2502. Цю системну директорію/службу не змінювали. WiX dark read-only extraction exit0, payload доступний; це не підтверджує завершення майстра встановлення. Потрібно запустити NSIS/MSI у звичайному Windows-профілі й перевірити встановлення/видалення. Докази: resume-msi-admin-extract, resume-msi-payload-extract та logs/resume-msi-extract-details.log.
 
-## B04 — Mem0 setup (2026-10-12)
-Installed package0.3.3 is present, but python3 hook command missing from PATH (python.exe3.14.7 works). Official status and doctor both exit1, PermissionError WinError5 creating C:/Users/broma/.mem0. No Mem0 API key is available to the diagnostic process. Actual capture/authentication/counts cannot be verified. Physical workaround: expose python3 to Codex launch environment, set your own MEM0_API_KEY without sharing it in chat, run status/doctor outside the restricted terminal. Preserve earlier prohibition on sending Pluely project data before cloud capture. PLUGIN_SETUP.md has exact steps. No project-memory upload was invoked.
+Тимчасова відмова автоматичної approval-перевірки через usage limit припинилася після часу відновлення; нові Cargo/native команди знову дозволені й виконані. Постійного блокування B02 через цей ліміт немає.

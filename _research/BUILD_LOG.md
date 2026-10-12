@@ -6535,3 +6535,1602 @@ Encoding: 386 text files checked; 0 failures.
 ```
 
 Full log: logs/resume-precommit-encoding.log
+
+## resume-startup-verified — 2026-10-12T16:22:28.464Z
+
+Command: `_research\temp\smoke-latest.exe`
+
+Observation: 301.9s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: none
+
+Last 20 lines:
+
+```text
+Updating shortcuts with 14 bindings
+Registered shortcut: find_buttons -> ctrl+shift+r
+Registered shortcut: tts_pause -> ctrl+shift+p
+Registered shortcut: system_audio -> ctrl+shift+m
+Registered shortcut: audio_recording -> ctrl+shift+a
+Registered shortcut: focus_input -> ctrl+shift+i
+Registered shortcut: screenshot -> ctrl+shift+s
+Registered shortcut: toggle_dashboard -> ctrl+shift+d
+Registered shortcut: toggle_window -> ctrl+backslash
+Registered shortcut: tts_seek_back -> ctrl+shift+left
+Registered shortcut: tts_seek_forward -> ctrl+shift+right
+Registered shortcut: tts_stop -> ctrl+shift+o
+Registered shortcut: tts_toggle -> ctrl+shift+t
+Registered shortcut: ui_mode -> ctrl+shift+u
+Registered shortcut: move_window_up -> ctrl+up
+Registered shortcut: move_window_down -> ctrl+down
+Registered shortcut: move_window_left -> ctrl+left
+Registered shortcut: move_window_right -> ctrl+right
+Global shortcuts state initialized, waiting for frontend config
+Owned-process cleanup: {"rootProcessId":4684,"startedUtc":"2026-10-12T16:22:28.4673117Z","terminatedProcessIds":[1228,14640,16260,15472,10244,11652,7544,14088,14168,11324,16052,4948,4684],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-startup-verified.log
+
+## resume-fake-server — 2026-10-12T16:25:10.830Z
+
+Command: `node scripts\fake-provider.mjs`
+
+Observation: 181.1s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: none
+
+Last 20 lines:
+
+```text
+Local fixture listening on 127.0.0.1:18086
+Owned-process cleanup: {"rootProcessId":9184,"startedUtc":"2026-10-12T16:25:10.8330178Z","terminatedProcessIds":[6180,7756,9184],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-fake-server.log
+
+## resume-final-rust-tests — 2026-10-12T16:28:48.073Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test providers::tests::failed_disk_write_never_authorizes_a_request_or_changes_live_budget ... ok
+test shell_store::tests::creates_parent_directory_and_preserves_utf8 ... ok
+test shell_store::tests::recovers_from_a_stale_partial_temporary_file ... ok
+test providers::tests::registry_persists_metadata_limits_and_usage_through_atomic_store ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 60 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.40s
+
+     Running unittests src\main.rs (src-tauri\target\debug\deps\pluely-41d72a6925b85514.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests pluely_lib
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/resume-final-rust-tests.log
+
+## resume-security-audit — 2026-10-12T16:31:03.828Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  },
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 6,
+      "moderate": 13,
+      "high": 16,
+      "critical": 2,
+      "total": 37
+    },
+    "dependencies": {
+      "prod": 451,
+      "dev": 54,
+      "optional": 81,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 574
+    }
+  }
+}
+```
+
+Full log: logs/resume-security-audit.log
+
+## resume-release-ports-fixed — 2026-10-12T16:28:33.914Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-B-l5KYNF.js                         2,398.91 kB │ gzip: 634.84 kB
+✓ built in 57.93s
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 07s
+       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+    Finished 2 bundles at:
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+```
+
+Full log: logs/resume-release-ports-fixed.log
+
+## resume-correlated-error-red — 2026-10-12T16:33:03.336Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    - null
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: ~
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/service.test.mjs:100:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 7
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 620.2965
+```
+
+Full log: logs/resume-correlated-error-red.log
+
+## resume-correlated-error-green — 2026-10-12T16:33:06.363Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 7 - disabling system capture live stops the actual active stream
+  ---
+  duration_ms: 0.4612
+  type: 'test'
+  ...
+# Subtest: speech errors do not turn a successful AI batch into a failed chat result
+ok 8 - speech errors do not turn a successful AI batch into a failed chat result
+  ---
+  duration_ms: 0.7173
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 577.0144
+```
+
+Full log: logs/resume-correlated-error-green.log
+
+## resume-audit-safe-fix — 2026-10-12T16:36:58.300Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm audit fix --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+serialize-javascript  <=7.0.4
+Severity: high
+Serialize JavaScript is Vulnerable to RCE via RegExp.flags and Date.prototype.toISOString() - https://github.com/advisories/GHSA-5c6j-r48x-rmvq
+Serialize JavaScript has CPU Exhaustion Denial of Service via crafted array-like objects - https://github.com/advisories/GHSA-qj8w-gfj5-8c6v
+No fix available
+node_modules/serialize-javascript
+  @rollup/plugin-terser  0.2.0 - 0.4.4
+  Depends on vulnerable versions of serialize-javascript
+  node_modules/@rollup/plugin-terser
+    tauri-plugin-keychain  *
+    Depends on vulnerable versions of @rollup/plugin-terser
+    node_modules/tauri-plugin-keychain
+
+14 vulnerabilities (6 low, 2 moderate, 5 high, 1 critical)
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+```
+
+Full log: logs/resume-audit-safe-fix.log
+
+## resume-native-batch-smoke — 2026-10-12T16:38:54.135Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+keychain True
+listener True
+configure True
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 12, in <module>
+AssertionError: {'busy': False, 'main': 'Перевірено $x^2$.', 'side': 'Додатково.', 'speak': 'Просте пояснення.', 'error': None, 'clientIds': ['smoke-q1', 'smoke-q2']}
+```
+
+Full log: logs/resume-native-batch-smoke.log
+
+## resume-client-regressions — 2026-10-12T16:39:19.445Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/service-client.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 2 - abort during snapshot listener installation prevents sending
+  ---
+  duration_ms: 1.2447
+  type: 'test'
+  ...
+# Subtest: abort during ack listener installation prevents sending
+ok 3 - abort during ack listener installation prevents sending
+  ---
+  duration_ms: 0.2591
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 896.4248
+```
+
+Full log: logs/resume-client-regressions.log
+
+## resume-native-batch-smoke-utf8 — 2026-10-12T16:39:34.972Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+keychain True
+listener True
+configure True
+combined_panels True
+one_batch_and_fallback {'requests': ['smoke-fail', 'smoke-ok'], 'summaries': [{'mic': True, 'system': True, 'q1': True, 'q2': True, 'images': 0, 'jpeg': True}]}
+modes True
+voices [{'name': 'Microsoft Irina - Russian (Russia)', 'language': 'ru-RU'}, {'name': 'Microsoft Pavel - Russian (Russia)', 'language': 'ru-RU'}]
+cleanup True
+```
+
+Full log: logs/resume-native-batch-smoke-utf8.log
+
+## resume-vad-update — 2026-10-12T16:40:03.130Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm install @ricky0123/vad-react@0.0.37 --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+removed 3 packages, changed 10 packages, and audited 487 packages in 8s
+
+136 packages are looking for funding
+  run `npm fund` for details
+
+9 vulnerabilities (6 low, 2 moderate, 1 high)
+
+To address all issues possible (including breaking changes), run:
+  npm audit fix --force
+
+Some issues need review, and may require choosing
+a different dependency.
+
+Run `npm audit` for details.
+```
+
+Full log: logs/resume-vad-update.log
+
+## resume-security-clean — 2026-10-12T16:40:37.895Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm install --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+removed 24 packages, changed 2 packages, and audited 463 packages in 2s
+
+131 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+Full log: logs/resume-security-clean.log
+
+## resume-ports-fixture — 2026-10-12T16:37:50.478Z
+
+Command: `node scripts/fake-provider.mjs`
+
+Observation: 181.6s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 30 bytes; /src/main.tsx HTTP200, 881 bytes; / HTTP200, 124 bytes; / HTTP200, 220 bytes; / HTTP200, 316 bytes; / HTTP200, 412 bytes; / HTTP200, 508 bytes; / HTTP200, 698 bytes; / HTTP200, 794 bytes; / HTTP200, 890 bytes; / HTTP200, 986 bytes; / HTTP200, 1082 bytes; / HTTP200, 1178 bytes; / HTTP200, 1368 bytes; / HTTP200, 1464 bytes; / HTTP200, 1560 bytes; / HTTP200, 1656 bytes; / HTTP200, 1752 bytes; / HTTP200, 1848 bytes; / HTTP200, 1944 bytes; / HTTP200, 2040 bytes; / HTTP200, 2230 bytes; / HTTP200, 2326 bytes; / HTTP200, 2422 bytes; / HTTP200, 2518 bytes; / HTTP200, 2614 bytes; / HTTP200, 2710 bytes; / HTTP200, 2806 bytes; / HTTP200, 2902 bytes; / HTTP200, 2998 bytes; / HTTP200, 3094 bytes; / HTTP200, 3190 bytes; / HTTP200, 3286 bytes; / HTTP200, 3382 bytes; / HTTP200, 3478 bytes; / HTTP200, 3574 bytes
+
+Last 20 lines:
+
+```text
+Local fixture listening on 127.0.0.1:18086
+Owned-process cleanup: {"rootProcessId":13252,"startedUtc":"2026-10-12T16:37:50.4844879Z","terminatedProcessIds":[11576,1496,13252],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-ports-fixture.log
+
+## resume-security-zero — 2026-10-12T16:41:10.390Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 402,
+      "dev": 118,
+      "optional": 87,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 542
+    }
+  }
+}
+```
+
+Full log: logs/resume-security-zero.log
+
+## resume-current-ts — 2026-10-12T16:41:12.805Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 2
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 387 text files checked; 0 failures.
+src/pages/app/components/completion/AutoSpeechVad.tsx(34,5): error TS2353: Object literal may only specify known properties, and 'additionalAudioConstraints' does not exist in type 'Partial<ReactRealTimeVADOptions>'.
+```
+
+Full log: logs/resume-current-ts.log
+
+## resume-ui-regressions — 2026-10-12T16:42:06.819Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:11156) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 58 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 4.5165
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 53
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12454.8898
+```
+
+Full log: logs/resume-ui-regressions.log
+
+## resume-final-clippy — 2026-10-12T16:42:19.703Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo clippy --offline --manifest-path src-tauri\Cargo.toml --all-targets`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#useless_conversion
+    = note: `#[warn(clippy::useless_conversion)]` on by default
+help: consider removing the `.into_iter()`
+    |
+242 -                     pre_speech.extend(mono.into_iter());
+242 +                     pre_speech.extend(mono);
+    |
+
+warning: this expression creates a reference which is immediately dereferenced by the compiler
+   --> src\lib.rs:198:65
+    |
+198 |                 if let Err(e) = window::create_dashboard_window(&app_handle) {
+    |                                                                 ^^^^^^^^^^^ help: change this to: `app_handle`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_borrow
+    = note: `#[warn(clippy::needless_borrow)]` on by default
+
+warning: `pluely` (lib) generated 7 warnings (3 duplicates) (run `cargo clippy --fix --lib -p pluely -- ` to apply 3 suggestions)
+warning: `pluely` (lib test) generated 9 warnings (3 duplicates) (run `cargo clippy --fix --lib -p pluely --tests -- ` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.56s
+```
+
+Full log: logs/resume-final-clippy.log
+
+## resume-ports-native — 2026-10-12T16:37:38.295Z
+
+Command: `_research\temp\smoke-ports.exe`
+
+Observation: 303.6s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 433 bytes; /src/main.tsx HTTP200, 433 bytes
+
+Last 20 lines:
+
+```text
+Updating shortcuts with 14 bindings
+Registered shortcut: find_buttons -> ctrl+shift+r
+Registered shortcut: ui_mode -> ctrl+shift+u
+Registered shortcut: audio_recording -> ctrl+shift+a
+Registered shortcut: screenshot -> ctrl+shift+s
+Registered shortcut: toggle_window -> ctrl+backslash
+Registered shortcut: focus_input -> ctrl+shift+i
+Registered shortcut: tts_stop -> ctrl+shift+o
+Registered shortcut: tts_seek_forward -> ctrl+shift+right
+Registered shortcut: tts_seek_back -> ctrl+shift+left
+Registered shortcut: system_audio -> ctrl+shift+m
+Registered shortcut: move_window_up -> ctrl+up
+Registered shortcut: move_window_down -> ctrl+down
+Registered shortcut: move_window_left -> ctrl+left
+Registered shortcut: move_window_right -> ctrl+right
+Registered shortcut: toggle_dashboard -> ctrl+shift+d
+Registered shortcut: tts_pause -> ctrl+shift+p
+Registered shortcut: tts_toggle -> ctrl+shift+t
+Global shortcuts state initialized, waiting for frontend config
+Owned-process cleanup: {"rootProcessId":12112,"startedUtc":"2026-10-12T16:37:38.2987463Z","terminatedProcessIds":[6720,10244,15480,9856,13560,14988,15320,14160,14396,15496,11488,5152,12112],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-ports-native.log
+
+## resume-context-regressions — 2026-10-12T16:43:07.082Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/chat-context.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: oversized single history message is omitted without discarding current question
+ok 2 - oversized single history message is omitted without discarding current question
+  ---
+  duration_ms: 0.4893
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 551.4137
+```
+
+Full log: logs/resume-context-regressions.log
+
+## resume-vad-ts-fixed — 2026-10-12T16:43:07.787Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 389 text files checked; 0 failures.
+```
+
+Full log: logs/resume-vad-ts-fixed.log
+
+## resume-math-security — 2026-10-12T19:19:51.807Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs tests/chat-context.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 8 - Markdown preserves all math delimiters inside fenced code
+  ---
+  duration_ms: 97.844
+  type: 'test'
+  ...
+# Subtest: Markdown preserves math inside tilde fences and multi-backtick inline spans
+ok 9 - Markdown preserves math inside tilde fences and multi-backtick inline spans
+  ---
+  duration_ms: 3.9053
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1344.5388
+```
+
+Full log: logs/resume-math-security.log
+
+## resume-new-ui-check — 2026-10-12T19:20:33.769Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 389 text files checked; 0 failures.
+```
+
+Full log: logs/resume-new-ui-check.log
+
+## resume-current-native-check — 2026-10-12T19:20:42.986Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.63s
+```
+
+Full log: logs/resume-current-native-check.log
+
+## resume-final-ui-suite — 2026-10-12T19:21:02.918Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:15444) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 58 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 1.6627
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 58
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8817.5683
+```
+
+Full log: logs/resume-final-ui-suite.log
+
+## resume-current-rust-tests — 2026-10-12T19:21:41.306Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 61 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 4.10s
+
+     Running unittests src\main.rs (src-tauri\target\debug\deps\pluely-41d72a6925b85514.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests pluely_lib
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/resume-current-rust-tests.log
+
+## resume-delivery-ui-tests — 2026-10-12T19:24:14.293Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:9784) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 59 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 1.9254
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 58
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10668.7254
+```
+
+Full log: logs/resume-delivery-ui-tests.log
+
+## resume-refined-release — 2026-10-12T19:21:14.192Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-B0vJpHpq.js                         1,988.15 kB │ gzip: 590.38 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 35.87s
+   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 22s
+       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+    Finished 2 bundles at:
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+```
+
+Full log: logs/resume-refined-release.log
+
+## resume-sanitize-direct — 2026-10-12T19:25:11.828Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm install rehype-sanitize@^6.0.0 --offline --ignore-scripts`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+up to date, audited 463 packages in 2s
+
+131 packages are looking for funding
+  run `npm fund` for details
+
+found 0 vulnerabilities
+```
+
+Full log: logs/resume-sanitize-direct.log
+
+## resume-transparent-ui-tests — 2026-10-12T19:26:00.363Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:14116) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 59 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 2.1661
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10014.7427
+```
+
+Full log: logs/resume-transparent-ui-tests.log
+
+## resume-ui-final-check — 2026-10-12T19:27:29.742Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 390 text files checked; 0 failures.
+```
+
+Full log: logs/resume-ui-final-check.log
+
+## resume-current-encoding — 2026-10-12T19:28:24.930Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check:encoding`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check:encoding
+npm notice run node scripts/check-encoding.mjs
+Encoding: 390 text files checked; 0 failures.
+```
+
+Full log: logs/resume-current-encoding.log
+
+## resume-transparent-release — 2026-10-12T19:26:12.225Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-ul2su-Z3.js                         1,988.43 kB │ gzip: 590.47 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 23.05s
+   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 43s
+       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+    Finished 2 bundles at:
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+```
+
+Full log: logs/resume-transparent-release.log
+
+## resume-final-native-batch — 2026-10-12T19:29:44.562Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+keychain True
+listener True
+configure True
+combined_panels True
+one_batch_and_fallback {'requests': ['smoke-fail', 'smoke-ok'], 'summaries': [{'mic': True, 'system': True, 'q1': True, 'q2': True, 'images': 1, 'jpeg': True}]}
+modes True
+voices [{'name': 'Microsoft Irina - Russian (Russia)', 'language': 'ru-RU'}, {'name': 'Microsoft Pavel - Russian (Russia)', 'language': 'ru-RU'}]
+cleanup True
+```
+
+Full log: logs/resume-final-native-batch.log
+
+## resume-final-native-ui — 2026-10-12T19:29:49.375Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    + CategoryInfo          : SecurityError: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnauthorizedAccess
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 23, in <module>
+  File "<string>", line 16, in policy
+  File "C:\Users\broma\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['powershell.exe', '-NoProfile', '-File', 'scripts/inspect-windows.ps1', '-ProcessId', '15464', '-Json']' returned non-zero exit status 1.
+registered_interaction shift+backslash
+show None
+```
+
+Full log: logs/resume-final-native-ui.log
+
+## resume-final-native-vision — 2026-10-12T19:29:50.885Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-vision-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+vision_fixture {'ocr': True, 'ui': True, 'bounded': True}
+```
+
+Full log: logs/resume-final-native-vision.log
+
+## resume-final-native-ui-verified — 2026-10-12T19:30:11.540Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+registered_interaction shift+backslash
+show None
+native_policy {'interactive': False, 'styles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'affinity': '0x00000011'}
+transparent_canvas {'body': 'rgba(0, 0, 0, 0)', 'root': 'rgba(0, 0, 0, 0)', 'background': 'rgba(23, 23, 23, 0.32)', 'height': 480, 'viewport': 480}
+native_policy {'interactive': True, 'styles': ['TOPMOST', 'TOOLWINDOW'], 'affinity': '0x00000011'}
+work_area_corner {'x': 0, 'y': 0}
+work_area_corner {'x': 636, 'y': 216}
+native_policy {'interactive': False, 'styles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'affinity': '0x00000011'}
+local_wasm True
+```
+
+Full log: logs/resume-final-native-ui-verified.log
+
+## resume-msi-admin-extract — 2026-10-12T19:30:18.686Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `msiexec /a src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi /qn TARGETDIR=C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\temp\msi-image /l*v _research\logs\resume-msi-extract-details.log`
+
+Exit code: 1603
+
+Last 20 output lines:
+
+```text
+
+```
+
+Full log: logs/resume-msi-admin-extract.log
+
+## resume-delivery-clippy — 2026-10-12T19:31:03.828Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo clippy --offline --manifest-path src-tauri\Cargo.toml --all-targets`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#useless_conversion
+    = note: `#[warn(clippy::useless_conversion)]` on by default
+help: consider removing the `.into_iter()`
+    |
+242 -                     pre_speech.extend(mono.into_iter());
+242 +                     pre_speech.extend(mono);
+    |
+
+warning: this expression creates a reference which is immediately dereferenced by the compiler
+   --> src\lib.rs:201:65
+    |
+201 |                 if let Err(e) = window::create_dashboard_window(&app_handle) {
+    |                                                                 ^^^^^^^^^^^ help: change this to: `app_handle`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_borrow
+    = note: `#[warn(clippy::needless_borrow)]` on by default
+
+warning: `pluely` (lib test) generated 10 warnings (3 duplicates) (run `cargo clippy --fix --lib -p pluely --tests -- ` to apply 4 suggestions)
+warning: `pluely` (lib) generated 8 warnings (4 duplicates) (run `cargo clippy --fix --lib -p pluely -- ` to apply 3 suggestions)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.65s
+```
+
+Full log: logs/resume-delivery-clippy.log
+
+## resume-msi-payload-extract — 2026-10-12T19:31:29.822Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `C:\Users\broma\AppData\Local\tauri\WixTools314\dark.exe -nologo -x _research\temp\msi-payload src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi _research\temp\msi-payload.wxs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Pluely_0.1.9_x64_en-US.msi
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ExitDialog/Finish/DoAction/LaunchApplication/WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed' whose Dialog_ and Control_ columns contain the values, 'ExitDialog' and 'Finish', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'InstallDirDlg/Back/NewDialog/WelcomeDlg/1' whose Dialog_ and Control_ columns contain the values, 'InstallDirDlg' and 'Back', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'LicenseAgreementDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'LicenseAgreementDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'MaintenanceWelcomeDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'MaintenanceWelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/Install/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'Install', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/InstallNoShield/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'InstallNoShield', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'WelcomeDlg/Next/NewDialog/InstallDirDlg/1' whose Dialog_ and Control_ columns contain the values, 'WelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+```
+
+Full log: logs/resume-msi-payload-extract.log
+
+## resume-final-gates — 2026-10-12T19:31:31.518Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 390 text files checked; 0 failures.
+```
+
+Full log: logs/resume-final-gates.log
+
+## resume-final-tests59 — 2026-10-12T19:31:38.165Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:15604) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 59 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 1.2708
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 8470.7845
+```
+
+Full log: logs/resume-final-tests59.log
+
+## resume-release-delivery-run — 2026-10-12T19:29:19.598Z
+
+Command: `..\RELEASE\pluely.exe`
+
+Observation: 301.5s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 433 bytes; /src/main.tsx HTTP200, 433 bytes
+
+Last 20 lines:
+
+```text
+Registered shortcut: tts_seek_forward -> ctrl+shift+right
+Registered shortcut: tts_toggle -> ctrl+shift+t
+Registered shortcut: move_window_up -> ctrl+up
+Registered shortcut: move_window_down -> ctrl+down
+Registered shortcut: move_window_left -> ctrl+left
+Registered shortcut: move_window_right -> ctrl+right
+Registered shortcut: find_buttons -> ctrl+shift+r
+Registered shortcut: tts_seek_back -> ctrl+shift+left
+Registered shortcut: toggle_dashboard -> ctrl+shift+d
+Registered shortcut: tts_pause -> ctrl+shift+p
+Registered shortcut: ui_mode -> ctrl+shift+u
+Registered shortcut: answer_interaction -> shift+backslash
+Registered shortcut: tts_stop -> ctrl+shift+o
+Registered shortcut: system_audio -> ctrl+shift+m
+Registered shortcut: screenshot -> ctrl+shift+s
+Registered shortcut: focus_input -> ctrl+shift+i
+Registered shortcut: audio_recording -> ctrl+shift+a
+Registered shortcut: toggle_window -> ctrl+backslash
+Global shortcuts state initialized, waiting for frontend config
+Owned-process cleanup: {"rootProcessId":4572,"startedUtc":"2026-10-12T19:29:19.6011570Z","terminatedProcessIds":[8984,14380,2468,12572,15552,9520,4756,7828,15888,14980,3552,15464,4572],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-release-delivery-run.log
+
+## resume-final-provider-fixture — 2026-10-12T19:29:31.478Z
+
+Command: `node scripts/fake-provider.mjs`
+
+Observation: 301.1s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 30 bytes; /src/main.tsx HTTP200, 881 bytes; / HTTP200, 124 bytes; / HTTP200, 314 bytes; / HTTP200, 410 bytes; / HTTP200, 506 bytes; / HTTP200, 602 bytes; / HTTP200, 698 bytes; / HTTP200, 794 bytes; / HTTP200, 890 bytes; / HTTP200, 986 bytes; / HTTP200, 1082 bytes; / HTTP200, 1178 bytes; / HTTP200, 1274 bytes; / HTTP200, 1370 bytes; / HTTP200, 1466 bytes; / HTTP200, 1562 bytes; / HTTP200, 1658 bytes; / HTTP200, 1754 bytes; / HTTP200, 1850 bytes; / HTTP200, 1946 bytes; / HTTP200, 2042 bytes; / HTTP200, 2138 bytes; / HTTP200, 2234 bytes; / HTTP200, 2330 bytes; / HTTP200, 2426 bytes; / HTTP200, 2522 bytes; / HTTP200, 2618 bytes; / HTTP200, 2714 bytes; / HTTP200, 2810 bytes; / HTTP200, 2906 bytes; / HTTP200, 3002 bytes; / HTTP200, 3098 bytes; / HTTP200, 3194 bytes; / HTTP200, 3290 bytes; / HTTP200, 3386 bytes; / HTTP200, 3482 bytes; / HTTP200, 3578 bytes; / HTTP200, 3674 bytes; / HTTP200, 3770 bytes; / HTTP200, 3866 bytes; / HTTP200, 3962 bytes; / HTTP200, 4058 bytes; / HTTP200, 4154 bytes; / HTTP200, 4250 bytes; / HTTP200, 4346 bytes; / HTTP200, 4442 bytes; / HTTP200, 4538 bytes; / HTTP200, 4634 bytes; / HTTP200, 4730 bytes; / HTTP200, 4826 bytes; / HTTP200, 4922 bytes; / HTTP200, 5018 bytes; / HTTP200, 5114 bytes; / HTTP200, 5210 bytes; / HTTP200, 5306 bytes; / HTTP200, 5402 bytes; / HTTP200, 5498 bytes; / HTTP200, 5594 bytes; / HTTP200, 5690 bytes
+
+Last 20 lines:
+
+```text
+Local fixture listening on 127.0.0.1:18086
+Owned-process cleanup: {"rootProcessId":9164,"startedUtc":"2026-10-12T19:29:31.4814787Z","terminatedProcessIds":[6608,5320,9164],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-final-provider-fixture.log
+
+## resume-portable-launcher-clean — 2026-10-12T19:37:40.280Z
+
+Command: `..\RELEASE\START_PLUELY.cmd --wait`
+
+Observation: 66.8s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: none
+
+Last 20 lines:
+
+```text
+Registered shortcut: system_audio -> ctrl+shift+m
+Registered shortcut: tts_stop -> ctrl+shift+o
+Registered shortcut: ui_mode -> ctrl+shift+u
+Registered shortcut: toggle_window -> ctrl+backslash
+Registered shortcut: find_buttons -> ctrl+shift+r
+Registered shortcut: focus_input -> ctrl+shift+i
+Registered shortcut: move_window_up -> ctrl+up
+Registered shortcut: move_window_down -> ctrl+down
+Registered shortcut: move_window_left -> ctrl+left
+Registered shortcut: move_window_right -> ctrl+right
+Registered shortcut: audio_recording -> ctrl+shift+a
+Registered shortcut: tts_pause -> ctrl+shift+p
+Registered shortcut: tts_seek_forward -> ctrl+shift+right
+Registered shortcut: tts_toggle -> ctrl+shift+t
+Registered shortcut: tts_seek_back -> ctrl+shift+left
+Registered shortcut: screenshot -> ctrl+shift+s
+Registered shortcut: toggle_dashboard -> ctrl+shift+d
+Registered shortcut: answer_interaction -> shift+backslash
+Global shortcuts state initialized, waiting for frontend config
+Owned-process cleanup: {"rootProcessId":15948,"startedUtc":"2026-10-12T19:37:40.2851259Z","terminatedProcessIds":[4728,3492,14740,14640,2252,14212,1408,13884,14708,10740,12832,564,15948],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-portable-launcher-clean.log
+
+## resume-msi-payload-launch — 2026-10-12T19:37:52.667Z
+
+Command: `_research\temp\msi-extracted.exe`
+
+Observation: 54.7s; native exit: 1; stopped by timer: false. Intentional termination is not a build success.
+
+Probes: none
+
+Last 20 lines:
+
+```text
+Updating shortcuts with 15 bindings
+Failed to register tts_toggle shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyT, id: 34078758 }
+Failed to register ui_mode shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyU, id: 34078759 }
+Failed to register tts_stop shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyO, id: 34078753 }
+Failed to register find_buttons shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyR, id: 34078756 }
+Failed to register system_audio shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyM, id: 34078751 }
+Failed to register move_window_up shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL), key: ArrowUp, id: 524370 }
+Failed to register move_window_down shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL), key: ArrowDown, id: 524367 }
+Failed to register move_window_left shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL), key: ArrowLeft, id: 524368 }
+Failed to register move_window_right shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL), key: ArrowRight, id: 524369 }
+Failed to register screenshot shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyS, id: 34078757 }
+Failed to register audio_recording shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyA, id: 34078739 }
+Failed to register tts_pause shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyP, id: 34078754 }
+Failed to register toggle_window shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL), key: Backslash, id: 524289 }
+Failed to register answer_interaction shortcut: HotKey already registered: HotKey { mods: Modifiers(SHIFT), key: Backslash, id: 33554433 }
+Failed to register focus_input shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyI, id: 34078747 }
+Failed to register toggle_dashboard shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: KeyD, id: 34078742 }
+Failed to register tts_seek_back shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: ArrowLeft, id: 34078800 }
+Failed to register tts_seek_forward shortcut: HotKey already registered: HotKey { mods: Modifiers(CONTROL | SHIFT), key: ArrowRight, id: 34078801 }
+Global shortcuts state initialized, waiting for frontend config
+```
+
+Full log: logs/resume-msi-payload-launch.log
+
+## resume-msi-payload-sequential — 2026-10-12T19:39:33.585Z
+
+Command: `_research\temp\msi-extracted.exe`
+
+Observation: 66.3s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: none
+
+Last 20 lines:
+
+```text
+Registered shortcut: find_buttons -> ctrl+shift+r
+Registered shortcut: move_window_up -> ctrl+up
+Registered shortcut: move_window_down -> ctrl+down
+Registered shortcut: move_window_left -> ctrl+left
+Registered shortcut: move_window_right -> ctrl+right
+Registered shortcut: answer_interaction -> shift+backslash
+Registered shortcut: toggle_dashboard -> ctrl+shift+d
+Registered shortcut: tts_stop -> ctrl+shift+o
+Registered shortcut: focus_input -> ctrl+shift+i
+Registered shortcut: system_audio -> ctrl+shift+m
+Registered shortcut: tts_seek_forward -> ctrl+shift+right
+Registered shortcut: tts_seek_back -> ctrl+shift+left
+Registered shortcut: audio_recording -> ctrl+shift+a
+Registered shortcut: ui_mode -> ctrl+shift+u
+Registered shortcut: tts_toggle -> ctrl+shift+t
+Registered shortcut: screenshot -> ctrl+shift+s
+Registered shortcut: toggle_window -> ctrl+backslash
+Registered shortcut: tts_pause -> ctrl+shift+p
+Global shortcuts state initialized, waiting for frontend config
+Owned-process cleanup: {"rootProcessId":4692,"startedUtc":"2026-10-12T19:39:33.5886540Z","terminatedProcessIds":[14756,13632,9280,14216,11008,10248,1404,16084,14884,3432,6928,11820,4692],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-msi-payload-sequential.log
+
+## resume-release-audit-final — 2026-10-12T19:41:36.056Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  "vulnerabilities": {},
+  "metadata": {
+    "vulnerabilities": {
+      "info": 0,
+      "low": 0,
+      "moderate": 0,
+      "high": 0,
+      "critical": 0,
+      "total": 0
+    },
+    "dependencies": {
+      "prod": 402,
+      "dev": 118,
+      "optional": 87,
+      "peer": 0,
+      "peerOptional": 0,
+      "total": 542
+    }
+  }
+}
+```
+
+Full log: logs/resume-release-audit-final.log
+
+## resume-release-integrity — 2026-10-12T19:43:41.302Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `node scripts/verify-release.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+SHA256 OK pluely.exe
+SHA256 OK Pluely_0.1.9_x64-setup.exe
+SHA256 OK Pluely_0.1.9_x64_en-US.msi
+SHA256 OK START_PLUELY.cmd
+Build artifact matches pluely.exe
+Build artifact matches Pluely_0.1.9_x64-setup.exe
+Build artifact matches Pluely_0.1.9_x64_en-US.msi
+Windows x64 PE verified; Authenticode signing is not configured.
+```
+
+Full log: logs/resume-release-integrity.log
+
+## resume-docs-encoding — 2026-10-12T19:44:52.847Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check:encoding`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check:encoding
+npm notice run node scripts/check-encoding.mjs
+Encoding: 396 text files checked; 0 failures.
+```
+
+Full log: logs/resume-docs-encoding.log
+
+## resume-final-script-regressions — 2026-10-12T19:44:53.338Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  type: 'test'
+  ...
+# (node:9184) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+# --import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: service window starts hidden and release policy permits native IPC and local assets
+ok 59 - service window starts hidden and release policy permits native IPC and local assets
+  ---
+  duration_ms: 1.7513
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9335.8027
+```
+
+Full log: logs/resume-final-script-regressions.log
+
+## resume-final-encoding396 — 2026-10-12T19:46:10.561Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run pluely@0.1.9 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 396 text files checked; 0 failures.
+```
+
+Full log: logs/resume-final-encoding396.log
+
+## resume-handoff-rust-check — 2026-10-12T19:46:21.637Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.27s
+```
+
+Full log: logs/resume-handoff-rust-check.log
+
+## resume-handoff-rust-tests61 — 2026-10-12T19:46:32.802Z
+
+Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+
+Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test providers::tests::failed_disk_write_never_authorizes_a_request_or_changes_live_budget ... ok
+test providers::tests::registry_persists_metadata_limits_and_usage_through_atomic_store ... ok
+test shell_store::tests::recovers_from_a_stale_partial_temporary_file ... ok
+test shell_store::tests::creates_parent_directory_and_preserves_utf8 ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 61 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.56s
+
+     Running unittests src\main.rs (src-tauri\target\debug\deps\pluely-41d72a6925b85514.exe)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests pluely_lib
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/resume-handoff-rust-tests61.log
+
+## resume-handoff-vite — 2026-10-12T19:48:42.887Z
+
+Command: `npm run dev -- --host 127.0.0.1 --port 1420 --strictPort`
+
+Observation: 46.2s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: probe: fetch failed
+
+Last 20 lines:
+
+```text
+npm notice run pluely@0.1.9 dev
+npm notice run node scripts/frontend.mjs dev --host 127.0.0.1 --port 1420 --strictPort
+Prepared 4 local VAD assets; microphone processing does not use a CDN.
+22:48:45 [vite] (client) Re-optimizing dependencies because lockfile has changed
+
+  VITE v7.3.7  ready in 1387 ms
+
+  ➜  Local:   http://localhost:1420/
+Owned-process cleanup: {"rootProcessId":16188,"startedUtc":"2026-10-12T19:48:42.8912010Z","terminatedProcessIds":[12724,4352,10756,15404,11996,6404,9300,16188],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-handoff-vite.log
+
+## resume-handoff-vite-host — 2026-10-12T19:51:23.533Z
+
+Command: `npm run dev`
+
+Observation: 46.2s; native exit: 1; stopped by timer: true. Intentional termination is not a build success.
+
+Probes: / HTTP200, 631 bytes; /src/main.tsx HTTP200, 7730 bytes
+
+Last 20 lines:
+
+```text
+22:51:34 [vite] (client) page reload src/lib/overlay/screen-context.ts
+22:51:34 [vite] (client) page reload src/lib/overlay/service-controller.ts
+22:51:34 [vite] (client) page reload src/lib/overlay/structured.ts
+22:51:34 [vite] (client) page reload src/lib/overlay/speech-controller.ts
+22:51:34 [vite] (client) page reload src/lib/storage/credential-store.ts
+22:51:34 [vite] (client) page reload src/lib/storage/secure.storage.ts
+22:51:34 [vite] (client) page reload src/lib/storage/shortcuts.storage.ts
+22:51:34 [vite] (client) hmr update /@id/R:/src/global.css
+22:51:34 [vite] (client) page reload src/main.tsx
+22:51:34 [vite] (client) hmr update /@id/R:/src/components/Overlay.tsx
+22:51:34 [vite] (client) hmr update /@id/R:/src/components/ServiceRuntime.tsx
+22:51:34 [vite] (client) hmr update /@id/R:/src/contexts/app.context.tsx
+22:51:34 [vite] (client) page reload src/contexts/index.ts
+22:51:34 [vite] (client) hmr update /@id/R:/src/contexts/theme.context.tsx
+22:51:34 [vite] (client) page reload src/layouts/index.ts
+22:51:34 [vite] (client) page reload src/config/index.ts
+22:51:34 [vite] (client) page reload src/pages/index.ts
+22:51:34 [vite] (client) hmr update /@id/R:/src/routes/index.tsx
+22:51:34 [vite] server restarted.
+Owned-process cleanup: {"rootProcessId":15460,"startedUtc":"2026-10-12T19:51:23.5353558Z","terminatedProcessIds":[9756,14316,15176,11924,7932,14016,9656,15460],"alreadyExitedProcessIds":[]}
+```
+
+Full log: logs/resume-handoff-vite-host.log
