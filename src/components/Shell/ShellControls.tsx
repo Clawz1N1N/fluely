@@ -47,6 +47,7 @@ export function ShellControls({ snapshot, act, actions=SHELL_ACTIONS }: {
     key={action} type="button" title={ACTION_LABELS[action]} aria-label={ACTION_LABELS[action]}
     aria-pressed={actionIsActive(action, snapshot)} disabled={!snapshot.ready}
     onClick={() => void act(action)}
-    className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-neutral-800/95 text-white hover:bg-neutral-700 disabled:opacity-40 aria-pressed:bg-blue-700"
+    style={{backgroundColor:`rgba(${actionIsActive(action,snapshot)?'29,78,216':'23,23,23'},${snapshot.shell.button_opacities[action]??0.28})`}}
+    className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-white/20 text-white hover:border-white/70 disabled:opacity-40"
   ><ActionIcon action={action} /></button>)}</>;
 }

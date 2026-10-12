@@ -182,6 +182,7 @@ export class ServiceController {
     const next=this.requests.catch(()=>{}).then(async()=>{
       await this.startup;if(!this.alive)return;
       this.snapshot.busy=true;this.snapshot.error=null;this.snapshot.requestId=String(batch.request_id);
+      this.snapshot.requestError=null;
       this.snapshot.clientIds=batch.client_ids??[];
       Object.assign(this.snapshot,{main:'',side:'',speak:''});
       if(this.ports.speech.begin)this.ports.speech.begin();else this.ports.speech.stop();
@@ -204,7 +205,7 @@ export class ServiceController {
           this.snapshot.history=this.snapshot.history.slice(-20);
           this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;
         }
-      }catch(error){if(this.alive){this.setError(error);this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;}}
+      }catch(error){if(this.alive){this.snapshot.requestError=error instanceof Error?error.message:String(error);this.setError(error);this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;}}
       finally{
         this.snapshot.busy=false;this.snapshot.requestId=null;
         if(this.alive){try{await this.ports.invoke('continuous_request_done',{requestId:batch.request_id});}catch(error){this.setError(error);}await this.publish(true);}

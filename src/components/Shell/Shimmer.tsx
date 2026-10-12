@@ -38,7 +38,9 @@ export const Shimmer: React.FC<{ enabled: boolean; speed: number }> = ({
           "linear-gradient(90deg, rgba(255,0,128,0.55), rgba(0,200,255,0.55), rgba(255,220,0,0.55), rgba(255,0,128,0.55))",
         backgroundSize: "300% 100%",
         animation: `shimmer-slide ${duration}s linear infinite`,
-        filter: "blur(6px)",
+        padding: 1,
+        mask:'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+        maskComposite:'exclude',
         zIndex: 2,
         opacity: flash?1:0.25,
       }}

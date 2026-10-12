@@ -18,6 +18,8 @@ export interface ShellSettings {
   shimmer: boolean;
   shimmer_speed: number;
   answer_opacity: number;
+  strip_opacity:number;
+  button_opacities:Record<string,number>;
 }
 export interface SpeechState {
   enabled: boolean;
@@ -43,6 +45,7 @@ export interface ServiceSnapshot extends StructuredAnswer {
   requestLimits: RequestLimits;
   error: string | null;
   requestId: string | null;
+  requestError:string|null;
   clientIds:string[];
   shell: ShellSettings;
   history: HistoryEntry[];
@@ -52,10 +55,11 @@ export const INITIAL_SERVICE_STATE: ServiceSnapshot = {
   revision: 0, ready: false, listening: false, continuous: false,
   answerVisible: false, busy: false, neutral: false, nextAllowedAt: null,
   currentModel: null, error: null, requestId: null,
+  requestError:null,
   clientIds:[],
   requestCounts: {per_second:0,per_minute:0,per_hour:0,per_day:0},
   requestLimits: {per_second:0,per_minute:0,per_hour:0,per_day:0},
   main: '', side: '', speak: '', history: [],
-  shell: { ui_mode: 'sidestrips', shimmer: true, shimmer_speed: 3, answer_opacity: 0.9 },
+  shell: { ui_mode: 'sidestrips', shimmer: false, shimmer_speed: 3, answer_opacity: 0.32,strip_opacity:0.28,button_opacities:{} },
   tts: { enabled: true, speaking: false, paused: false, wordStart: -1, wordEnd: -1, rate: 1, voices: [] },
 };

@@ -6,7 +6,7 @@
 //   * ocr+ui     - OCR + UI Automation tree of the
 //                  foreground window
 //   * vlm        - a separately configured vision model
-//                  (Phase 4 provider; stubbed here)
+//                  (independent frontend provider registry)
 //   * full       - everything combined, changed frames only
 //
 // The output is compact structured text with a size cap,
@@ -283,9 +283,8 @@ pub async fn build_screen_context(
                 }
             }
             VisionMode::Vlm => {
-                // A vision model describes the frame. The
-                // provider is configured in Phase 4; until
-                // then the description is a placeholder.
+                // The frontend runs the independently configured vision model;
+                // this native command provides only OCR/UI Automation context.
                 return Err("VLM context is built by the configured frontend vision provider".into());
             }
             VisionMode::Full => {

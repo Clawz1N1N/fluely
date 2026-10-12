@@ -3,13 +3,15 @@
 // Secrets use the OS keychain. Failures propagate to callers;
 // secrets are never silently written to plaintext storage.
 
-// The tauri-plugin-keychain JS API.
-import {
-  getItem as keychainGet,
-  saveItem as keychainSet,
-  removeItem as keychainRemove,
-} from "tauri-plugin-keychain";
+import { invoke } from '@tauri-apps/api/core';
 import { CredentialStore } from './credential-store';
+
+const keychainSet=(key:string,password:string)=>invoke<void>('plugin:keychain|save_item',{key,password});
+const keychainGet=async(key:string)=>{
+  const result=await invoke<{password:string|null}>('plugin:keychain|get_item',{key});
+  return result.password || null;
+};
+const keychainRemove=(key:string)=>invoke<void>('plugin:keychain|remove_item',{key});
 
 export const credentialStore = new CredentialStore({
   getItem: key => localStorage.getItem(key),

@@ -1,5 +1,6 @@
 import React from "react";
-import { Streamdown, defaultRemarkPlugins } from "streamdown";
+import { Streamdown, defaultRemarkPlugins, defaultRehypePlugins } from "streamdown";
+import rehypeSanitize, { defaultSchema } from 'rehype-sanitize';
 import remarkMath from "remark-math";
 import "katex/dist/katex.min.css";
 import { openUrl } from "@tauri-apps/plugin-opener";
@@ -14,6 +15,13 @@ const REMARK_PLUGINS = [
   ...Object.entries(defaultRemarkPlugins).filter(([name]) => name !== 'math').map(([, plugin]) => plugin),
   [remarkMath, { singleDollarTextMath: true }] as [typeof remarkMath, { singleDollarTextMath: boolean }],
 ];
+// Sanitize model HTML before generating trusted KaTeX markup. KaTeX 0.18
+// output is otherwise stripped by Streamdown 1.x's old post-render sanitizer.
+const REHYPE_PLUGINS = [defaultRehypePlugins.raw,
+  [rehypeSanitize,{...defaultSchema,attributes:{...defaultSchema.attributes,
+    code:[...(defaultSchema.attributes?.code??[]),['className',/^language-./,'math-inline','math-display']],
+  }}] as const,
+  defaultRehypePlugins.katex,defaultRehypePlugins.harden];
 
 /** Translate model LaTeX delimiters only in prose, preserving Markdown code. */
 export function normalizeMathDelimiters(markdown: string): string {
@@ -63,6 +71,7 @@ export function Markdown({
       shikiTheme={["github-light", "github-dark"]}
       components={COMPONENTS as any}
       remarkPlugins={REMARK_PLUGINS}
+      rehypePlugins={REHYPE_PLUGINS as any}
       controls={{
         table: true,
         code: true,

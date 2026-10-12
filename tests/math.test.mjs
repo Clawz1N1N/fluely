@@ -75,3 +75,9 @@ test('Markdown preserves math inside tilde fences and multi-backtick inline span
   assert.doesNotMatch(html, /class="katex"/);
   assert.ok(html.replace(/<[^>]*>/g, '').includes(codeMath));
 });
+
+test('model HTML stays sanitized before trusted math rendering',async()=>{
+  const html=await renderMarkdown('<script>alert(1)</script><img src="x" onerror="alert(2)"><a href="javascript:alert(3)">link</a>\n\n$x^2$');
+  assert.doesNotMatch(html,/<script|onerror=|javascript:/);
+  assert.match(html,/class="katex"/);
+});

@@ -80,6 +80,12 @@ pub fn handle_shortcut_action<R: Runtime>(app: &AppHandle<R>, action_id: &str) {
         "toggle_dashboard" => handle_toggle_dashboard(app),
         "toggle_window" => handle_toggle_window(app),
         "focus_input" => handle_focus_input(app),
+        "answer_interaction" => {
+            let app=app.clone();
+            tauri::async_runtime::spawn_blocking(move||{
+                if let Err(error)=crate::shell::toggle_answer_interaction(&app){eprintln!("Answer interaction: {error}");}
+            });
+        },
         "move_window_up" => handle_move_window(app, "up"),
         "move_window_down" => handle_move_window(app, "down"),
         "move_window_left" => handle_move_window(app, "left"),
@@ -155,9 +161,12 @@ pub fn stop_all_move_windows<R: Runtime>(app: &AppHandle<R>) {
 
 /// Handle app toggle (hide/show) with input focus and app icon management
 fn handle_toggle_window<R: Runtime>(app: &AppHandle<R>) {
-    if let Err(error) = crate::shell::toggle_shell_visibility(app) {
-        eprintln!("Toggle shell visibility: {error}");
-    }
+    let app = app.clone();
+    tauri::async_runtime::spawn_blocking(move || {
+        if let Err(error) = crate::shell::toggle_shell_visibility(&app) {
+            eprintln!("Toggle shell visibility: {error}");
+        }
+    });
 }
 
 /// Handle audio shortcut

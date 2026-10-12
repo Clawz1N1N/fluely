@@ -5,7 +5,6 @@ import { Pause, Play, Square, X } from 'lucide-react';
 import { Markdown } from '@/components/Markdown';
 import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
 import { useShellDrag } from './useShellDrag';
-import { Shimmer } from './Shimmer';
 import { requestCounts } from './ShellControls';
 
 /** The answer window is a view of the persistent hidden-main service. */
@@ -13,6 +12,8 @@ export const AnswerWindow: React.FC = () => {
   const { snapshot, act, connectionError } = useServiceSnapshot();
   const [input, setInput] = useState('');
   const [focusError, setFocusError] = useState<string | null>(null);
+  const [interactive,setInteractive]=useState(false);
+  const [interactionShortcut,setInteractionShortcut]=useState('Shift + \\');
   const [now, setNow] = useState(Date.now());
   const inputRef = useRef<HTMLInputElement>(null);
   const mounted = useRef(false);
@@ -30,6 +31,7 @@ export const AnswerWindow: React.FC = () => {
   const endEditing = useCallback(() => {
     focusRevision.current++;
     editing.current = false;
+    setInteractive(false);
     void setEditing(false).catch(() => { if (mounted.current) setFocusError('Не вдалося завершити введення.'); });
   }, [setEditing]);
   const beginEditing = useCallback(async () => {
@@ -38,10 +40,27 @@ export const AnswerWindow: React.FC = () => {
       await setEditing(true);
       if (!mounted.current || revision !== focusRevision.current) return;
       editing.current = true;
+      setInteractive(true);
       setFocusError(null);
       inputRef.current?.focus();
     } catch { if (mounted.current) setFocusError('Не вдалося активувати поле запиту.'); }
   }, [setEditing]);
+  useEffect(() => {
+    let disposed=false,off:UnlistenFn|undefined;
+    void invoke<Record<string,string>>('get_registered_shortcuts').then(bindings=>{
+      if(!disposed&&bindings.answer_interaction)setInteractionShortcut(bindings.answer_interaction);
+    }).catch(console.error);
+    void listen<boolean>('answer-interaction-changed',event=>{
+      if(disposed)return;
+      editing.current=event.payload;setInteractive(event.payload);
+      if(!event.payload)inputRef.current?.blur();
+    }).then(async stop=>{
+      if(disposed){stop();return;}off=stop;
+      const value=await invoke<boolean>('get_answer_interaction');
+      if(!disposed){editing.current=value;setInteractive(value);}
+    }).catch(console.error);
+    return()=>{disposed=true;off?.();};
+  },[]);
   useEffect(() => {
     mounted.current = true;
     let disposed = false;
@@ -79,14 +98,14 @@ export const AnswerWindow: React.FC = () => {
   const status = !snapshot.ready ? 'Підключення…' : snapshot.neutral ? (wait ? `Очікування: ${wait} с` : 'Запити призупинено') : snapshot.busy ? 'Готуємо відповідь…' : snapshot.currentModel ?? 'Готово';
 
   return <div
-    className="relative flex h-full w-full flex-col overflow-hidden rounded-lg text-white"
-    style={{ backgroundColor: `rgba(23,23,23,${snapshot.shell.answer_opacity})` }}
+    className="relative flex h-full w-full flex-col overflow-hidden rounded-lg border border-white/50 text-white"
+    style={{ backgroundColor: `rgba(23,23,23,${interactive?1:snapshot.shell.answer_opacity})`,pointerEvents:interactive?'auto':'none',textShadow:interactive?'none':'0 1px 2px #000' }}
+    data-interactive={interactive}
     data-mode={snapshot.shell.ui_mode}
     onKeyDown={event => { if (event.key === 'Escape') { inputRef.current?.blur(); endEditing(); } }}
   >
-    <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
-    <div className="flex cursor-move items-center justify-between bg-neutral-800/80 px-3 py-2" {...drag.handlers}>
-      <span className="text-xs font-medium">Pluely</span>
+    <div className="flex cursor-move items-center justify-between border-b border-white/20 px-3 py-2" {...(interactive?drag.handlers:{})}>
+      <span className="text-xs font-medium">Pluely {interactive?'· Взаємодія · Escape — завершити':''}</span>
       <div className="flex items-center gap-2">
         <span className="text-[10px] text-white/60" id="rate-limit-status" aria-live="polite" title={requestCounts(snapshot)}>{status} · {requestCounts(snapshot)}</span>
         <button type="button" className="rounded p-1 hover:bg-neutral-700" onClick={() => void close()} aria-label="Закрити відповідь"><X className="h-4 w-4" /></button>
@@ -94,11 +113,11 @@ export const AnswerWindow: React.FC = () => {
     </div>
     {(connectionError || focusError || snapshot.error) && <p role="alert" className="px-3 py-1 text-xs text-red-300">{connectionError ?? focusError ?? snapshot.error}</p>}
     <div className="flex min-h-0 flex-1 gap-2 p-2">
-      <section className="min-w-0 flex-1 overflow-auto rounded bg-neutral-800/60 p-2">
+      <section className="min-w-0 flex-1 overflow-auto rounded border border-white/15 p-2">
         <h2 className="mb-1 text-[10px] uppercase text-white/50">Основне · MAIN</h2>
         <Markdown isStreaming={snapshot.busy}>{snapshot.main || '…'}</Markdown>
       </section>
-      <section className="min-w-0 flex-1 overflow-auto rounded bg-neutral-800/60 p-2">
+      <section className="min-w-0 flex-1 overflow-auto rounded border border-white/15 p-2">
         <h2 className="mb-1 text-[10px] uppercase text-white/50">Додатково · SIDE</h2>
         <Markdown isStreaming={snapshot.busy}>{snapshot.side || '…'}</Markdown>
       </section>
@@ -123,10 +142,9 @@ export const AnswerWindow: React.FC = () => {
       <button type="button" className="rounded bg-neutral-700 px-2 text-xs" onClick={() => void beginEditing()}>Ввести запит</button>
       <input
         ref={inputRef} value={input} tabIndex={-1} onChange={event => setInput(event.target.value)}
-        onPointerDown={event => { if (!editing.current) { event.preventDefault(); void beginEditing(); } }}
-        onFocus={() => { if (!editing.current) { inputRef.current?.blur(); void beginEditing(); } }}
-        onBlur={endEditing} placeholder="Запитайте…" aria-label="Запит до помічника"
-        className="min-w-0 flex-1 rounded bg-neutral-800 px-2 py-1 text-sm outline-none"
+        readOnly={!interactive}
+        placeholder={interactive?'Запитайте…':`${interactionShortcut} — переміщення та введення`} aria-label="Запит до помічника"
+        className="min-w-0 flex-1 rounded border border-white/20 bg-transparent px-2 py-1 text-sm outline-none"
       />
       <button type="submit" disabled={!input.trim() || !snapshot.ready} className="rounded bg-blue-600 px-3 py-1 text-sm disabled:opacity-40">Надіслати</button>
     </form>

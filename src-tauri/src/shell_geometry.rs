@@ -64,6 +64,15 @@ mod tests {
         assert_eq!(clamp(Point { x: 100, y: 100 }, Extent { width: 3000, height: 2000 }, left()), Point { x: -1920, y: -240 });
     }
     #[test]
+    fn answer_reaches_work_area_corners_without_strip_boundaries_or_taskbar() {
+        let work=Bounds{x:0,y:0,width:1920,height:1040};
+        let size=Extent{width:720,height:480};
+        let (top,_) = constrained_move(Point{x:600,y:300},Point{x:0,y:0},size,&[work],"free").unwrap();
+        let (bottom,_) = constrained_move(top,Point{x:1920,y:1080},size,&[work],"free").unwrap();
+        assert_eq!(top,Point{x:0,y:0});
+        assert_eq!(bottom,Point{x:1200,y:560});
+    }
+    #[test]
     fn proposed_location_can_cross_to_another_monitor() {
         let monitors = [left(), Bounds { x: 0, y: 0, width: 2560, height: 1440 }];
         assert_eq!(choose_monitor(Point { x: 300, y: 200 }, Extent { width: 44, height: 44 }, &monitors), Some(1));

@@ -91,3 +91,13 @@ test('disabling system capture live stops the actual active stream',async()=>{
     assert.ok(f.calls.some(call=>call.name==='stop_system_audio_capture'));
   }finally{await f.controller.stop();}
 });
+
+test('speech errors do not turn a successful AI batch into a failed chat result',async()=>{
+  const f=fixture();f.controller.ports.speech.update=()=>f.controller.setError(new Error('TTS unavailable'));
+  await f.controller.start();try {
+    await f.controller.batch({request_id:11,frames:[],transcript:[],questions:['Q'],client_ids:['client']});
+    assert.equal(f.controller.snapshot.main,'Відповідь');
+    assert.equal(f.controller.snapshot.requestError,null);
+    assert.equal(f.controller.snapshot.error,'TTS unavailable');
+  }finally{await f.controller.stop();}
+});

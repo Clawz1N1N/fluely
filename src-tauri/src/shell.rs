@@ -68,22 +68,32 @@ pub struct WindowPlacement {
 /// The whole persisted layout.
 #[derive(Debug, Clone, Serialize, Deserialize, Default)]
 pub struct ShellLayout {
+    #[serde(default)]
+    pub appearance_version:u32,
     pub ui_mode: UiMode,
     pub shimmer: bool,
     pub shimmer_speed: u32,
     pub answer_opacity: f64,
+    #[serde(default = "default_strip_opacity")]
+    pub strip_opacity:f64,
+    #[serde(default)]
+    pub button_opacities:HashMap<String,f64>,
     pub placements: HashMap<String, WindowPlacement>,
     #[serde(default)]
     pub placements_by_monitor: HashMap<String, HashMap<String, WindowPlacement>>,
 }
+fn default_strip_opacity()->f64 {0.28}
 
 impl ShellLayout {
     fn default_for_mode(mode: UiMode) -> Self {
         ShellLayout {
+            appearance_version:2,
             ui_mode: mode,
-            shimmer: true,
+            shimmer: false,
             shimmer_speed: 3,
-            answer_opacity: 1.0,
+            answer_opacity: 0.32,
+            strip_opacity:default_strip_opacity(),
+            button_opacities:HashMap::new(),
             placements: HashMap::new(),
             placements_by_monitor: HashMap::new(),
         }
@@ -131,8 +141,15 @@ pub fn load_layout<R: Runtime>(app: &AppHandle<R>) -> ShellLayout {
         None => return ShellLayout::default_for_mode(UiMode::default()),
     };
     match std::fs::read_to_string(&path) {
-        Ok(content) => serde_json::from_str(&content)
-            .unwrap_or_else(|_| ShellLayout::default_for_mode(UiMode::default())),
+        Ok(content) => {
+            let mut layout:ShellLayout=serde_json::from_str(&content)
+                .unwrap_or_else(|_| ShellLayout::default_for_mode(UiMode::default()));
+            if layout.appearance_version<2 {
+                layout.answer_opacity=0.32;layout.strip_opacity=0.28;
+                layout.shimmer=false;layout.appearance_version=2;
+            }
+            layout
+        },
         Err(_) => ShellLayout::default_for_mode(UiMode::default()),
     }
 }
@@ -176,9 +193,21 @@ struct MonitorGeometry {
 fn monitor_geometry(monitor: &tauri::Monitor) -> MonitorGeometry {
     let position = monitor.position();
     let size = monitor.size();
+    let mut bounds=Bounds { x: position.x, y: position.y, width: size.width, height: size.height };
+    #[cfg(target_os="windows")]
+    unsafe {
+        use windows::Win32::Foundation::POINT;
+        use windows::Win32::Graphics::Gdi::{MonitorFromPoint,GetMonitorInfoW,MONITORINFO,MONITOR_DEFAULTTONEAREST};
+        let handle=MonitorFromPoint(POINT{x:position.x+(size.width/2) as i32,y:position.y+(size.height/2) as i32},MONITOR_DEFAULTTONEAREST);
+        let mut info=MONITORINFO{cbSize:std::mem::size_of::<MONITORINFO>() as u32,..Default::default()};
+        if GetMonitorInfoW(handle,&mut info).as_bool(){
+            let work=info.rcWork;
+            bounds=Bounds{x:work.left,y:work.top,width:(work.right-work.left).max(1) as u32,height:(work.bottom-work.top).max(1) as u32};
+        }
+    }
     MonitorGeometry {
         key: format!("{}@{},{}", monitor.name().map(String::as_str).unwrap_or("display"), position.x, position.y),
-        bounds: Bounds { x: position.x, y: position.y, width: size.width, height: size.height },
+        bounds,
         scale: monitor.scale_factor(),
     }
 }
@@ -330,6 +359,13 @@ fn run_shell_policy_on_main_thread<R: Runtime>(
 fn apply_window_policy<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<(), String> {
     let label = label.to_string();
     run_shell_policy_on_main_thread(app, move |app| {
+        if label=="answer" {
+            let editing=app.state::<ShellState>().answer_editing.load(Ordering::SeqCst);
+            if let Some(window)=app.get_webview_window(&label){
+                window.set_ignore_cursor_events(!editing).map_err(|e|format!("Answer cursor policy: {e}"))?;
+                window.set_resizable(editing).map_err(|e|e.to_string())?;
+            }
+        }
         #[cfg(target_os = "windows")]
         {
             let hwnd = hwnd_for_label(app, &label).ok_or_else(|| format!("No HWND for {label}"))?;
@@ -527,6 +563,17 @@ pub fn set_answer_opacity(app: AppHandle, opacity: f64) -> Result<(), String> {
     emit_shell_settings(&app)
 }
 
+#[tauri::command]
+pub fn set_shell_opacity(app:AppHandle,label:String,opacity:f64)->Result<(),String>{
+    if !opacity.is_finite(){return Err("Opacity must be finite".into());}
+    let value=opacity.clamp(0.05,1.0);
+    if label!="strips"&&!matches!(label.as_str(),"listen"|"screenshot"|"continuous"|"answer"|"chat"|"tts"|"mode"|"settings"){
+        return Err("Unknown opacity element".into());
+    }
+    update_layout(&app,|layout|{if label=="strips"{layout.strip_opacity=value;}else{layout.button_opacities.insert(label,value);}})?;
+    emit_shell_settings(&app)
+}
+
 /// Reset layout settings and recreate strips/buttons, retaining the answer.
 #[tauri::command]
 pub async fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
@@ -548,6 +595,12 @@ pub async fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
 
 /// Hide/show the complete overlay; never expose or activate the service window.
 pub fn toggle_shell_visibility<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
+    let state = app.state::<ShellState>();
+    let _lifecycle = state.lifecycle.lock().map_err(|e| e.to_string())?;
+    toggle_shell_visibility_locked(app)
+}
+
+fn toggle_shell_visibility_locked<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     let state = app.state::<ShellState>();
     let hide = !state.hidden.load(Ordering::SeqCst);
     if hide {
@@ -711,6 +764,8 @@ pub fn get_shell_settings(app: AppHandle) -> Result<serde_json::Value, String> {
         "shimmer": layout.shimmer,
         "shimmer_speed": layout.shimmer_speed,
         "answer_opacity": layout.answer_opacity,
+        "strip_opacity":layout.strip_opacity,
+        "button_opacities":layout.button_opacities,
         "ui_mode": layout.ui_mode.as_str(),
     }))
 }
@@ -728,11 +783,6 @@ fn setup_answer_window<R: Runtime>(app: &AppHandle<R>, window: &tauri::WebviewWi
             api.prevent_close();
             if let Err(error) = hide_answer(&app_handle) {
                 eprintln!("Hide answer: {error}");
-            }
-        }
-        tauri::WindowEvent::Focused(false) => {
-            if let Err(error) = set_editing_policy(&app_handle, false) {
-                eprintln!("Restore answer nonactivation: {error}");
             }
         }
         _ => {}
@@ -793,6 +843,8 @@ fn set_editing_policy_on_main_thread<R: Runtime>(
         window
             .set_focusable(editing)
             .map_err(|e| format!("Answer focusability: {e}"))?;
+        window.set_ignore_cursor_events(!editing).map_err(|e|format!("Answer cursor policy: {e}"))?;
+        window.set_resizable(editing).map_err(|e|e.to_string())?;
         #[cfg(target_os = "windows")]
         apply_windows_shell_style(hwnd, editing)?;
         Ok::<(), String>(())
@@ -832,6 +884,7 @@ fn set_editing_policy_on_main_thread<R: Runtime>(
             return Err(format!("Focus answer: {error}"));
         }
     }
+    app.emit("answer-interaction-changed",editing).map_err(|e|e.to_string())?;
     Ok(())
 }
 
@@ -850,7 +903,7 @@ pub async fn show_answer_window(app: AppHandle) -> Result<(), String> {
     let state = app.state::<ShellState>();
     let _lifecycle = state.lifecycle.lock().map_err(|e| e.to_string())?;
     let window = ensure_answer_window(&app)?;
-    if state.hidden.load(Ordering::SeqCst) { toggle_shell_visibility(&app)?; }
+    if state.hidden.load(Ordering::SeqCst) { toggle_shell_visibility_locked(&app)?; }
     apply_window_policy(&app, "answer")?;
     window.show().map_err(|e| format!("Show answer: {e}"))?;
     app.emit("answer-visibility-changed", true).map_err(|e| e.to_string())
@@ -859,8 +912,13 @@ pub async fn show_answer_window(app: AppHandle) -> Result<(), String> {
 /// Automatic responses respect the global hide switch.
 #[tauri::command]
 pub async fn present_answer_window(app: AppHandle) -> Result<bool, String> {
-    if app.state::<ShellState>().hidden.load(Ordering::SeqCst) { return Ok(false); }
-    show_answer_window(app).await?;
+    let state = app.state::<ShellState>();
+    let _lifecycle = state.lifecycle.lock().map_err(|e| e.to_string())?;
+    if state.hidden.load(Ordering::SeqCst) { return Ok(false); }
+    let window = ensure_answer_window(&app)?;
+    apply_window_policy(&app, "answer")?;
+    window.show().map_err(|e| format!("Show answer: {e}"))?;
+    app.emit("answer-visibility-changed", true).map_err(|e| e.to_string())?;
     Ok(true)
 }
 
@@ -868,6 +926,27 @@ pub async fn present_answer_window(app: AppHandle) -> Result<bool, String> {
 #[tauri::command]
 pub fn set_answer_editing(app: AppHandle, editing: bool) -> Result<(), String> {
     set_editing_policy(&app, editing)
+}
+
+#[tauri::command]
+pub fn get_answer_interaction(app:AppHandle)->bool {
+    app.state::<ShellState>().answer_editing.load(Ordering::SeqCst)
+}
+
+pub fn toggle_answer_interaction<R:Runtime>(app:&AppHandle<R>)->Result<(),String>{
+    let state=app.state::<ShellState>();
+    let _lifecycle=state.lifecycle.lock().map_err(|e|e.to_string())?;
+    let editing=!app.state::<ShellState>().answer_editing.load(Ordering::SeqCst);
+    let window=ensure_answer_window(app)?;
+    if state.hidden.load(Ordering::SeqCst){toggle_shell_visibility_locked(app)?;}
+    window.show().map_err(|e|e.to_string())?;
+    app.emit("answer-visibility-changed",true).map_err(|e|e.to_string())?;
+    set_editing_policy(app,editing)
+}
+
+#[tauri::command]
+pub async fn toggle_answer_interaction_window(app:AppHandle)->Result<(),String>{
+    toggle_answer_interaction(&app)
 }
 
 /// Keep answer/history/streaming state alive when closing the visible pane.

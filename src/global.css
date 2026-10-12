@@ -172,6 +172,14 @@ html {
   overscroll-behavior: none;
 }
 
+/* Native transparent overlays must not inherit the dashboard's opaque body.
+   Matching the native rectangle also prevents invisible drag/hit-test margins. */
+html[data-overlay-shell],html[data-overlay-shell] body,html[data-overlay-shell] #root {
+  background:transparent !important;
+  width:100%;
+  height:100%;
+}
+
 body {
   position: fixed;
   width: 100%;

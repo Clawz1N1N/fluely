@@ -2,6 +2,11 @@ import { ShortcutAction } from "@/types";
 
 export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
   {
+    id:'answer_interaction',name:'Переміщення та взаємодія з чатом',
+    description:'Перемкнути пасивний прозорий чат і непрозорий режим введення/переміщення',
+    defaultKey:{macos:'shift+backslash',windows:'shift+backslash',linux:'shift+backslash'},
+  },
+  {
     id: 'find_buttons', name: 'Знайти кнопки / скинути розташування',
     description: 'Повернути панелі й кнопки на екран',
     defaultKey: { macos: 'cmd+shift+r', windows: 'ctrl+shift+r', linux: 'ctrl+shift+r' },

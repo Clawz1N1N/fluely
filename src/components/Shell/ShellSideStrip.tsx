@@ -15,9 +15,9 @@ export const ShellSideStrip: React.FC = () => {
 
   return (
     <div
-      className="relative flex flex-col items-center gap-2 w-full h-full rounded-lg bg-neutral-900/90 py-3 cursor-move overflow-auto"
+      className="relative flex flex-col items-center gap-2 w-full h-full rounded-lg border border-white/45 py-3 cursor-move overflow-auto"
       {...drag.handlers}
-      style={{ userSelect: "none" }}
+      style={{ userSelect: "none",backgroundColor:`rgba(23,23,23,${snapshot.shell.strip_opacity})`,textShadow:'0 1px 2px #000' }}
       data-side={side}
       data-mode={snapshot.shell.ui_mode}
       title={connectionError ?? undefined}

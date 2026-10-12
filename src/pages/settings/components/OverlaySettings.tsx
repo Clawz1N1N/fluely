@@ -9,6 +9,8 @@ import { PROVIDER_PRESETS, parseProviderVariables, saveProviderConfiguration } f
 import type { VisionSettings } from '@/lib/overlay/screen-context';
 import { fetchProviderModels } from '@/lib/overlay/provider-engine';
 import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
+import type { ShellSettings } from '@/lib/overlay/contracts';
+import { ACTION_LABELS,SHELL_ACTIONS } from '@/components/Shell/ShellControls';
 
 interface CaptureSettings {
   mode: 'manual' | 'interval' | 'after_speech'; interval: number; monitor: string;
@@ -16,7 +18,6 @@ interface CaptureSettings {
   max_wait_secs: number; microphone: boolean; system_audio: boolean;
 }
 interface TtsSettings { backend: 'system' | 'piper' | 'cloud'; enabled: boolean; voice: string; language: string; rate: number; stream: boolean;piper_executable:string }
-interface ShellSettings { ui_mode: 'sidestrips' | 'topbottomstrips' | 'buttons'; shimmer: boolean; shimmer_speed: number; answer_opacity: number }
 const kinds: Array<{ id: ProviderKind; label: string }> = [
   { id: 'brain', label: 'Мислення' }, { id: 'stt', label: 'Розпізнавання мовлення' },
   { id: 'tts', label: 'Озвучення' }, { id: 'vision', label: 'Аналіз зображень' },
@@ -211,13 +212,18 @@ export function OverlaySettings() {
       {shell && <Section title="Вигляд накладеного інтерфейсу"><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
         await invoke('set_ui_mode', { mode: shell.ui_mode }); await invoke('set_shimmer', { enabled: shell.shimmer });
         await invoke('set_shimmer_speed', { speed: shell.shimmer_speed }); await invoke('set_answer_opacity', { opacity: shell.answer_opacity });
+        await invoke('set_shell_opacity',{label:'strips',opacity:shell.strip_opacity});
+        for(const action of SHELL_ACTIONS)await invoke('set_shell_opacity',{label:action,opacity:shell.button_opacities[action]??0.28});
         setShell(await invoke<ShellSettings>('get_shell_settings'));
       }, 'Вигляд інтерфейсу збережено.', 'Не вдалося застосувати всі налаштування інтерфейсу.'); }}>
         <div className="grid gap-3 md:grid-cols-2">
           <Field label="Розташування керування"><select className={control} value={shell.ui_mode} onChange={event => setShell({ ...shell, ui_mode: event.target.value as ShellSettings['ui_mode'] })}><option value="sidestrips">Бічні смуги</option><option value="topbottomstrips">Верхня та нижня смуги</option><option value="buttons">Окремі кнопки</option></select></Field>
           <Field label="Період переливання, секунд"><input className={control} type="number" min={1} max={20} step={1} required value={shell.shimmer_speed} onChange={event => setShell({ ...shell, shimmer_speed: Number(event.target.value) })} /></Field>
-          <Field label="Непрозорість фону відповіді (0–1)"><input className={control} type="number" min={0} max={1} step={0.05} required value={shell.answer_opacity} onChange={event => setShell({ ...shell, answer_opacity: Number(event.target.value) })} /></Field>
+          <Field label={`Прозорість чату: ${Math.round((1-shell.answer_opacity)*100)}%`} hint="У режимі переміщення чат стає непрозорим."><input type="range" min={0} max={85} step={1} value={Math.round((1-shell.answer_opacity)*100)} onChange={event => setShell({ ...shell, answer_opacity: 1-Number(event.target.value)/100 })} /></Field>
+          <Field label={`Прозорість смуг: ${Math.round((1-shell.strip_opacity)*100)}%`}><input type="range" min={0} max={95} step={1} value={Math.round((1-shell.strip_opacity)*100)} onChange={event=>setShell({...shell,strip_opacity:1-Number(event.target.value)/100})}/></Field>
         </div>
+        <div className="grid gap-3 md:grid-cols-2">{SHELL_ACTIONS.map(action=><Field key={action} label={`Прозорість кнопки «${ACTION_LABELS[action]}»: ${Math.round((1-(shell.button_opacities[action]??0.28))*100)}%`}><input type="range" min={0} max={95} step={1} value={Math.round((1-(shell.button_opacities[action]??0.28))*100)} onChange={event=>setShell({...shell,button_opacities:{...shell.button_opacities,[action]:1-Number(event.target.value)/100}})}/></Field>)}</div>
+        <p className="text-sm text-muted-foreground">Чат пропускає кліки. Натисніть Shift + \ для переміщення, зміни розміру й введення. Повторне натискання або Escape повертає прозорий режим. Окрему комбінацію «Переміщення та взаємодія з чатом» можна змінити на сторінці гарячих клавіш.</p>
         <Toggle label="Переливання кольорів" checked={shell.shimmer} onChange={shimmer => setShell({ ...shell, shimmer })} />
         <button className={primary} type="submit">Зберегти вигляд</button>
       </form></Section>}

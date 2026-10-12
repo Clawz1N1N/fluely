@@ -19,6 +19,7 @@ if (windowLabel === 'main') {
   windowLabel.startsWith("button-") ||
   windowLabel === "answer"
 ) {
+  document.documentElement.dataset.overlayShell='true';
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <ThemeProvider>

@@ -10,6 +10,7 @@ import { providerFetch, ProviderHttpError, readEventStream } from "../overlay/ne
 import curl2Json from "@bany/curl-to-json";
 import { getResponseSettings, RESPONSE_LENGTHS, LANGUAGES } from "@/lib";
 import { MARKDOWN_FORMATTING_INSTRUCTIONS } from "@/config/constants";
+import { boundedChatQuestion } from '../overlay/chat-context';
 
 export function buildEnhancedSystemPrompt(baseSystemPrompt?: string): string {
   const responseSettings = getResponseSettings();
@@ -55,7 +56,8 @@ export async function* fetchAIResponse(params: {
   if(!params.registryReserved&&typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window){
     const {requestServiceAnswer}=await import('../overlay/service-client');
     const current=localStorage.getItem('system_prompt');
-    const question=params.systemPrompt&&params.systemPrompt!==current?`Додаткові інструкції для цього запиту:\n${params.systemPrompt}\n\nЗапит:\n${params.userMessage}`:params.userMessage;
+    const instructions=params.systemPrompt&&params.systemPrompt!==current?`Додаткові інструкції для цього запиту:\n${params.systemPrompt}\n\n`:'';
+    const question=boundedChatQuestion(instructions,params.history,params.userMessage);
     yield await requestServiceAnswer(question,params.imagesBase64,params.signal);return;
   }
   try {

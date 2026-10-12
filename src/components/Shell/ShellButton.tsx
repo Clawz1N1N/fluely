@@ -19,7 +19,8 @@ export const ShellButton: React.FC = () => {
       aria-pressed={actionIsActive(action, snapshot)} disabled={!snapshot.ready}
       data-shell-drag
       onClick={() => { if (!drag.consumeClick()) void act(action); }}
-      className="relative flex h-full w-full items-center justify-center rounded-lg bg-neutral-800/95 text-white disabled:opacity-40 aria-pressed:bg-blue-700"
+      style={{backgroundColor:`rgba(${actionIsActive(action,snapshot)?'29,78,216':'23,23,23'},${snapshot.shell.button_opacities[action]??0.28})`}}
+      className="relative flex h-full w-full items-center justify-center rounded-lg border border-white/45 text-white disabled:opacity-40"
     ><ActionIcon action={action} />{snapshot.neutral && <span role="status" className="absolute bottom-0 right-0 rounded bg-amber-600 px-0.5 text-[8px]">{snapshot.nextAllowedAt?Math.max(0,Math.ceil((snapshot.nextAllowedAt-Date.now())/1000)):'Ⅱ'}</span>}</button>
   </div>;
 };

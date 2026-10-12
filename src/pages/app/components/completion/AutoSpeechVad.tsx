@@ -29,9 +29,12 @@ const AutoSpeechVADInternal = ({
       : {};
 
   const vad = useMicVAD({
+    model:'v5',baseAssetPath:'/vad/',onnxWASMBasePath:'/vad/',
+    ortConfig:ort=>{ort.env.wasm.numThreads=1;},
     userSpeakingThreshold: 0.6,
     startOnLoad: true,
-    additionalAudioConstraints: audioConstraints,
+    getStream:()=>navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,...audioConstraints}}),
+    resumeStream:()=>navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,...audioConstraints}}),
     onSpeechEnd: async (audio) => {
       try {
         // convert float32array to blob
@@ -40,7 +43,7 @@ const AutoSpeechVADInternal = ({
         let transcription: string;
 
         // Check if we have a configured speech provider
-        if (!selectedSttProvider.provider) {
+        if (!selectedSttProvider.provider && !('__TAURI_INTERNALS__' in window)) {
           console.warn("No speech provider selected");
           setState((prev: any) => ({
             ...prev,
@@ -54,7 +57,7 @@ const AutoSpeechVADInternal = ({
           (p) => p.id === selectedSttProvider.provider
         );
 
-        if (!providerConfig) {
+        if (!providerConfig && !('__TAURI_INTERNALS__' in window)) {
           console.warn("Selected speech provider configuration not found");
           setState((prev: any) => ({
             ...prev,
