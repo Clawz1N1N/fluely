@@ -53,4 +53,3 @@ Frontend local-engine-client tests: 3/3 passed. TypeScript check completed succe
 
 ## Final application verification
 The packaged Fluely EXE managed and stopped its own GGUF ASR worker. The final native smoke loaded the model in 1.531 seconds and transcribed the public JFK fixture in 1.204 seconds with auto language. Malformed WAV was rejected without crashing the worker. Final Rust suite: 105 passed; Node suite: 123 passed. See docs/release-0.2.0.md for integrated evidence.
-
