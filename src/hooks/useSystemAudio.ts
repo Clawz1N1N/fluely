@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useEffect, useState, useCallback, useRef } from "react";
 import { useWindowResize, useGlobalShortcuts } from ".";
 import { invoke } from "@tauri-apps/api/core";
@@ -65,6 +66,7 @@ export interface ChatConversation {
 export type useSystemAudioType = ReturnType<typeof useSystemAudio>;
 
 export function useSystemAudio() {
+  useI18n();
   const { resizeWindow } = useWindowResize();
   const globalShortcuts = useGlobalShortcuts();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
@@ -187,7 +189,7 @@ export function useSystemAudio() {
         errorUnlisten = await listen("audio-encoding-error", (event) => {
           const errorMsg = event.payload as string;
           console.error("Audio encoding error:", errorMsg);
-          setError(`Failed to process audio: ${errorMsg}`);
+          setError(t('Failed to process audio: {error}', {error: errorMsg}));
           setIsProcessing(false);
           setIsAIProcessing(false);
           setIsRecordingInContinuousMode(false);
@@ -235,7 +237,7 @@ export function useSystemAudio() {
             const audioBlob = new Blob([bytes], { type: "audio/wav" });
 
             if (!selectedSttProvider.provider) {
-              setError("No speech provider selected.");
+              setError(t("No speech provider selected."));
               return;
             }
 
@@ -244,7 +246,7 @@ export function useSystemAudio() {
             );
 
             if (!providerConfig) {
-              setError("Speech provider config not found.");
+              setError(t("Speech provider config not found."));
               return;
             }
 
@@ -259,7 +261,7 @@ export function useSystemAudio() {
 
             const timeoutPromise = new Promise<string>((_, reject) => {
               setTimeout(
-                () => reject(new Error("Speech transcription timed out (30s)")),
+                () => reject(new Error(t("Speech transcription timed out (30s)"))),
                 30000
               );
             });
@@ -288,21 +290,21 @@ export function useSystemAudio() {
                   previousMessages
                 );
               } else {
-                setError("Received empty transcription");
+                setError(t("Received empty transcription"));
               }
             } catch (sttError: any) {
               console.error("STT Error:", sttError);
-              setError(sttError.message || "Failed to transcribe audio");
+              setError(sttError.message || t("Failed to transcribe audio"));
               setIsPopoverOpen(true);
             }
           } catch (err) {
-            setError("Failed to process speech");
+            setError(t("Failed to process speech"));
           } finally {
             setIsProcessing(false);
           }
         });
       } catch (err) {
-        setError("Failed to setup speech listener");
+        setError(t("Failed to setup speech listener"));
       }
     };
 
@@ -443,7 +445,7 @@ export function useSystemAudio() {
       });
     } catch (err) {
       console.error("Failed to start continuous recording:", err);
-      setError(`Failed to start recording: ${err}`);
+      setError(t('Failed to start recording: {error}', {error: String(err)}));
     }
   }, [vadConfig, selectedAudioDevices.output.id]);
 
@@ -461,7 +463,7 @@ export function useSystemAudio() {
       setIsRecordingInContinuousMode(false);
     } catch (err) {
       console.error("Failed to ignore recording:", err);
-      setError(`Failed to ignore recording: ${err}`);
+      setError(t('Failed to ignore recording: {error}', {error: String(err)}));
     }
   }, [isContinuousMode, isRecordingInContinuousMode]);
 
@@ -486,7 +488,7 @@ export function useSystemAudio() {
         let fullResponse = "";
 
         if (!selectedAIProvider.provider) {
-          setError("No AI provider selected.");
+          setError(t("No AI provider selected."));
           return;
         }
 
@@ -494,7 +496,7 @@ export function useSystemAudio() {
           (p) => p.id === selectedAIProvider.provider
         );
         if (!provider) {
-          setError("AI provider config not found.");
+          setError(t("AI provider config not found."));
           return;
         }
 
@@ -511,7 +513,7 @@ export function useSystemAudio() {
             setLastAIResponse((prev) => prev + chunk);
           }
         } catch (aiError: any) {
-          setError(aiError.message || "Failed to get AI response");
+          setError(aiError.message || t("Failed to get AI response"));
         }
 
         if (fullResponse) {
@@ -538,7 +540,7 @@ export function useSystemAudio() {
           }));
         }
       } catch (err) {
-        setError("Failed to get AI response");
+        setError(t("Failed to get AI response"));
       } finally {
         setIsAIProcessing(false);
         // No auto-restart - user manually controls when to start next recording
@@ -626,7 +628,7 @@ export function useSystemAudio() {
       setIsPopoverOpen(false);
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to stop capture: ${errorMessage}`);
+      setError(t('Failed to stop capture: {error}', {error: errorMessage}));
       console.error("Stop capture error:", err);
     }
   }, []);
@@ -635,7 +637,7 @@ export function useSystemAudio() {
   const manualStopAndSend = useCallback(async () => {
     try {
       if (!isContinuousMode) {
-        console.warn("Not in continuous mode");
+        console.warn(t("Not in continuous mode"));
         return;
       }
 
@@ -646,7 +648,7 @@ export function useSystemAudio() {
       await invoke("manual_stop_continuous");
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : String(err);
-      setError(`Failed to manually stop: ${errorMessage}`);
+      setError(t('Failed to manually stop: {error}', {error: errorMessage}));
       setIsProcessing(false); // Clear processing state on error
       console.error("Manual stop error:", err);
     }
@@ -669,10 +671,10 @@ export function useSystemAudio() {
         await startCapture();
       } else {
         setSetupRequired(true);
-        setError("Permission not granted. Please try the manual steps.");
+        setError(t("Permission not granted. Please try the manual steps."));
       }
     } catch (err) {
-      setError("Failed to request access. Please try the manual steps below.");
+      setError(t("Failed to request access. Please try the manual steps below."));
       setSetupRequired(true);
     }
   }, [startCapture]);

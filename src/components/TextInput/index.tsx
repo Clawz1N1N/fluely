@@ -1,4 +1,5 @@
 import { Input, Label } from "@/components";
+import { useI18n } from '@/lib/i18n';
 
 export const TextInput = ({
   label,
@@ -15,6 +16,7 @@ export const TextInput = ({
   error?: string;
   notes?: string;
 }) => {
+  const { t } = useI18n();
   return (
     <div className="space-y-1">
       {label ? <Label className="text-xs font-medium">{label}</Label> : null}
@@ -26,7 +28,7 @@ export const TextInput = ({
           error ? "border-destructive" : ""
         }`}
       />
-      {error && <p className="text-xs text-destructive">{error}</p>}
+      {error && <p className="text-xs text-destructive">{t(error)}</p>}
       {notes && <p className="text-xs text-muted-foreground">{notes}</p>}
     </div>
   );

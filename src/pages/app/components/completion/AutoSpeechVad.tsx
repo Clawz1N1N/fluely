@@ -1,126 +1,26 @@
-import { fetchSTT } from "@/lib";
-import { UseCompletionReturn } from "@/types";
-import { useMicVAD } from "@ricky0123/vad-react";
-import { LoaderCircleIcon, MicIcon, MicOffIcon } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components";
-import { useApp } from "@/contexts";
-import { floatArrayToWav } from "@/lib/utils";
-
-interface AutoSpeechVADProps {
-  submit: UseCompletionReturn["submit"];
-  setState: UseCompletionReturn["setState"];
-  setEnableVAD: UseCompletionReturn["setEnableVAD"];
-  microphoneDeviceId?: string;
+import {useEffect,useState} from 'react';
+import {LoaderCircleIcon,MicOffIcon} from 'lucide-react';
+import {Button} from '@/components';
+import {fetchSTT} from '@/lib';
+import {useApp} from '@/contexts';
+import type {UseCompletionReturn} from '@/types';
+import {t,useI18n} from '@/lib/i18n';
+import {openMicrophoneSession} from '@/lib/overlay/microphone-session';
+interface Props{submit:UseCompletionReturn['submit'];setState:UseCompletionReturn['setState'];setEnableVAD:UseCompletionReturn['setEnableVAD'];microphoneDeviceId?:string}
+export function AutoSpeechVAD({submit,setState,setEnableVAD,microphoneDeviceId}:Props){
+  useI18n();
+  const {selectedSttProvider,allSttProviders}=useApp();
+  const [busy,setBusy]=useState(false);
+  useEffect(()=>{
+    let disposed=false,session:Awaited<ReturnType<typeof openMicrophoneSession>>|undefined;
+    const abort=new AbortController();
+    const fail=(failure:unknown)=>{if(!disposed)setState((previous:Record<string,unknown>)=>({...previous,error:t(String(failure))}));};
+    void openMicrophoneSession(async audio=>{
+      if(abort.signal.aborted)return;setBusy(true);
+      try{const text=await fetchSTT({audio,provider:allSttProviders.find(p=>p.id===selectedSttProvider.provider),selectedProvider:selectedSttProvider,signal:abort.signal});if(!disposed&&text.trim())submit(text);}
+      finally{if(!disposed)setBusy(false);}
+    },fail,microphoneDeviceId).then(value=>{session=value;if(disposed)void value.finish().catch(console.error);}).catch(fail);
+    return()=>{disposed=true;abort.abort();void session?.finish().catch(console.error);};
+  },[microphoneDeviceId]);
+  return <Button size="icon" title={t('Stop recording')} onClick={()=>setEnableVAD(false)}>{busy?<LoaderCircleIcon className="h-4 w-4 animate-spin"/>:<MicOffIcon className="h-4 w-4 animate-pulse"/>}</Button>;
 }
-
-const AutoSpeechVADInternal = ({
-  submit,
-  setState,
-  setEnableVAD,
-  microphoneDeviceId,
-}: AutoSpeechVADProps) => {
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const { selectedSttProvider, allSttProviders } = useApp();
-
-  const audioConstraints: MediaTrackConstraints =
-    microphoneDeviceId && microphoneDeviceId !== "default"
-      ? { deviceId: { exact: microphoneDeviceId } }
-      : {};
-
-  const vad = useMicVAD({
-    model:'v5',baseAssetPath:'/vad/',onnxWASMBasePath:'/vad/',
-    ortConfig:ort=>{ort.env.wasm.numThreads=1;},
-    userSpeakingThreshold: 0.6,
-    startOnLoad: true,
-    getStream:()=>navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,...audioConstraints}}),
-    resumeStream:()=>navigator.mediaDevices.getUserMedia({audio:{echoCancellation:true,noiseSuppression:true,...audioConstraints}}),
-    onSpeechEnd: async (audio) => {
-      try {
-        // convert float32array to blob
-        const audioBlob = floatArrayToWav(audio, 16000, "wav");
-
-        let transcription: string;
-
-        // Check if we have a configured speech provider
-        if (!selectedSttProvider.provider && !('__TAURI_INTERNALS__' in window)) {
-          console.warn("No speech provider selected");
-          setState((prev: any) => ({
-            ...prev,
-            error:
-              "No speech provider selected. Please select one in settings.",
-          }));
-          return;
-        }
-
-        const providerConfig = allSttProviders.find(
-          (p) => p.id === selectedSttProvider.provider
-        );
-
-        if (!providerConfig && !('__TAURI_INTERNALS__' in window)) {
-          console.warn("Selected speech provider configuration not found");
-          setState((prev: any) => ({
-            ...prev,
-            error:
-              "Speech provider configuration not found. Please check your settings.",
-          }));
-          return;
-        }
-
-        setIsTranscribing(true);
-
-        // Use the fetchSTT function for all providers
-        transcription = await fetchSTT({
-          provider: providerConfig,
-          selectedProvider: selectedSttProvider,
-          audio: audioBlob,
-        });
-
-        if (transcription) {
-          submit(transcription);
-        }
-      } catch (error) {
-        console.error("Failed to transcribe audio:", error);
-        setState((prev: any) => ({
-          ...prev,
-          error:
-            error instanceof Error ? error.message : "Transcription failed",
-        }));
-      } finally {
-        setIsTranscribing(false);
-      }
-    },
-  });
-
-  return (
-    <>
-      <Button
-        size="icon"
-        onClick={() => {
-          if (vad.listening) {
-            vad.pause();
-            setEnableVAD(false);
-          } else {
-            vad.start();
-            setEnableVAD(true);
-          }
-        }}
-        className="cursor-pointer"
-      >
-        {isTranscribing ? (
-          <LoaderCircleIcon className="h-4 w-4 animate-spin text-green-500" />
-        ) : vad.userSpeaking ? (
-          <LoaderCircleIcon className="h-4 w-4 animate-spin" />
-        ) : vad.listening ? (
-          <MicOffIcon className="h-4 w-4 animate-pulse" />
-        ) : (
-          <MicIcon className="h-4 w-4" />
-        )}
-      </Button>
-    </>
-  );
-};
-
-export const AutoSpeechVAD = (props: AutoSpeechVADProps) => {
-  return <AutoSpeechVADInternal key={props.microphoneDeviceId} {...props} />;
-};

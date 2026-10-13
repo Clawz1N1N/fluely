@@ -17,6 +17,7 @@ if (windowLabel === 'main') {
 } else if (
   windowLabel.startsWith("strip-") ||
   windowLabel.startsWith("button-") ||
+  windowLabel.startsWith("panel-") || windowLabel === "status" ||
   windowLabel === "answer"
 ) {
   document.documentElement.dataset.overlayShell='true';
@@ -36,6 +37,7 @@ if (windowLabel === 'main') {
     </React.StrictMode>
   );
 } else {
+  document.documentElement.dataset.fluelyDashboard='true';
   ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
     <React.StrictMode>
       <ThemeProvider>

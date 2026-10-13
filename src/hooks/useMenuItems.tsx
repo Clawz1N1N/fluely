@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Settings,
   Code,
@@ -8,15 +9,14 @@ import {
   MonitorIcon,
   HomeIcon,
   PowerIcon,
-  CoffeeIcon,
-  GlobeIcon,
   BugIcon,
   MessageSquareTextIcon,
 } from "lucide-react";
 import { invoke } from "@tauri-apps/api/core";
-import { XIcon, GithubIcon } from "@/components";
+import { GithubIcon } from "@/components";
 
 export const useMenuItems = () => {
+  useI18n();
 
 
   const menu: {
@@ -27,48 +27,48 @@ export const useMenuItems = () => {
   }[] = [
     {
       icon: HomeIcon,
-      label: "Dashboard",
+      label: t("Dashboard"),
       href: "/dashboard",
     },
     {
       icon: MessagesSquare,
-      label: "Chats",
+      label: t("Chats"),
       href: "/chats",
     },
     {
       icon: WandSparkles,
-      label: "System prompts",
+      label: t("System prompts"),
       href: "/system-prompts",
     },
     {
       icon: Settings,
-      label: "App Settings",
+      label: t("App Settings"),
       href: "/settings",
     },
     {
       icon: MessageSquareTextIcon,
-      label: "Responses",
+      label: t("Responses"),
       href: "/responses",
     },
     {
       icon: MonitorIcon,
-      label: "Screenshot",
+      label: t("Screenshot"),
       href: "/screenshot",
     },
     {
       icon: AudioLinesIcon,
-      label: "Audio",
+      label: t("Audio"),
       href: "/audio",
     },
     {
       icon: SquareSlashIcon,
-      label: "Cursor & Shortcuts",
+      label: t("Cursor & Shortcuts"),
       href: "/shortcuts",
     },
 
     {
       icon: Code,
-      label: "Dev space",
+      label: t("Dev space"),
       href: "/dev-space",
     },
   ];
@@ -76,12 +76,12 @@ export const useMenuItems = () => {
   const footerItems = [
     {
       icon: BugIcon,
-      label: "Report a bug",
-      href: "https://github.com/iamsrikanthnani/pluely/issues/new?template=bug-report.yml",
+      label: t("Report a bug"),
+      href: "https://github.com/Clawz1N1N/fluely/issues/new?template=bug-report.yml",
     },
     {
       icon: PowerIcon,
-      label: "Quit pluely",
+      label: t("Quit Fluely"),
       action: async () => {
         await invoke("exit_app");
       },
@@ -94,24 +94,9 @@ export const useMenuItems = () => {
     link: string;
   }[] = [
     {
-      title: "Website",
-      icon: GlobeIcon,
-      link: "https://github.com/iamsrikanthnani/pluely",
-    },
-    {
-      title: "Github",
+      title: t("Github"),
       icon: GithubIcon,
-      link: "https://github.com/iamsrikanthnani/pluely",
-    },
-    {
-      title: "Buy Me a Coffee",
-      icon: CoffeeIcon,
-      link: "https://buymeacoffee.com/srikanthnani",
-    },
-    {
-      title: "Follow on X",
-      icon: XIcon,
-      link: "https://x.com/srikanthnani",
+      link: "https://github.com/Clawz1N1N/fluely",
     },
   ];
 

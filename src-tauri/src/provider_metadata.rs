@@ -50,6 +50,22 @@ pub struct ProviderEntry {
     pub base_url: String,
     pub model: String,
     #[serde(default)]
+    pub provider_id: String,
+    #[serde(default)]
+    pub provider_name: String,
+    #[serde(default)]
+    pub credential_id: String,
+    #[serde(default)]
+    pub display_name: String,
+    #[serde(default)]
+    pub model_display_name: String,
+    #[serde(default)]
+    pub supports_audio: bool,
+    #[serde(default)]
+    pub context_window: Option<u32>,
+    #[serde(default)]
+    pub max_output_tokens: Option<u32>,
+    #[serde(default)]
     pub supports_images: bool,
     #[serde(default)]
     pub rank: i32,
@@ -94,6 +110,14 @@ impl ProviderEntry {
         }
         if self.model.trim().is_empty() {
             return Err("Provider model is required".into());
+        }
+        if self.credential_id.len() > 256 || self.provider_id.len() > 256 {
+            return Err("Provider and credential IDs must contain at most 256 characters".into());
+        }
+        if self.context_window == Some(0) || self.max_output_tokens == Some(0)
+            || matches!((self.context_window, self.max_output_tokens), (Some(context), Some(output)) if output > context)
+        {
+            return Err("Model token limits must be positive; output cannot exceed context".into());
         }
         let authority = self
             .base_url

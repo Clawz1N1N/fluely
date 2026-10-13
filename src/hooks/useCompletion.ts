@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useState, useCallback, useRef, useEffect } from "react";
 import { useWindowResize } from "./useWindow";
 import { useGlobalShortcuts } from "@/hooks";
@@ -52,6 +53,7 @@ interface CompletionState {
 }
 
 export const useCompletion = () => {
+  useI18n();
   const {
     selectedAIProvider,
     allAiProviders,
@@ -182,7 +184,7 @@ export const useCompletion = () => {
         if (!selectedAIProvider.provider && !('__TAURI_INTERNALS__' in window)) {
           setState((prev) => ({
             ...prev,
-            error: "Please select an AI provider in settings",
+            error: t("Please select an AI provider in settings"),
           }));
           return;
         }
@@ -193,7 +195,7 @@ export const useCompletion = () => {
         if (!provider && !('__TAURI_INTERNALS__' in window)) {
           setState((prev) => ({
             ...prev,
-            error: "Invalid provider selected",
+            error: t("Invalid provider selected"),
           }));
           return;
         }
@@ -239,7 +241,7 @@ export const useCompletion = () => {
             setState((prev) => ({
               ...prev,
               isLoading: false,
-              error: e.message || "An error occurred",
+              error: e.message || t("An error occurred"),
             }));
           }
           return;
@@ -276,7 +278,7 @@ export const useCompletion = () => {
         if (!signal?.aborted && currentRequestIdRef.current === requestId) {
           setState((prev) => ({
             ...prev,
-            error: error instanceof Error ? error.message : "An error occurred",
+            error: error instanceof Error ? error.message : t("An error occurred"),
             isLoading: false,
           }));
         }
@@ -365,7 +367,7 @@ export const useCompletion = () => {
     ) => {
       // Validate inputs
       if (!userMessage || !assistantResponse) {
-        console.error("Cannot save conversation: missing message content");
+        console.error(t("Cannot save conversation: missing message content"));
         return;
       }
 
@@ -428,7 +430,7 @@ export const useCompletion = () => {
         // Show error to user
         setState((prev) => ({
           ...prev,
-          error: "Failed to save conversation. Please try again.",
+          error: t("Failed to save conversation. Please try again."),
         }));
       }
     },
@@ -443,10 +445,10 @@ export const useCompletion = () => {
       const { id } = event.detail;
       console.log(id, "id");
       if (!id || typeof id !== "string") {
-        console.error("No conversation ID provided");
+        console.error(t("No conversation ID provided"));
         setState((prev) => ({
           ...prev,
-          error: "Invalid conversation selected",
+          error: t("Invalid conversation selected"),
         }));
         return;
       }
@@ -461,14 +463,14 @@ export const useCompletion = () => {
           console.error(`Conversation ${id} not found in database`);
           setState((prev) => ({
             ...prev,
-            error: "Conversation not found. It may have been deleted.",
+            error: t("Conversation not found. It may have been deleted."),
           }));
         }
       } catch (error) {
         console.error("Failed to load conversation:", error);
         setState((prev) => ({
           ...prev,
-          error: "Failed to load conversation. Please try again.",
+          error: t("Failed to load conversation. Please try again."),
         }));
       }
     };
@@ -543,7 +545,7 @@ export const useCompletion = () => {
       if (state.attachedFiles.length >= MAX_FILES) {
         setState((prev) => ({
           ...prev,
-          error: `You can only upload ${MAX_FILES} files`,
+          error: t('You can only upload {count} files', {count: MAX_FILES}),
         }));
         return;
       }
@@ -584,7 +586,7 @@ export const useCompletion = () => {
             if (!selectedAIProvider.provider) {
               setState((prev) => ({
                 ...prev,
-                error: "Please select an AI provider in settings",
+                error: t("Please select an AI provider in settings"),
               }));
               return;
             }
@@ -595,7 +597,7 @@ export const useCompletion = () => {
             if (!provider) {
               setState((prev) => ({
                 ...prev,
-                error: "Invalid provider selected",
+                error: t("Invalid provider selected"),
               }));
               return;
             }
@@ -659,7 +661,7 @@ export const useCompletion = () => {
             if (currentRequestIdRef.current === requestId && !signal.aborted) {
               setState((prev) => ({
                 ...prev,
-                error: e.message || "An error occurred",
+                error: e.message || t("An error occurred"),
               }));
             }
           } finally {
@@ -690,7 +692,7 @@ export const useCompletion = () => {
           error:
             error instanceof Error
               ? error.message
-              : "An error occurred processing screenshot",
+              : t("An error occurred processing screenshot"),
           isLoading: false,
         }));
       }
@@ -873,7 +875,7 @@ export const useCompletion = () => {
             setState((prev) => ({
               ...prev,
               error:
-                "Screen Recording permission required. Please enable it by going to System Settings > Privacy & Security > Screen & System Audio Recording. If you don't see Pluely in the list, click the '+' button to add it. If it's already listed, make sure it's enabled. Then restart the app.",
+                t("Screen Recording permission required. Please enable it by going to System Settings > Privacy & Security > Screen & System Audio Recording. If you don't see Fluely in the list, click the '+' button to add it. If it's already listed, make sure it's enabled. Then restart the app."),
             }));
             setIsScreenshotLoading(false);
             screenshotInitiatedByThisContext.current = false;
@@ -902,7 +904,7 @@ export const useCompletion = () => {
     } catch (error) {
       setState((prev) => ({
         ...prev,
-        error: "Failed to capture screenshot. Please try again.",
+        error: t("Failed to capture screenshot. Please try again."),
       }));
       isProcessingScreenshotRef.current = false;
       screenshotInitiatedByThisContext.current = false;

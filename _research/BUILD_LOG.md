@@ -8,7 +8,7 @@
 
 ## baseline-encoding — 2026-10-11T20:52:22.756Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -43,7 +43,7 @@ Full log: logs/baseline-encoding.log
 
 ## baseline-typescript — 2026-10-11T20:52:22.956Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -78,7 +78,7 @@ Full log: logs/baseline-typescript.log
 
 ## r1-encoding — 2026-10-11T20:54:49.476Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -94,7 +94,7 @@ Full log: logs/r1-encoding.log
 
 ## r1-encoding-tests — 2026-10-11T20:54:49.662Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --test tests/encoding.test.mjs`
 
@@ -129,7 +129,7 @@ Full log: logs/r1-encoding-tests.log
 
 ## r1-npm-policy — 2026-10-11T20:54:49.880Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm config get force && npm config get legacy-peer-deps`
 
@@ -146,7 +146,7 @@ Full log: logs/r1-npm-policy.log
 
 ## r2-approve-scripts — 2026-10-11T20:57:43.629Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install-scripts approve @tailwindcss/oxide esbuild`
 
@@ -165,7 +165,7 @@ Full log: logs/r2-approve-scripts.log
 
 ## r2-install-script-state — 2026-10-11T20:57:44.738Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install-scripts ls --json`
 
@@ -193,7 +193,7 @@ Full log: logs/r2-install-script-state.log
 
 ## r2-rebuild-tools — 2026-10-11T20:57:45.880Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm rebuild @tailwindcss/oxide esbuild`
 
@@ -210,7 +210,7 @@ Full log: logs/r2-rebuild-tools.log
 
 ## r2-audit — 2026-10-11T20:57:47.220Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
 
@@ -236,7 +236,7 @@ Full log: logs/r2-audit.log
 
 ## r2-protobuf-tree — 2026-10-11T20:57:47.969Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm ls protobufjs`
 
@@ -245,7 +245,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-pluely@0.1.9 C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+pluely@0.1.9 <workspace>
 └─┬ @ricky0123/vad-react@0.0.30
   └─┬ onnxruntime-web@1.14.0
     └─┬ onnx-proto@4.0.4
@@ -256,7 +256,7 @@ Full log: logs/r2-protobuf-tree.log
 
 ## r2-tsc-intermediate — 2026-10-11T20:58:13.956Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -288,7 +288,7 @@ Full log: logs/r2-tsc-intermediate.log
 
 ## r2-vitest-availability — 2026-10-11T20:58:43.215Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install --save-dev vitest --dry-run --offline --ignore-scripts --fetch-retries=0`
 
@@ -323,9 +323,9 @@ Full log: logs/r2-vitest-availability.log
 
 ## ring-exact — 2026-10-11T20:58:55.599Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-exact.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-exact.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -340,9 +340,9 @@ Full log: logs/ring-exact.log
 
 ## ring-no-z7 — 2026-10-11T20:58:55.736Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-no-z7.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -357,9 +357,9 @@ Full log: logs/ring-no-z7.log
 
 ## ring-no-brepro — 2026-10-11T20:58:55.856Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-no-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -374,9 +374,9 @@ Full log: logs/ring-no-brepro.log
 
 ## ring-no-z7-brepro — 2026-10-11T20:58:55.971Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-no-z7-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -391,9 +391,9 @@ Full log: logs/ring-no-z7-brepro.log
 
 ## ring-no-wall — 2026-10-11T20:58:56.095Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-no-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -408,9 +408,9 @@ Full log: logs/ring-no-wall.log
 
 ## ring-no-z7-brepro-wall — 2026-10-11T20:58:56.205Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -425,9 +425,9 @@ Full log: logs/ring-no-z7-brepro-wall.log
 
 ## ring-vcvars-22621 — 2026-10-11T20:58:56.321Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-vcvars-22621.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-22621.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -442,9 +442,9 @@ Full log: logs/ring-vcvars-22621.log
 
 ## ring-vcvars-26100 — 2026-10-11T20:58:56.422Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.26100.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-vcvars-26100.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.26100.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-26100.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -459,9 +459,9 @@ Full log: logs/ring-vcvars-26100.log
 
 ## ring-vcvars-28000 — 2026-10-11T20:58:56.516Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.28000.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-vcvars-28000.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.28000.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-28000.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -476,9 +476,9 @@ Full log: logs/ring-vcvars-28000.log
 
 ## ring-vcvars-no-z7-brepro-wall — 2026-10-11T20:58:56.609Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-vcvars-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -493,9 +493,9 @@ Full log: logs/ring-vcvars-no-z7-brepro-wall.log
 
 ## ring-vcvars-1444 — 2026-10-11T20:58:56.716Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 -vcvars_ver=14.44 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-FoC:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\ring-probe\ring-vcvars-1444.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 -vcvars_ver=14.44 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-1444.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -510,7 +510,7 @@ Full log: logs/ring-vcvars-1444.log
 
 ## r2-vitest-workspace-cache — 2026-10-11T20:58:56.001Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install --save-dev vitest --dry-run --ignore-scripts --cache ../.npm-cache --fetch-retries=0 --fetch-timeout=15000`
 
@@ -529,7 +529,7 @@ Full log: logs/r2-vitest-workspace-cache.log
 
 ## r2-tsc — 2026-10-11T20:58:50.366Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -559,19 +559,19 @@ npm notice run vite
 
 ✘ [ERROR] Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
 
-failed to load config from C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\vite.config.ts
+failed to load config from <workspace>\vite.config.ts
 error when starting dev server:
 Error: Build failed with 2 errors:
 error: Cannot read directory "../../../..": Access is denied.
 error: Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
-    at failureErrorWithLog (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1467:15)
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:926:25
-    at runOnEndCallbacks (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1307:45)
-    at buildResponseToResult (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:924:7)
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:951:16
-    at responseCallbacks.<computed> (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:603:9)
-    at handleIncomingPacket (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:658:12)
-    at Socket.readFromStdout (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:581:7)
+    at failureErrorWithLog (<workspace>\node_modules\esbuild\lib\main.js:1467:15)
+    at <workspace>\node_modules\esbuild\lib\main.js:926:25
+    at runOnEndCallbacks (<workspace>\node_modules\esbuild\lib\main.js:1307:45)
+    at buildResponseToResult (<workspace>\node_modules\esbuild\lib\main.js:924:7)
+    at <workspace>\node_modules\esbuild\lib\main.js:951:16
+    at responseCallbacks.<computed> (<workspace>\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (<workspace>\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (<workspace>\node_modules\esbuild\lib\main.js:581:7)
     at Socket.emit (node:events:519:28)
     at addChunk (node:internal/streams/readable:561:12)
 ```
@@ -580,7 +580,7 @@ Full log: logs/r2-vite.log
 
 ## ring-exact-native — 2026-10-11T20:59:16.844Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-exact-native.cmd`
 
@@ -597,7 +597,7 @@ Full log: logs/ring-exact-native.log
 
 ## ring-no-z7-native — 2026-10-11T20:59:17.287Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-no-z7-native.cmd`
 
@@ -614,7 +614,7 @@ Full log: logs/ring-no-z7-native.log
 
 ## ring-no-brepro-native — 2026-10-11T20:59:17.439Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-no-brepro-native.cmd`
 
@@ -631,7 +631,7 @@ Full log: logs/ring-no-brepro-native.log
 
 ## ring-no-z7-brepro-native — 2026-10-11T20:59:17.578Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-no-z7-brepro-native.cmd`
 
@@ -648,7 +648,7 @@ Full log: logs/ring-no-z7-brepro-native.log
 
 ## ring-no-wall-native — 2026-10-11T20:59:17.712Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-no-wall-native.cmd`
 
@@ -665,7 +665,7 @@ Full log: logs/ring-no-wall-native.log
 
 ## ring-no-z7-brepro-wall-native — 2026-10-11T20:59:17.844Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-no-z7-brepro-wall-native.cmd`
 
@@ -682,7 +682,7 @@ Full log: logs/ring-no-z7-brepro-wall-native.log
 
 ## r2-build — 2026-10-11T20:59:11.219Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -696,19 +696,19 @@ npm notice run tsc && vite build
 
 ✘ [ERROR] Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
 
-failed to load config from C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\vite.config.ts
+failed to load config from <workspace>\vite.config.ts
 error during build:
 Error: Build failed with 2 errors:
 error: Cannot read directory "../../../..": Access is denied.
 error: Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
-    at failureErrorWithLog (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1467:15)
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:926:25
-    at runOnEndCallbacks (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1307:45)
-    at buildResponseToResult (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:924:7)
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:951:16
-    at responseCallbacks.<computed> (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:603:9)
-    at handleIncomingPacket (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:658:12)
-    at Socket.readFromStdout (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:581:7)
+    at failureErrorWithLog (<workspace>\node_modules\esbuild\lib\main.js:1467:15)
+    at <workspace>\node_modules\esbuild\lib\main.js:926:25
+    at runOnEndCallbacks (<workspace>\node_modules\esbuild\lib\main.js:1307:45)
+    at buildResponseToResult (<workspace>\node_modules\esbuild\lib\main.js:924:7)
+    at <workspace>\node_modules\esbuild\lib\main.js:951:16
+    at responseCallbacks.<computed> (<workspace>\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (<workspace>\node_modules\esbuild\lib\main.js:658:12)
+    at Socket.readFromStdout (<workspace>\node_modules\esbuild\lib\main.js:581:7)
     at Socket.emit (node:events:519:28)
     at addChunk (node:internal/streams/readable:561:12)
 ```
@@ -717,7 +717,7 @@ Full log: logs/r2-build.log
 
 ## ring-vcvars-22621-native — 2026-10-11T20:59:17.999Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-vcvars-22621-native.cmd`
 
@@ -742,7 +742,7 @@ Full log: logs/ring-vcvars-22621-native.log
 
 ## ring-vcvars-26100-native — 2026-10-11T20:59:19.879Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-vcvars-26100-native.cmd`
 
@@ -767,7 +767,7 @@ Full log: logs/ring-vcvars-26100-native.log
 
 ## ring-vcvars-28000-native — 2026-10-11T20:59:21.435Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-vcvars-28000-native.cmd`
 
@@ -792,7 +792,7 @@ Full log: logs/ring-vcvars-28000-native.log
 
 ## r2-build-runner — 2026-10-11T20:59:29.769Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build -- --configLoader runner`
 
@@ -803,21 +803,21 @@ Last 20 output lines:
 ```text
 npm notice run pluely@0.1.9 build
 npm notice run tsc && vite build --configLoader runner
-failed to load config from C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\vite.config.ts
+failed to load config from <workspace>\vite.config.ts
 error during build:
 ReferenceError: __dirname is not defined
-    at eval (C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/vite.config.ts:17:50)
-    at loadConfigFromFile (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:36510:64)
-    at async resolveConfig (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:36154:22)
-    at async createBuilder (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:34610:19)
-    at async CAC.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/node_modules/vite/dist/node/cli.js:641:19)
+    at eval (<workspace>/vite.config.ts:17:50)
+    at loadConfigFromFile (file:///<workspace>/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:36510:64)
+    at async resolveConfig (file:///<workspace>/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:36154:22)
+    at async createBuilder (file:///<workspace>/node_modules/vite/dist/node/chunks/dep-CMEinpL-.js:34610:19)
+    at async CAC.<anonymous> (file:///<workspace>/node_modules/vite/dist/node/cli.js:641:19)
 ```
 
 Full log: logs/r2-build-runner.log
 
 ## r2-tsc — 2026-10-11T20:59:39.855Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -833,7 +833,7 @@ Full log: logs/r2-tsc.log
 
 ## ring-vcvars-22621-repeat — 2026-10-11T20:59:53.647Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\ring-vcvars-22621-native.cmd`
 
@@ -858,7 +858,7 @@ Full log: logs/ring-vcvars-22621-repeat.log
 
 ## r2-build — 2026-10-11T20:59:58.857Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -877,10 +877,10 @@ rendering chunks...
 ✗ Build failed in 40.38s
 error during build:
 [vite:esbuild-transpile] remove C:\Users\broma\AppData\Local\Temp\esbuild-62479067d4172ec0bf1224f0ffc0a988ea4c200a2cf2482c7267e4cdcd55a77d: Access is denied.
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:718:38
-    at responseCallbacks.<computed> (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:603:9)
-    at handleIncomingPacket (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:657:31)
-    at Socket.readFromStdout (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:581:7)
+    at <workspace>\node_modules\esbuild\lib\main.js:718:38
+    at responseCallbacks.<computed> (<workspace>\node_modules\esbuild\lib\main.js:603:9)
+    at handleIncomingPacket (<workspace>\node_modules\esbuild\lib\main.js:657:31)
+    at Socket.readFromStdout (<workspace>\node_modules\esbuild\lib\main.js:581:7)
     at Socket.emit (node:events:519:28)
     at addChunk (node:internal/streams/readable:561:12)
     at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
@@ -892,7 +892,7 @@ Full log: logs/r2-build.log
 
 ## r2-build-temp — 2026-10-11T21:01:52.505Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -947,9 +947,9 @@ Last 20 lines:
           ╵        ~~~~~~~~~~~~~~~~~~~~~~
 
 
-    at failureErrorWithLog (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1467:15)
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:926:25
-    at C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\node_modules\esbuild\lib\main.js:1345:9
+    at failureErrorWithLog (<workspace>\node_modules\esbuild\lib\main.js:1467:15)
+    at <workspace>\node_modules\esbuild\lib\main.js:926:25
+    at <workspace>\node_modules\esbuild\lib\main.js:1345:9
     at process.processTicksAndRejections (node:internal/process/task_queues:103:5) {
   errors: [Getter/Setter],
   warnings: [Getter/Setter]
@@ -962,7 +962,7 @@ Full log: logs/r2-vite-final.log
 
 ## r2-esbuild-relative — 2026-10-11T21:03:16.342Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node_modules/@esbuild/win32-x64/esbuild.exe node_modules/react/index.js --bundle --platform=browser --outfile=_research/ring-probe/react.js --preserve-symlinks`
 
@@ -979,7 +979,7 @@ Full log: logs/r2-esbuild-relative.log
 
 ## r2-esbuild-absolute — 2026-10-11T21:03:22.662Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node_modules\@esbuild\win32-x64\esbuild.exe node_modules\react\index.js --bundle --platform=browser --outfile=_research/ring-probe/react.js --preserve-symlinks`
 
@@ -1001,7 +1001,7 @@ Full log: logs/r2-esbuild-absolute.log
 
 ## r2-esbuild-short-drive — 2026-10-11T21:03:42.860Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `P:\node_modules\@esbuild\win32-x64\esbuild.exe P:\node_modules\react\index.js --bundle --platform=browser --outfile=P:\_research\ring-probe\react-short.js --preserve-symlinks`
 
@@ -1044,7 +1044,7 @@ Full log: logs/r2-esbuild-short-cwd.log
 
 ## r2-esbuild-drive-session — 2026-10-11T21:04:05.773Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `subst P: %cd% && cd /d P:\ && node_modules\@esbuild\win32-x64\esbuild.exe node_modules/react/index.js --bundle --platform=browser --outfile=_research/ring-probe/react-drive.js --preserve-symlinks`
 
@@ -1078,7 +1078,7 @@ Last 20 lines:
 
 ✘ [ERROR] Could not resolve "./chunk-UIGDSWPH.mjs"
 
-    C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/node_modules/react-router/dist/development/index.mjs:142:7:
+    <workspace>/node_modules/react-router/dist/development/index.mjs:142:7:
       142 │ } from "./chunk-UIGDSWPH.mjs";
           ╵        ~~~~~~~~~~~~~~~~~~~~~~
 
@@ -1119,7 +1119,7 @@ Full log: logs/r2-vite-preserve.log
 
 ## r2-build-final — 2026-10-11T21:05:58.403Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -1154,7 +1154,7 @@ Full log: logs/r2-build-final.log
 
 ## r3-cargo-baseline — 2026-10-11T21:10:05.147Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+Directory: <workspace>\src-tauri
 
 Command: `call ..\scripts\rust-env.cmd cargo check --offline`
 
@@ -1181,7 +1181,7 @@ Last 20 output lines:
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -1189,7 +1189,7 @@ Full log: logs/r3-cargo-baseline.log
 
 ## r3-native-probe — 2026-10-11T21:11:11.027Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\native-probe.cmd`
 
@@ -1224,7 +1224,7 @@ Full log: logs/r3-native-probe.log
 
 ## r3-native-com-probe — 2026-10-11T21:11:45.200Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\native-com-probe.cmd`
 
@@ -1245,7 +1245,7 @@ Full log: logs/r3-native-com-probe.log
 
 ## r3-vswhom-tree — 2026-10-11T21:12:03.709Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+Directory: <workspace>\src-tauri
 
 Command: `cargo tree --offline -i vswhom-sys`
 
@@ -1255,32 +1255,32 @@ Last 20 output lines:
 
 ```text
                 [build-dependencies]
-                ├── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                ├── pluely v0.1.9 (<workspace>\src-tauri)
                 └── tauri v2.8.2
-                    ├── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    ├── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-autostart v2.5.0
-                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │   └── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-fs v2.4.2
                     │   └── tauri-plugin-http v2.5.2
-                    │       └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │       └── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-global-shortcut v2.3.0
-                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │   └── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-http v2.5.2 (*)
                     ├── tauri-plugin-keychain v2.0.2
-                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │   └── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-opener v2.4.0
-                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │   └── pluely v0.1.9 (<workspace>\src-tauri)
                     ├── tauri-plugin-shell v2.3.1
-                    │   └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                    │   └── pluely v0.1.9 (<workspace>\src-tauri)
                     └── tauri-plugin-sql v2.3.0
-                        └── pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+                        └── pluely v0.1.9 (<workspace>\src-tauri)
 ```
 
 Full log: logs/r3-vswhom-tree.log
 
 ## r3-native-com-delay-probe — 2026-10-11T21:12:59.201Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\native-com-probe.cmd`
 
@@ -1302,7 +1302,7 @@ Full log: logs/r3-native-com-delay-probe.log
 
 ## r3-cargo-delayload — 2026-10-11T21:13:27.495Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\cargo-delay-probe.cmd`
 
@@ -1319,7 +1319,7 @@ Last 20 output lines:
 error: failed to run custom build command for `zerocopy v0.8.26`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\zerocopy-ed60612e1982ff9b\build-script-build` (exit code: 101)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\zerocopy-ed60612e1982ff9b\build-script-build` (exit code: 101)
   --- stdout
   cargo:rerun-if-changed=build.rs
   cargo:rerun-if-changed=Cargo.toml
@@ -1337,7 +1337,7 @@ Full log: logs/r3-cargo-delayload.log
 
 ## r3-native-spawn-probe — 2026-10-11T21:14:19.369Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\native-spawn-probe.cmd`
 
@@ -1360,7 +1360,7 @@ Full log: logs/r3-native-spawn-probe.log
 
 ## r3-native-spawn-flags — 2026-10-11T21:14:43.187Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\native-spawn-probe.cmd`
 
@@ -1385,7 +1385,7 @@ Full log: logs/r3-native-spawn-flags.log
 
 ## r3-test-runner — 2026-10-11T21:17:33.404Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs`
 
@@ -1420,7 +1420,7 @@ Full log: logs/r3-test-runner.log
 
 ## r3-structured-red — 2026-10-11T21:18:47.946Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
 
@@ -1455,7 +1455,7 @@ Full log: logs/r3-structured-red.log
 
 ## r3-dll-probe — 2026-10-11T21:18:57.272Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\dll-probe.cmd`
 
@@ -1490,7 +1490,7 @@ Full log: logs/r3-dll-probe.log
 
 ## r3-dll-mitigations — 2026-10-11T21:19:25.161Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\dll-probe.cmd`
 
@@ -1525,7 +1525,7 @@ Full log: logs/r3-dll-mitigations.log
 
 ## r3-dll-native-cmd — 2026-10-11T21:20:37.918Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\dll-probe.cmd`
 
@@ -1560,7 +1560,7 @@ Full log: logs/r3-dll-native-cmd.log
 
 ## r3-structured-green — 2026-10-11T21:20:49.544Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
 
@@ -1595,7 +1595,7 @@ Full log: logs/r3-structured-green.log
 
 ## r3-rust-foundation-metadata — 2026-10-11T21:22:08.988Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-720c0f264cdbf104.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-025abdb1f26993d0.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -1630,7 +1630,7 @@ Full log: logs/r3-rust-foundation-metadata.log
 
 ## r3-typescript-after-core — 2026-10-11T21:22:06.239Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -1647,7 +1647,7 @@ Full log: logs/r3-typescript-after-core.log
 
 ## r3-rust-foundation-metadata-env — 2026-10-11T21:22:28.828Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -1682,7 +1682,7 @@ Full log: logs/r3-rust-foundation-metadata-env.log
 
 ## r3-rust-foundation-metadata-green — 2026-10-11T21:22:56.549Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -1717,7 +1717,7 @@ Full log: logs/r3-rust-foundation-metadata-green.log
 
 ## r3-cargo-test-blocker — 2026-10-11T21:23:16.133Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+Directory: <workspace>\src-tauri
 
 Command: `call ..\scripts\rust-env.cmd cargo test --offline`
 
@@ -1736,7 +1736,7 @@ warn: could not canonicalize path C:\Users\broma
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -1744,7 +1744,7 @@ Full log: logs/r3-cargo-test-blocker.log
 
 ## r3-cargo-clippy-blocker — 2026-10-11T21:23:24.572Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+Directory: <workspace>\src-tauri
 
 Command: `call ..\scripts\rust-env.cmd cargo clippy --offline --all-targets`
 
@@ -1770,7 +1770,7 @@ warn: could not canonicalize path C:\Users\broma
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -1778,7 +1778,7 @@ Full log: logs/r3-cargo-clippy-blocker.log
 
 ## r3-parser-compile — 2026-10-11T21:23:29.886Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\structured_core.rs -o src-tauri\target\structured-core-tests.exe`
 
@@ -1799,7 +1799,7 @@ Full log: logs/r3-parser-compile.log
 
 ## r3-parser-tests — 2026-10-11T21:23:33.007Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\structured-core-tests.exe`
 
@@ -1832,7 +1832,7 @@ Full log: logs/r3-parser-tests.log
 
 ## r3-rust-foundation-tests-metadata — 2026-10-11T21:23:34.289Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_tests_metadata --test --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation-tests.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -1867,7 +1867,7 @@ Full log: logs/r3-rust-foundation-tests-metadata.log
 
 ## r3-precommit-rust-tests — 2026-10-11T21:25:40.200Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\structured-core-tests.exe`
 
@@ -1900,7 +1900,7 @@ Full log: logs/r3-precommit-rust-tests.log
 
 ## r3-precommit-encoding — 2026-10-11T21:25:40.200Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -1916,7 +1916,7 @@ Full log: logs/r3-precommit-encoding.log
 
 ## r3-precommit-ts — 2026-10-11T21:25:40.482Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -1933,7 +1933,7 @@ Full log: logs/r3-precommit-ts.log
 
 ## r3-precommit-ts-tests — 2026-10-11T21:25:49.801Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs`
 
@@ -1968,7 +1968,7 @@ Full log: logs/r3-precommit-ts-tests.log
 
 ## r3-review-parser-red — 2026-10-11T21:26:43.381Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/structured.test.mjs`
 
@@ -1980,7 +1980,7 @@ Last 20 output lines:
     speak: ''
   operator: 'deepStrictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/structured.test.mjs:35:10)
+    TestContext.<anonymous> (file:///<workspace>/tests/structured.test.mjs:35:10)
     Test.runInAsyncScope (node:async_hooks:214:14)
     Test.run (node:internal/test_runner/test:1047:25)
     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
@@ -2003,7 +2003,7 @@ Full log: logs/r3-review-parser-red.log
 
 ## r3-review-parser-green — 2026-10-11T21:26:51.689Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs`
 
@@ -2038,7 +2038,7 @@ Full log: logs/r3-review-parser-green.log
 
 ## r4-config-tests — 2026-10-12T07:09:01.096Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --test tests/tauri-config.test.mjs`
 
@@ -2069,7 +2069,7 @@ Full log: logs/r4-config-tests.log
 
 ## r4-cargo-retry — 2026-10-12T07:09:19.400Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri
+Directory: <workspace>\src-tauri
 
 Command: `call ..\scripts\rust-env.cmd cargo check --offline`
 
@@ -2095,7 +2095,7 @@ warn: could not canonicalize path C:\Users\broma
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -2103,7 +2103,7 @@ Full log: logs/r4-cargo-retry.log
 
 ## r4-shell-store-red-compile — 2026-10-12T07:11:46.726Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
 
@@ -2124,7 +2124,7 @@ Full log: logs/r4-shell-store-red-compile.log
 
 ## r4-shell-store-red-tests — 2026-10-12T07:11:49.503Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\shell-store-tests.exe`
 
@@ -2174,13 +2174,13 @@ Last 20 lines:
   ➜  Local:   http://localhost:1420/
      Running DevCommand (`cargo  run --no-default-features --color always --`)
 warn: could not canonicalize path C:\Users\broma
-        Info Watching C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri for changes...
+        Info Watching <workspace>\src-tauri for changes...
    Compiling vswhom-sys v0.1.3
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 note: To improve backtraces for build dependencies, set the CARGO_PROFILE_DEV_BUILD_OVERRIDE_DEBUG=true environment variable to enable debug information generation.
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 Get-CimInstance : Отказано в доступе
 At line:1 char:41
@@ -2194,7 +2194,7 @@ Full log: logs/r4-tauri-start.log
 
 ## r4-browser-doctor — 2026-10-12T07:12:35.755Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `browser-harness --doctor`
 
@@ -2219,7 +2219,7 @@ Full log: logs/r4-browser-doctor.log
 
 ## r4-shell-store-green-compile — 2026-10-12T07:12:41.950Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
 
@@ -2240,7 +2240,7 @@ Full log: logs/r4-shell-store-green-compile.log
 
 ## r4-shell-store-green-tests — 2026-10-12T07:12:44.892Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\shell-store-tests.exe`
 
@@ -2263,7 +2263,7 @@ Full log: logs/r4-shell-store-green-tests.log
 
 ## r4-config-encoding — 2026-10-12T07:17:42.729Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -2279,7 +2279,7 @@ Full log: logs/r4-config-encoding.log
 
 ## r5-math-red — 2026-10-12T07:19:32.716Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
 
@@ -2294,7 +2294,7 @@ Last 20 output lines:
   actual: '<div class="space-y-4 whitespace-normal"></div>'
   operator: 'match'
   stack: |-
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/math.test.mjs:61:10)
+    TestContext.<anonymous> (file:///<workspace>/tests/math.test.mjs:61:10)
     process.processTicksAndRejections (node:internal/process/task_queues:103:5)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
@@ -2314,7 +2314,7 @@ Full log: logs/r5-math-red.log
 
 ## r4-shell-metadata — 2026-10-12T07:19:35.203Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -2349,7 +2349,7 @@ Full log: logs/r4-shell-metadata.log
 
 ## r5-math-red — 2026-10-12T07:20:28.497Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
 
@@ -2384,7 +2384,7 @@ Full log: logs/r5-math-red.log
 
 ## r4-precommit-tests — 2026-10-12T07:23:18.332Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs tests/tauri-config.test.mjs`
 
@@ -2419,7 +2419,7 @@ Full log: logs/r4-precommit-tests.log
 
 ## r4-shell-metadata-final — 2026-10-12T07:25:01.961Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -2454,7 +2454,7 @@ Full log: logs/r4-shell-metadata-final.log
 
 ## r4-shell-metadata-reviewed — 2026-10-12T07:28:36.497Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -2489,7 +2489,7 @@ Full log: logs/r4-shell-metadata-reviewed.log
 
 ## r4-shell-store-reviewed-compile — 2026-10-12T07:28:42.896Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\shell_store.rs -o src-tauri\target\shell-store-tests.exe`
 
@@ -2510,7 +2510,7 @@ Full log: logs/r4-shell-store-reviewed-compile.log
 
 ## r4-shell-store-reviewed-tests — 2026-10-12T07:28:49.379Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\shell-store-tests.exe`
 
@@ -2533,7 +2533,7 @@ Full log: logs/r4-shell-store-reviewed-tests.log
 
 ## r4-stop-session-red — 2026-10-12T07:30:23.457Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node _research\temp\stop-session.test.mjs`
 
@@ -2552,7 +2552,7 @@ AssertionError [ERR_ASSERTION]: cleanup must terminate owned children, grandchil
 
 true !== false
 
-    at file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/_research/temp/stop-session.test.mjs:52:10 {
+    at file:///<workspace>/_research/temp/stop-session.test.mjs:52:10 {
   generatedMessage: false,
   code: 'ERR_ASSERTION',
   actual: true,
@@ -2568,7 +2568,7 @@ Full log: logs/r4-stop-session-red.log
 
 ## r4-stop-session-green — 2026-10-12T07:33:45.454Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node _research\temp\stop-session.test.mjs`
 
@@ -2585,7 +2585,7 @@ Full log: logs/r4-stop-session-green.log
 
 ## r4-stop-session-guards-green — 2026-10-12T07:35:38.888Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node _research\temp\stop-session.test.mjs`
 
@@ -2625,7 +2625,7 @@ Full log: logs/r4-cleanup-vite.log
 
 ## r4-shell-policy-ui-metadata — 2026-10-12T07:48:10.017Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -2660,7 +2660,7 @@ Full log: logs/r4-shell-policy-ui-metadata.log
 
 ## r4-shell-policy-ui-tests-metadata — 2026-10-12T07:48:51.841Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_tests_metadata --test --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation-tests.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -2695,7 +2695,7 @@ Full log: logs/r4-shell-policy-ui-tests-metadata.log
 
 ## r4-precommit-store — 2026-10-12T07:50:19.004Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\shell-store-tests.exe`
 
@@ -2718,7 +2718,7 @@ Full log: logs/r4-precommit-store.log
 
 ## r4-precommit-parser — 2026-10-12T07:50:19.121Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `src-tauri\target\structured-core-tests.exe`
 
@@ -2751,7 +2751,7 @@ Full log: logs/r4-precommit-parser.log
 
 ## r4-stop-guards-final — 2026-10-12T07:52:14.299Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node _research/temp/stop-session.test.mjs`
 
@@ -2769,7 +2769,7 @@ Full log: logs/r4-stop-guards-final.log
 
 ## r4-precommit-tsc — 2026-10-12T07:52:19.988Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -2786,7 +2786,7 @@ Full log: logs/r4-precommit-tsc.log
 
 ## r4-precommit-node — 2026-10-12T07:52:26.767Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs tests/tauri-config.test.mjs`
 
@@ -2821,7 +2821,7 @@ Full log: logs/r4-precommit-node.log
 
 ## r4-final-policy-metadata — 2026-10-12T07:53:28.182Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call _research\logs\r4-shell-policy-ui-metadata-launch.cmd`
 
@@ -2856,7 +2856,7 @@ Full log: logs/r4-final-policy-metadata.log
 
 ## r4-owned-process-tests — 2026-10-12T07:54:40.514Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node tests/stop-session.test.mjs`
 
@@ -2874,7 +2874,7 @@ Full log: logs/r4-owned-process-tests.log
 
 ## r4-final-encoding — 2026-10-12T07:54:46.181Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -2905,7 +2905,7 @@ Pending config independently read: correct ID, adaptive mode, immediate first pa
 
 ## r5-provider-core-red — 2026-10-12T08:33:48.631Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\provider_core.rs -o src-tauri\target\provider-core-tests.exe && src-tauri\target\provider-core-tests.exe`
 
@@ -2940,7 +2940,7 @@ Full log: logs/r5-provider-core-red.log
 
 ## r5-credentials-red — 2026-10-12T08:33:51.957Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/credentials.test.mjs`
 
@@ -2975,7 +2975,7 @@ Full log: logs/r5-credentials-red.log
 
 ## r5-agent-math-red — 2026-10-12T08:33:52.830Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
 
@@ -3010,7 +3010,7 @@ Full log: logs/r5-agent-math-red.log
 
 ## r5-credentials-green — 2026-10-12T08:34:28.386Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/credentials.test.mjs`
 
@@ -3045,7 +3045,7 @@ Full log: logs/r5-credentials-green.log
 
 ## r5-provider-core-initial-green — 2026-10-12T08:34:25.410Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\provider_core.rs -o src-tauri\target\provider-core-tests.exe && src-tauri\target\provider-core-tests.exe`
 
@@ -3071,7 +3071,7 @@ Full log: logs/r5-provider-core-initial-green.log
 
 ## r5-capture-core-red — 2026-10-12T08:34:54.418Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core-red.exe && _research/temp/r5-capture-core-red.exe`
 
@@ -3106,7 +3106,7 @@ Full log: logs/r5-capture-core-red.log
 
 ## r5-capture-core-red2 — 2026-10-12T08:35:00.740Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core-red.exe && _research\temp\r5-capture-core-red.exe`
 
@@ -3141,7 +3141,7 @@ Full log: logs/r5-capture-core-red2.log
 
 ## r5-agent-shell-red — 2026-10-12T08:35:03.729Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/shell-service.test.mjs`
 
@@ -3176,7 +3176,7 @@ Full log: logs/r5-agent-shell-red.log
 
 ## r5-provider-core-boundaries — 2026-10-12T08:35:39.915Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\provider_core.rs -o src-tauri\target\provider-core-tests.exe && src-tauri\target\provider-core-tests.exe`
 
@@ -3211,7 +3211,7 @@ Full log: logs/r5-provider-core-boundaries.log
 
 ## r5-network-red — 2026-10-12T08:35:52.198Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/network.test.mjs`
 
@@ -3246,7 +3246,7 @@ Full log: logs/r5-network-red.log
 
 ## r5-network-green — 2026-10-12T08:35:54.400Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/network.test.mjs`
 
@@ -3281,7 +3281,7 @@ Full log: logs/r5-network-green.log
 
 ## r5-agent-math-green — 2026-10-12T08:36:31.628Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs tests/shell-service.test.mjs`
 
@@ -3316,7 +3316,7 @@ Full log: logs/r5-agent-math-green.log
 
 ## r5-provider-metadata-tests — 2026-10-12T08:36:55.745Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustc --edition=2021 --test src-tauri\src\provider_metadata.rs -o src-tauri\target\provider-metadata-tests.exe -L dependency=src-tauri\target\debug\deps --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-metadata-tests.exe`
 
@@ -3346,7 +3346,7 @@ Full log: logs/r5-provider-metadata-tests.log
 
 ## r5-service-red — 2026-10-12T08:38:01.290Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -3381,7 +3381,7 @@ Full log: logs/r5-service-red.log
 
 ## r5-capture-core-green — 2026-10-12T08:39:20.803Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core.exe && _research\temp\r5-capture-core.exe`
 
@@ -3408,7 +3408,7 @@ Full log: logs/r5-capture-core-green.log
 
 ## r5-service-green — 2026-10-12T08:39:32.926Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -3443,7 +3443,7 @@ Full log: logs/r5-service-green.log
 
 ## r5-provider-native-metadata — 2026-10-12T08:39:51.073Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -3478,7 +3478,7 @@ Full log: logs/r5-provider-native-metadata.log
 
 ## r5-capture-cargo-test — 2026-10-12T08:39:53.744Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `cargo test --manifest-path src-tauri/Cargo.toml continuous --lib --offline`
 
@@ -3492,7 +3492,7 @@ warn: could not canonicalize path C:\Users\broma
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -3500,7 +3500,7 @@ Full log: logs/r5-capture-cargo-test.log
 
 ## r5-provider-native-metadata-green — 2026-10-12T08:40:05.241Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --crate-name rust_foundation_metadata --crate-type lib --emit metadata _research\temp\rust-foundation-metadata.rs -o src-tauri\target\rust-foundation.rmeta -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib --extern windows=src-tauri\target\debug\deps\libwindows-78d39e1734753091.rlib`
 
@@ -3535,7 +3535,7 @@ Full log: logs/r5-provider-native-metadata-green.log
 
 ## r5-capture-final-core — 2026-10-12T08:40:34.599Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core.exe && _research\temp\r5-capture-core.exe`
 
@@ -3562,7 +3562,7 @@ Full log: logs/r5-capture-final-core.log
 
 ## r5-capture-encoding — 2026-10-12T08:40:35.967Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -3580,7 +3580,7 @@ Full log: logs/r5-capture-encoding.log
 
 ## r5-capture-rustfmt — 2026-10-12T08:40:37.146Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustfmt --edition 2021 --check src-tauri/src/continuous.rs src-tauri/src/continuous_batch.rs`
 
@@ -3596,7 +3596,7 @@ Full log: logs/r5-capture-rustfmt.log
 
 ## r5-speech-red — 2026-10-12T08:40:40.416Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/speech.test.mjs`
 
@@ -3631,7 +3631,7 @@ Full log: logs/r5-speech-red.log
 
 ## r5-speech-green — 2026-10-12T08:40:42.698Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/speech.test.mjs`
 
@@ -3666,7 +3666,7 @@ Full log: logs/r5-speech-green.log
 
 ## r5-provider-registry-tests — 2026-10-12T08:41:17.800Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
@@ -3695,7 +3695,7 @@ Full log: logs/r5-provider-registry-tests.log
 
 ## r5-capture-lifecycle-red — 2026-10-12T08:41:23.488Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core.exe && _research\temp\r5-capture-core.exe`
 
@@ -3730,7 +3730,7 @@ Full log: logs/r5-capture-lifecycle-red.log
 
 ## r5-provider-registry-tests-native-libs — 2026-10-12T08:41:40.565Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
@@ -3765,7 +3765,7 @@ Full log: logs/r5-provider-registry-tests-native-libs.log
 
 ## r5-capture-lifecycle-green — 2026-10-12T08:41:58.583Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/continuous_batch.rs -o _research/temp/r5-capture-core.exe && _research\temp\r5-capture-core.exe`
 
@@ -3794,7 +3794,7 @@ Full log: logs/r5-capture-lifecycle-green.log
 
 ## r5-provider-rustfmt — 2026-10-12T08:42:08.076Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustfmt --edition=2021 src-tauri\src\providers.rs src-tauri\src\provider_core.rs src-tauri\src\provider_metadata.rs _research\temp\r5-provider-tests.rs`
 
@@ -3815,7 +3815,7 @@ Full log: logs/r5-provider-rustfmt.log
 
 ## r5-provider-encoding — 2026-10-12T08:42:10.677Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -3833,7 +3833,7 @@ Full log: logs/r5-provider-encoding.log
 
 ## r5-capture-final-format — 2026-10-12T08:42:19.099Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustfmt --edition 2021 --check src-tauri/src/continuous.rs src-tauri/src/continuous_batch.rs && git diff --check -- src-tauri/src/continuous.rs src-tauri/src/continuous_batch.rs`
 
@@ -3850,7 +3850,7 @@ Full log: logs/r5-capture-final-format.log
 
 ## r5-capture-final-format2 — 2026-10-12T08:42:33.858Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustfmt --edition 2021 --check src-tauri/src/continuous.rs src-tauri/src/continuous_batch.rs && git diff --check -- src-tauri/src/continuous.rs src-tauri/src/continuous_batch.rs`
 
@@ -3867,7 +3867,7 @@ Full log: logs/r5-capture-final-format2.log
 
 ## r5-provider-registry-rollback — 2026-10-12T08:42:55.842Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
@@ -3902,7 +3902,7 @@ Full log: logs/r5-provider-registry-rollback.log
 
 ## r5-integration-tsc — 2026-10-12T08:43:02.917Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -3927,7 +3927,7 @@ Full log: logs/r5-integration-tsc.log
 
 ## r5-provider-final-rustfmt — 2026-10-12T08:43:48.647Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd rustfmt --edition=2021 src-tauri\src\providers.rs src-tauri\src\provider_core.rs src-tauri\src\provider_metadata.rs`
 
@@ -3948,7 +3948,7 @@ Full log: logs/r5-provider-final-rustfmt.log
 
 ## r5-agent-tsc — 2026-10-12T08:43:49.012Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -3969,7 +3969,7 @@ Full log: logs/r5-agent-tsc.log
 
 ## r5-provider-final-tests — 2026-10-12T08:43:52.469Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
@@ -4004,7 +4004,7 @@ Full log: logs/r5-provider-final-tests.log
 
 ## r5-provider-final-encoding — 2026-10-12T08:44:10.494Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -4022,7 +4022,7 @@ Full log: logs/r5-provider-final-encoding.log
 
 ## r5-agent-all-node — 2026-10-12T08:44:14.476Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/*.test.mjs`
 
@@ -4057,7 +4057,7 @@ Full log: logs/r5-agent-all-node.log
 
 ## r5-agent-math-display-red — 2026-10-12T08:45:18.792Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs`
 
@@ -4092,7 +4092,7 @@ Full log: logs/r5-agent-math-display-red.log
 
 ## r5-agent-math-display-green — 2026-10-12T08:45:35.979Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs tests/shell-service.test.mjs`
 
@@ -4127,7 +4127,7 @@ Full log: logs/r5-agent-math-display-green.log
 
 ## r5-agent-encoding — 2026-10-12T08:45:39.920Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -4145,7 +4145,7 @@ Full log: logs/r5-agent-encoding.log
 
 ## r5-shell-geometry-red — 2026-10-12T08:45:48.381Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/shell_geometry.rs -o _research/temp/r5-shell-geometry.exe && _research\temp\r5-shell-geometry.exe`
 
@@ -4180,7 +4180,7 @@ Full log: logs/r5-shell-geometry-red.log
 
 ## r5-types-integration2 — 2026-10-12T08:45:48.328Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -4197,7 +4197,7 @@ Full log: logs/r5-types-integration2.log
 
 ## r5-root-encoding — 2026-10-12T08:46:38.471Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -4213,7 +4213,7 @@ Full log: logs/r5-root-encoding.log
 
 ## r5-settings-provider-red — 2026-10-12T08:46:38.846Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-config.test.mjs`
 
@@ -4229,7 +4229,7 @@ Last 20 output lines:
   name: 'AssertionError'
   operator: 'rejects'
   stack: |-
-    async TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/provider-config.test.mjs:41:3)
+    async TestContext.<anonymous> (file:///<workspace>/tests/provider-config.test.mjs:41:3)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -4248,7 +4248,7 @@ Full log: logs/r5-settings-provider-red.log
 
 ## r5-shell-geometry-green — 2026-10-12T08:46:49.172Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `rustc --edition=2021 --test src-tauri/src/shell_geometry.rs -o _research/temp/r5-shell-geometry.exe && _research\temp\r5-shell-geometry.exe`
 
@@ -4273,7 +4273,7 @@ Full log: logs/r5-shell-geometry-green.log
 
 ## r5-settings-provider-green — 2026-10-12T08:47:11.316Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-config.test.mjs`
 
@@ -4308,7 +4308,7 @@ Full log: logs/r5-settings-provider-green.log
 
 ## r5-all-unit-tests — 2026-10-12T08:47:15.760Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/encoding.test.mjs tests/structured.test.mjs tests/math.test.mjs tests/shell-service.test.mjs tests/credentials.test.mjs tests/network.test.mjs tests/service.test.mjs tests/speech.test.mjs`
 
@@ -4343,7 +4343,7 @@ Full log: logs/r5-all-unit-tests.log
 
 ## r5-types-current — 2026-10-12T08:47:18.263Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -4360,7 +4360,7 @@ Full log: logs/r5-types-current.log
 
 ## r5-agent-final-tsc — 2026-10-12T08:48:39.540Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node node_modules/typescript/bin/tsc --noEmit`
 
@@ -4376,7 +4376,7 @@ Full log: logs/r5-agent-final-tsc.log
 
 ## r5-actual-ai-red — 2026-10-12T08:48:52.883Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/ai-transport.test.mjs`
 
@@ -4411,7 +4411,7 @@ Full log: logs/r5-actual-ai-red.log
 
 ## r5-agent-final-node — 2026-10-12T08:48:47.266Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/*.test.mjs`
 
@@ -4446,7 +4446,7 @@ Full log: logs/r5-agent-final-node.log
 
 ## r5-literal-template-red — 2026-10-12T08:49:52.366Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/ai-transport.test.mjs`
 
@@ -4456,11 +4456,11 @@ Last 20 output lines:
 
 ```text
     JSON.parse (<anonymous>)
-    processUserMessageTemplate (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/lib/functions/common.function.ts:66:25)
-    buildDynamicMessages (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/lib/functions/common.function.ts:114:28)
-    fetchAIResponse (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/lib/functions/ai-response.function.ts:64:35)
+    processUserMessageTemplate (file:///<workspace>/src/lib/functions/common.function.ts:66:25)
+    buildDynamicMessages (file:///<workspace>/src/lib/functions/common.function.ts:114:28)
+    fetchAIResponse (file:///<workspace>/src/lib/functions/ai-response.function.ts:64:35)
     fetchAIResponse.next (<anonymous>)
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/ai-transport.test.mjs:21:22)
+    TestContext.<anonymous> (file:///<workspace>/tests/ai-transport.test.mjs:21:22)
     Test.runInAsyncScope (node:async_hooks:214:14)
     Test.run (node:internal/test_runner/test:1047:25)
     Test.processPendingSubtests (node:internal/test_runner/test:744:18)
@@ -4481,7 +4481,7 @@ Full log: logs/r5-literal-template-red.log
 
 ## r5-literal-template-green — 2026-10-12T08:49:55.143Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/ai-transport.test.mjs`
 
@@ -4516,7 +4516,7 @@ Full log: logs/r5-literal-template-green.log
 
 ## plugin-mem0-status — 2026-10-12T13:54:09.281Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `python C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex status --json`
 
@@ -4551,7 +4551,7 @@ Full log: logs/plugin-mem0-status.log
 
 ## plugin-mem0-doctor — 2026-10-12T13:54:09.565Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `python C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex doctor`
 
@@ -4608,7 +4608,7 @@ Read-only installation check: runtime/python.exe absent (Test-Path false). No mo
 
 ## plugin-handoff-encoding — 2026-10-12T13:54:53.294Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/check-encoding.mjs`
 
@@ -4624,7 +4624,7 @@ Full log: logs/plugin-handoff-encoding.log
 
 ## resume-cargo — 2026-10-12T15:10:39.094Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -4650,7 +4650,7 @@ warn: could not canonicalize path C:\Users\broma
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\vswhom-sys-7e8cc1d3af956fdf\build-script-build` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
 warning: build failed, waiting for other jobs to finish...
 ```
 
@@ -4658,7 +4658,7 @@ Full log: logs/resume-cargo.log
 
 ## resume-unit — 2026-10-12T15:10:39.094Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --import ./scripts/ts-loader.mjs --test tests/*.test.mjs`
 
@@ -4693,7 +4693,7 @@ Full log: logs/resume-unit.log
 
 ## resume-types — 2026-10-12T15:10:39.094Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -4710,7 +4710,7 @@ Full log: logs/resume-types.log
 
 ## resume-unit-loader — 2026-10-12T15:11:40.763Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/*.test.mjs`
 
@@ -4745,7 +4745,7 @@ Full log: logs/resume-unit-loader.log
 
 ## resume-cargo-native — 2026-10-12T15:11:02.547Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -4768,10 +4768,10 @@ Last 20 output lines:
 error: failed to run custom build command for `tauri-plugin-keychain v2.0.2`
 
 Caused by:
-  process didn't exit successfully: `C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\tauri-plugin-keychain-c270b718cc265773\build-script-build` (exit code: 1)
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\tauri-plugin-keychain-c270b718cc265773\build-script-build` (exit code: 1)
   --- stdout
   cargo:rerun-if-changed=permissions
-  cargo:PERMISSION_FILES_PATH=C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\build\tauri-plugin-keychain-d6c42059f11e9763\out\tauri-plugin-keychain-permission-files
+  cargo:PERMISSION_FILES_PATH=<workspace>\src-tauri\target\debug\build\tauri-plugin-keychain-d6c42059f11e9763\out\tauri-plugin-keychain-permission-files
   tauri-plugin: failed to write file './permissions\schemas\schema.json': Отказано в доступе. (os error 5)
 warning: build failed, waiting for other jobs to finish...
 ```
@@ -4780,7 +4780,7 @@ Full log: logs/resume-cargo-native.log
 
 ## resume-cargo-vendor — 2026-10-12T15:13:31.938Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -4815,7 +4815,7 @@ Full log: logs/resume-cargo-vendor.log
 
 ## resume-service-red — 2026-10-12T15:14:04.333Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -4831,7 +4831,7 @@ Last 20 output lines:
   actual: false
   operator: '=='
   stack: |-
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/service.test.mjs:65:12)
+    TestContext.<anonymous> (file:///<workspace>/tests/service.test.mjs:65:12)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -4850,7 +4850,7 @@ Full log: logs/resume-service-red.log
 
 ## resume-service-green — 2026-10-12T15:15:03.043Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -4885,7 +4885,7 @@ Full log: logs/resume-service-green.log
 
 ## resume-cargo-wired — 2026-10-12T15:15:05.926Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -4920,7 +4920,7 @@ Full log: logs/resume-cargo-wired.log
 
 ## resume-build — 2026-10-12T15:15:32.418Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -4931,14 +4931,14 @@ Last 20 output lines:
 ```text
 npm notice run pluely@0.1.9 build
 npm notice run tsc && node scripts/frontend.mjs build
-src/pages/settings/index.tsx(8,8): error TS2613: Module '"C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/pages/settings/components/OverlaySettings"' has no default export. Did you mean to use 'import { OverlaySettings } from "C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/pages/settings/components/OverlaySettings"' instead?
+src/pages/settings/index.tsx(8,8): error TS2613: Module '"<workspace>/src/pages/settings/components/OverlaySettings"' has no default export. Did you mean to use 'import { OverlaySettings } from "<workspace>/src/pages/settings/components/OverlaySettings"' instead?
 ```
 
 Full log: logs/resume-build.log
 
 ## resume-cargo-test — 2026-10-12T15:15:34.958Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -4973,7 +4973,7 @@ Full log: logs/resume-cargo-test.log
 
 ## resume-build-wired — 2026-10-12T15:19:24.467Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -5043,7 +5043,7 @@ Full log: logs/resume-tauri-dev.log
 
 ## resume-encoding — 2026-10-12T15:21:42.916Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check:encoding`
 
@@ -5061,7 +5061,7 @@ Full log: logs/resume-encoding.log
 
 ## resume-vision-red — 2026-10-12T15:21:30.285Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml vision::tests`
 
@@ -5096,7 +5096,7 @@ Full log: logs/resume-vision-red.log
 
 ## resume-native-vision-check — 2026-10-12T15:24:36.853Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -5131,7 +5131,7 @@ Full log: logs/resume-native-vision-check.log
 
 ## resume-screen-red — 2026-10-12T15:26:49.123Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/screen-context.test.mjs`
 
@@ -5166,7 +5166,7 @@ Full log: logs/resume-screen-red.log
 
 ## resume-node-wired — 2026-10-12T15:29:39.191Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -5201,7 +5201,7 @@ Full log: logs/resume-node-wired.log
 
 ## resume-audio-red — 2026-10-12T15:31:18.148Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/audio-speech.test.mjs`
 
@@ -5236,7 +5236,7 @@ Full log: logs/resume-audio-red.log
 
 ## resume-audio-green — 2026-10-12T15:32:19.818Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/audio-speech.test.mjs`
 
@@ -5271,7 +5271,7 @@ Full log: logs/resume-audio-green.log
 
 ## resume-debug-embedded — 2026-10-12T15:29:55.952Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo build --offline --manifest-path src-tauri\Cargo.toml --features tauri/custom-protocol`
 
@@ -5294,7 +5294,7 @@ warning: function `position_window_top_center` is never used
 26 | pub fn position_window_top_center(
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: linker stdout: Создается библиотека C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.exp
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.exp
   |
   = note: `#[warn(linker_messages)]` on by default
 
@@ -5341,7 +5341,7 @@ Full log: logs/resume-debug-run.log
 
 ## resume-types-live — 2026-10-12T15:33:54.394Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -5366,7 +5366,7 @@ Full log: logs/resume-types-live.log
 
 ## resume-node-speech — 2026-10-12T15:39:07.862Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -5401,7 +5401,7 @@ Full log: logs/resume-node-speech.log
 
 ## resume-types-speech — 2026-10-12T15:39:18.325Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -5418,7 +5418,7 @@ Full log: logs/resume-types-speech.log
 
 ## resume-debug-sql-diagnosis — 2026-10-12T15:37:41.973Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo build --offline --manifest-path src-tauri\Cargo.toml --features tauri/custom-protocol`
 
@@ -5441,7 +5441,7 @@ warning: function `position_window_top_center` is never used
 26 | pub fn position_window_top_center(
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: linker stdout: Создается библиотека C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.exp
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.exp
   |
   = note: `#[warn(linker_messages)]` on by default
 
@@ -5488,7 +5488,7 @@ Full log: logs/resume-debug-sql-run.log
 
 ## resume-native-profile-check — 2026-10-12T15:44:06.634Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -5523,7 +5523,7 @@ Full log: logs/resume-native-profile-check.log
 
 ## resume-offline-recognizers — 2026-10-12T15:45:45.269Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `powershell.exe -NoProfile -NonInteractive -File src-tauri\resources\system-stt.ps1 -List`
 
@@ -5532,8 +5532,8 @@ Exit code: 1
 Last 20 output lines:
 
 ```text
-File C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\resources\system-stt.ps1 cannot be loaded. The
-file C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\resources\system-stt.ps1 is not digitally signed.
+File <workspace>\src-tauri\resources\system-stt.ps1 cannot be loaded. The
+file <workspace>\src-tauri\resources\system-stt.ps1 is not digitally signed.
 You cannot run this script on the current system. For more information about running scripts and setting execution
 policy, see about_Execution_Policies at https:/go.microsoft.com/fwlink/?LinkID=135170.
     + CategoryInfo          : SecurityError: (:) [], ParentContainsErrorRecordException
@@ -5544,7 +5544,7 @@ Full log: logs/resume-offline-recognizers.log
 
 ## resume-offline-recognizers-local — 2026-10-12T15:46:02.518Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File src-tauri\resources\system-stt.ps1 -List`
 
@@ -5560,7 +5560,7 @@ Full log: logs/resume-offline-recognizers-local.log
 
 ## resume-native-profile-green — 2026-10-12T15:47:02.728Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -5595,7 +5595,7 @@ Full log: logs/resume-native-profile-green.log
 
 ## resume-build-complete — 2026-10-12T15:47:10.135Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run build`
 
@@ -5630,7 +5630,7 @@ Full log: logs/resume-build-complete.log
 
 ## resume-review-red — 2026-10-12T15:51:38.344Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -5646,7 +5646,7 @@ Last 20 output lines:
   actual: false
   operator: '=='
   stack: |-
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/service.test.mjs:91:12)
+    TestContext.<anonymous> (file:///<workspace>/tests/service.test.mjs:91:12)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -5665,7 +5665,7 @@ Full log: logs/resume-review-red.log
 
 ## resume-review-green — 2026-10-12T15:52:33.636Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -5700,7 +5700,7 @@ Full log: logs/resume-review-green.log
 
 ## resume-debug-profile-build — 2026-10-12T15:48:10.159Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo build --offline --manifest-path src-tauri\Cargo.toml --features tauri/custom-protocol`
 
@@ -5723,7 +5723,7 @@ warning: function `position_window_top_center` is never used
 26 | pub fn position_window_top_center(
    |        ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-warning: linker stdout: Создается библиотека C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\debug\deps\pluely_lib.dll.exp
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.lib и объект <workspace>\src-tauri\target\debug\deps\pluely_lib.dll.exp
   |
   = note: `#[warn(linker_messages)]` on by default
 
@@ -5735,7 +5735,7 @@ Full log: logs/resume-debug-profile-build.log
 
 ## resume-cargo-clippy — 2026-10-12T15:48:22.141Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo clippy --offline --manifest-path src-tauri\Cargo.toml --all-targets`
 
@@ -5805,7 +5805,7 @@ Full log: logs/resume-profile-run.log
 
 ## resume-action-red — 2026-10-12T15:55:35.148Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/action-client.test.mjs`
 
@@ -5840,7 +5840,7 @@ Full log: logs/resume-action-red.log
 
 ## resume-action-green — 2026-10-12T15:55:41.800Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/action-client.test.mjs`
 
@@ -5875,7 +5875,7 @@ Full log: logs/resume-action-green.log
 
 ## resume-types-bridge — 2026-10-12T16:00:32.107Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -5893,7 +5893,7 @@ Full log: logs/resume-types-bridge.log
 
 ## resume-types-final-wiring — 2026-10-12T16:02:02.923Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -5911,7 +5911,7 @@ Full log: logs/resume-types-final-wiring.log
 
 ## resume-release-first — 2026-10-12T15:54:29.307Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build -- --no-bundle`
 
@@ -5939,14 +5939,14 @@ warning: function `position_window_top_center` is never used
 
 warning: `pluely` (lib) generated 8 warnings (run `cargo fix --lib -p pluely` to apply 4 suggestions)
     Finished `release` profile [optimized] target(s) in 8m 47s
-       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+       Built application at: <workspace>\src-tauri\target\release\pluely.exe
 ```
 
 Full log: logs/resume-release-first.log
 
 ## resume-release-inspect — 2026-10-12T16:05:03.287Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `powershell.exe -NoProfile -NonInteractive -ExecutionPolicy Bypass -File scripts\inspect-windows.ps1 -ProcessId 15988 -Json`
 
@@ -6016,7 +6016,7 @@ Full log: logs/resume-release-profile-run.log
 
 ## resume-final-types — 2026-10-12T16:07:07.689Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npx tsc --noEmit`
 
@@ -6033,7 +6033,7 @@ Full log: logs/resume-final-types.log
 
 ## resume-final-npm-tests — 2026-10-12T16:07:16.109Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -6068,7 +6068,7 @@ Full log: logs/resume-final-npm-tests.log
 
 ## resume-current-check — 2026-10-12T16:09:10.940Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -6087,7 +6087,7 @@ Full log: logs/resume-current-check.log
 
 ## resume-current-check-fixed — 2026-10-12T16:10:14.742Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -6105,7 +6105,7 @@ Full log: logs/resume-current-check-fixed.log
 
 ## resume-current-rust-test — 2026-10-12T16:09:15.487Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -6140,7 +6140,7 @@ Full log: logs/resume-current-rust-test.log
 
 ## resume-lock-cleanup — 2026-10-12T16:12:50.830Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install --package-lock-only --offline --ignore-scripts`
 
@@ -6152,14 +6152,14 @@ Last 20 output lines:
 npm error code EALLOWREMOTE
 npm error Fetching packages of type "remote" have been disabled
 npm error Refusing to fetch "https://registry.npmjs.org/@tailwindcss/oxide-wasm32-wasi/-/oxide-wasm32-wasi-4.1.12.tgz"
-npm error A complete log of this run can be found in: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\npm-cache\_logs\2026-10-12T16_12_50_985Z-debug-0.log
+npm error A complete log of this run can be found in: <workspace>\_research\npm-cache\_logs\2026-10-12T16_12_50_985Z-debug-0.log
 ```
 
 Full log: logs/resume-lock-cleanup.log
 
 ## resume-quality-check — 2026-10-12T16:13:30.848Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -6212,7 +6212,7 @@ Full log: logs/resume-native-functional.log
 
 ## resume-startup-race-check — 2026-10-12T16:16:35.859Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -6234,8 +6234,8 @@ Last 20 output lines:
     Checking tauri-runtime-wry v2.8.0
     Checking tauri v2.8.2
     Checking tauri-plugin-fs v2.4.2
-    Checking tauri-plugin-keychain v2.0.2 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\vendor\tauri-plugin-keychain)
-    Checking tauri-plugin-sql v2.3.0 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\vendor\tauri-plugin-sql)
+    Checking tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+    Checking tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
     Checking tauri-plugin-autostart v2.5.0
     Checking tauri-plugin-opener v2.4.0
     Checking tauri-plugin-shell v2.3.1
@@ -6247,7 +6247,7 @@ Full log: logs/resume-startup-race-check.log
 
 ## resume-final-release — 2026-10-12T16:13:40.424Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build`
 
@@ -6263,7 +6263,7 @@ Last 20 output lines:
         Info extracting WIX
         Info Target: x64
      Running candle for "main.wxs"
-     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Verifying NSIS package
  Downloading https://github.com/tauri-apps/binary-releases/releases/download/nsis-3/nsis-3.zip
@@ -6272,17 +6272,17 @@ Last 20 output lines:
  Downloading https://github.com/tauri-apps/nsis-tauri-utils/releases/download/nsis_tauri_utils-v0.5.1/nsis_tauri_utils.dll
         Info validating hash
         Info Target: x64
-     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+        <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
 ```
 
 Full log: logs/resume-final-release.log
 
 ## resume-stream-red — 2026-10-12T16:19:05.264Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test --test-timeout=1000 tests/network.test.mjs`
 
@@ -6317,7 +6317,7 @@ Full log: logs/resume-stream-red.log
 
 ## resume-stream-green — 2026-10-12T16:19:30.414Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/network.test.mjs`
 
@@ -6333,7 +6333,7 @@ Last 20 output lines:
   code: 'ERR_ASSERTION'
   name: 'AssertionError'
   stack: |-
-    async TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/network.test.mjs:27:3)
+    async TestContext.<anonymous> (file:///<workspace>/tests/network.test.mjs:27:3)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -6352,7 +6352,7 @@ Full log: logs/resume-stream-green.log
 
 ## resume-stream-green-fixed — 2026-10-12T16:19:49.172Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/network.test.mjs`
 
@@ -6422,7 +6422,7 @@ Full log: logs/resume-startup-fixed-run.log
 
 ## resume-release-race-fixed — 2026-10-12T16:17:52.664Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build`
 
@@ -6438,26 +6438,26 @@ dist/assets/index-BwwZ0sgF.js                         2,398.68 kB │ gzip: 634.
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 ✓ built in 30.60s
-   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 53s
-       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+       Built application at: <workspace>\src-tauri\target\release\pluely.exe
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
-     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
-     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+        <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
 ```
 
 Full log: logs/resume-release-race-fixed.log
 
 ## resume-native-smoke — 2026-10-12T16:25:26.171Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `browser-harness < scripts\native-smoke.py`
 
@@ -6485,7 +6485,7 @@ Full log: logs/resume-native-smoke.log
 
 ## resume-final-suite — 2026-10-12T16:27:18.313Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -6520,7 +6520,7 @@ Full log: logs/resume-final-suite.log
 
 ## resume-precommit-encoding — 2026-10-12T16:27:29.473Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check:encoding`
 
@@ -6590,7 +6590,7 @@ Full log: logs/resume-fake-server.log
 
 ## resume-final-rust-tests — 2026-10-12T16:28:48.073Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -6625,7 +6625,7 @@ Full log: logs/resume-final-rust-tests.log
 
 ## resume-security-audit — 2026-10-12T16:31:03.828Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
 
@@ -6660,7 +6660,7 @@ Full log: logs/resume-security-audit.log
 
 ## resume-release-ports-fixed — 2026-10-12T16:28:33.914Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build`
 
@@ -6676,26 +6676,26 @@ dist/assets/index-B-l5KYNF.js                         2,398.91 kB │ gzip: 634.
 - Using dynamic import() to code-split the application
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
-   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 07s
-       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+       Built application at: <workspace>\src-tauri\target\release\pluely.exe
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
-     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
-     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+        <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
 ```
 
 Full log: logs/resume-release-ports-fixed.log
 
 ## resume-correlated-error-red — 2026-10-12T16:33:03.336Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -6711,7 +6711,7 @@ Last 20 output lines:
   expected: ~
   operator: 'strictEqual'
   stack: |-
-    TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/service.test.mjs:100:12)
+    TestContext.<anonymous> (file:///<workspace>/tests/service.test.mjs:100:12)
     async Test.run (node:internal/test_runner/test:1054:7)
     async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
   ...
@@ -6730,7 +6730,7 @@ Full log: logs/resume-correlated-error-red.log
 
 ## resume-correlated-error-green — 2026-10-12T16:33:06.363Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
 
@@ -6765,7 +6765,7 @@ Full log: logs/resume-correlated-error-green.log
 
 ## resume-audit-safe-fix — 2026-10-12T16:36:58.300Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm audit fix --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
 
@@ -6800,7 +6800,7 @@ Full log: logs/resume-audit-safe-fix.log
 
 ## resume-native-batch-smoke — 2026-10-12T16:38:54.135Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
@@ -6828,7 +6828,7 @@ Full log: logs/resume-native-batch-smoke.log
 
 ## resume-client-regressions — 2026-10-12T16:39:19.445Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/service-client.test.mjs`
 
@@ -6863,7 +6863,7 @@ Full log: logs/resume-client-regressions.log
 
 ## resume-native-batch-smoke-utf8 — 2026-10-12T16:39:34.972Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
@@ -6886,7 +6886,7 @@ Full log: logs/resume-native-batch-smoke-utf8.log
 
 ## resume-vad-update — 2026-10-12T16:40:03.130Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install @ricky0123/vad-react@0.0.37 --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
 
@@ -6916,7 +6916,7 @@ Full log: logs/resume-vad-update.log
 
 ## resume-security-clean — 2026-10-12T16:40:37.895Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install --ignore-scripts --fetch-retries=0 --fetch-timeout=20000`
 
@@ -6955,7 +6955,7 @@ Full log: logs/resume-ports-fixture.log
 
 ## resume-security-zero — 2026-10-12T16:41:10.390Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
 
@@ -6990,7 +6990,7 @@ Full log: logs/resume-security-zero.log
 
 ## resume-current-ts — 2026-10-12T16:41:12.805Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -7009,7 +7009,7 @@ Full log: logs/resume-current-ts.log
 
 ## resume-ui-regressions — 2026-10-12T16:42:06.819Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -7044,7 +7044,7 @@ Full log: logs/resume-ui-regressions.log
 
 ## resume-final-clippy — 2026-10-12T16:42:19.703Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo clippy --offline --manifest-path src-tauri\Cargo.toml --all-targets`
 
@@ -7114,7 +7114,7 @@ Full log: logs/resume-ports-native.log
 
 ## resume-context-regressions — 2026-10-12T16:43:07.082Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/chat-context.test.mjs`
 
@@ -7149,7 +7149,7 @@ Full log: logs/resume-context-regressions.log
 
 ## resume-vad-ts-fixed — 2026-10-12T16:43:07.787Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -7167,7 +7167,7 @@ Full log: logs/resume-vad-ts-fixed.log
 
 ## resume-math-security — 2026-10-12T19:19:51.807Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node --loader ./scripts/ts-loader.mjs --test tests/math.test.mjs tests/chat-context.test.mjs`
 
@@ -7202,7 +7202,7 @@ Full log: logs/resume-math-security.log
 
 ## resume-new-ui-check — 2026-10-12T19:20:33.769Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -7220,7 +7220,7 @@ Full log: logs/resume-new-ui-check.log
 
 ## resume-current-native-check — 2026-10-12T19:20:42.986Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -7234,7 +7234,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.63s
 ```
 
@@ -7242,7 +7242,7 @@ Full log: logs/resume-current-native-check.log
 
 ## resume-final-ui-suite — 2026-10-12T19:21:02.918Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -7277,7 +7277,7 @@ Full log: logs/resume-final-ui-suite.log
 
 ## resume-current-rust-tests — 2026-10-12T19:21:41.306Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -7312,7 +7312,7 @@ Full log: logs/resume-current-rust-tests.log
 
 ## resume-delivery-ui-tests — 2026-10-12T19:24:14.293Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -7347,7 +7347,7 @@ Full log: logs/resume-delivery-ui-tests.log
 
 ## resume-refined-release — 2026-10-12T19:21:14.192Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build`
 
@@ -7363,26 +7363,26 @@ dist/assets/index-B0vJpHpq.js                         1,988.15 kB │ gzip: 590.
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 ✓ built in 35.87s
-   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 22s
-       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+       Built application at: <workspace>\src-tauri\target\release\pluely.exe
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
-     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
-     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+        <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
 ```
 
 Full log: logs/resume-refined-release.log
 
 ## resume-sanitize-direct — 2026-10-12T19:25:11.828Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm install rehype-sanitize@^6.0.0 --offline --ignore-scripts`
 
@@ -7404,7 +7404,7 @@ Full log: logs/resume-sanitize-direct.log
 
 ## resume-transparent-ui-tests — 2026-10-12T19:26:00.363Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -7439,7 +7439,7 @@ Full log: logs/resume-transparent-ui-tests.log
 
 ## resume-ui-final-check — 2026-10-12T19:27:29.742Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -7457,7 +7457,7 @@ Full log: logs/resume-ui-final-check.log
 
 ## resume-current-encoding — 2026-10-12T19:28:24.930Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check:encoding`
 
@@ -7475,7 +7475,7 @@ Full log: logs/resume-current-encoding.log
 
 ## resume-transparent-release — 2026-10-12T19:26:12.225Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd npm run tauri build`
 
@@ -7491,26 +7491,26 @@ dist/assets/index-ul2su-Z3.js                         1,988.43 kB │ gzip: 590.
 - Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
 - Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
 ✓ built in 23.05s
-   Compiling pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 43s
-       Built application at: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\pluely.exe
+       Built application at: <workspace>\src-tauri\target\release\pluely.exe
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
-     Running light to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
         Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
-     Running makensis to produce C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
+        <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
 ```
 
 Full log: logs/resume-transparent-release.log
 
 ## resume-final-native-batch — 2026-10-12T19:29:44.562Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
@@ -7533,7 +7533,7 @@ Full log: logs/resume-final-native-batch.log
 
 ## resume-final-native-ui — 2026-10-12T19:29:49.375Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
 
@@ -7568,7 +7568,7 @@ Full log: logs/resume-final-native-ui.log
 
 ## resume-final-native-vision — 2026-10-12T19:29:50.885Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-vision-smoke.py`
 
@@ -7584,7 +7584,7 @@ Full log: logs/resume-final-native-vision.log
 
 ## resume-final-native-ui-verified — 2026-10-12T19:30:11.540Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
 
@@ -7608,9 +7608,9 @@ Full log: logs/resume-final-native-ui-verified.log
 
 ## resume-msi-admin-extract — 2026-10-12T19:30:18.686Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
-Command: `msiexec /a src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi /qn TARGETDIR=C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\_research\temp\msi-image /l*v _research\logs\resume-msi-extract-details.log`
+Command: `msiexec /a src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi /qn TARGETDIR=<workspace>\_research\temp\msi-image /l*v _research\logs\resume-msi-extract-details.log`
 
 Exit code: 1603
 
@@ -7624,7 +7624,7 @@ Full log: logs/resume-msi-admin-extract.log
 
 ## resume-delivery-clippy — 2026-10-12T19:31:03.828Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo clippy --offline --manifest-path src-tauri\Cargo.toml --all-targets`
 
@@ -7659,7 +7659,7 @@ Full log: logs/resume-delivery-clippy.log
 
 ## resume-msi-payload-extract — 2026-10-12T19:31:29.822Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `C:\Users\broma\AppData\Local\tauri\WixTools314\dark.exe -nologo -x _research\temp\msi-payload src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi _research\temp\msi-payload.wxs`
 
@@ -7669,20 +7669,20 @@ Last 20 output lines:
 
 ```text
 Pluely_0.1.9_x64_en-US.msi
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ExitDialog/Finish/DoAction/LaunchApplication/WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed' whose Dialog_ and Control_ columns contain the values, 'ExitDialog' and 'Finish', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'InstallDirDlg/Back/NewDialog/WelcomeDlg/1' whose Dialog_ and Control_ columns contain the values, 'InstallDirDlg' and 'Back', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'LicenseAgreementDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'LicenseAgreementDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'MaintenanceWelcomeDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'MaintenanceWelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/Install/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'Install', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/InstallNoShield/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'InstallNoShield', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
-C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'WelcomeDlg/Next/NewDialog/InstallDirDlg/1' whose Dialog_ and Control_ columns contain the values, 'WelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ExitDialog/Finish/DoAction/LaunchApplication/WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed' whose Dialog_ and Control_ columns contain the values, 'ExitDialog' and 'Finish', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'InstallDirDlg/Back/NewDialog/WelcomeDlg/1' whose Dialog_ and Control_ columns contain the values, 'InstallDirDlg' and 'Back', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'LicenseAgreementDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'LicenseAgreementDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'MaintenanceWelcomeDlg/Next/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'MaintenanceWelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/Install/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'Install', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'ResumeDlg/InstallNoShield/SpawnWaitDialog/WaitForCostingDlg/1 OR CostingComplete = 1' whose Dialog_ and Control_ columns contain the values, 'ResumeDlg' and 'InstallNoShield', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
+<workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi : warning DARK1059 : The ControlEvent table contains a row with primary key(s) 'WelcomeDlg/Next/NewDialog/InstallDirDlg/1' whose Dialog_ and Control_ columns contain the values, 'WelcomeDlg' and 'Next', which specify a foreign key relationship with the Control table.  However, since the expected foreign row specified by this value does not exist, this will result in some information being left out of the decompiled output.
 ```
 
 Full log: logs/resume-msi-payload-extract.log
 
 ## resume-final-gates — 2026-10-12T19:31:31.518Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -7700,7 +7700,7 @@ Full log: logs/resume-final-gates.log
 
 ## resume-final-tests59 — 2026-10-12T19:31:38.165Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -7892,7 +7892,7 @@ Full log: logs/resume-msi-payload-sequential.log
 
 ## resume-release-audit-final — 2026-10-12T19:41:36.056Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm audit --json --fetch-retries=0 --fetch-timeout=20000`
 
@@ -7927,7 +7927,7 @@ Full log: logs/resume-release-audit-final.log
 
 ## resume-release-integrity — 2026-10-12T19:43:41.302Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `node scripts/verify-release.mjs`
 
@@ -7950,7 +7950,7 @@ Full log: logs/resume-release-integrity.log
 
 ## resume-docs-encoding — 2026-10-12T19:44:52.847Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check:encoding`
 
@@ -7968,7 +7968,7 @@ Full log: logs/resume-docs-encoding.log
 
 ## resume-final-script-regressions — 2026-10-12T19:44:53.338Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm test`
 
@@ -8003,7 +8003,7 @@ Full log: logs/resume-final-script-regressions.log
 
 ## resume-final-encoding396 — 2026-10-12T19:46:10.561Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `npm run check`
 
@@ -8021,7 +8021,7 @@ Full log: logs/resume-final-encoding396.log
 
 ## resume-handoff-rust-check — 2026-10-12T19:46:21.637Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo check --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -8035,7 +8035,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-    Checking pluely v0.1.9 (C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely\src-tauri)
+    Checking pluely v0.1.9 (<workspace>\src-tauri)
     Finished `dev` profile [unoptimized + debuginfo] target(s) in 7.27s
 ```
 
@@ -8043,7 +8043,7 @@ Full log: logs/resume-handoff-rust-check.log
 
 ## resume-handoff-rust-tests61 — 2026-10-12T19:46:32.802Z
 
-Directory: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\pluely
+Directory: <workspace>
 
 Command: `call scripts\rust-env.cmd cargo test --offline --manifest-path src-tauri\Cargo.toml`
 
@@ -8134,3 +8134,1962 @@ Owned-process cleanup: {"rootProcessId":15460,"startedUtc":"2026-10-12T19:51:23.
 ```
 
 Full log: logs/resume-handoff-vite-host.log
+
+## fluely-local-native-check — 2026-10-12T21:24:55.975Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo check --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+   --> src\local_engines.rs:261:15
+    |
+240 |     config: LocalEngineConfig,
+    |     ------ move occurs because `config` has type `LocalEngineConfig`, which does not implement the `Copy` trait
+...
+261 |         .find(|c| c.kind == config.kind)
+    |               ^^^           ----------- borrow occurs due to use in closure
+    |               |
+    |               value borrowed here after move
+262 |         .ok_or("Unknown engine kind")? = config;
+    |                                          ------ value moved here
+    |
+help: consider cloning the value if the performance cost is acceptable
+    |
+262 |         .ok_or("Unknown engine kind")? = config.clone();
+    |                                                ++++++++
+
+Some errors have detailed explanations: E0277, E0308, E0382, E0433.
+For more information about an error, try `rustc --explain E0277`.
+error: could not compile `pluely` (lib) due to 5 previous errors
+```
+
+Full log: logs/fluely-local-native-check.log
+
+## fluely-integrated-cargo — 2026-10-13T05:31:28.647Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo check --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking windows v0.61.3
+   Compiling pluely v0.1.9 (<workspace>\src-tauri)
+    Checking webview2-com-sys v0.38.0
+    Checking tao v0.34.2
+    Checking wasapi v0.19.0
+    Checking webview2-com v0.38.0
+    Checking tauri-runtime v2.8.0
+    Checking wry v0.53.1
+    Checking tauri-runtime-wry v2.8.0
+    Checking tauri v2.8.2
+    Checking tauri-plugin-fs v2.4.2
+    Checking tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
+    Checking tauri-plugin-autostart v2.5.0
+    Checking tauri-plugin-global-shortcut v2.3.0
+    Checking tauri-plugin-shell v2.3.1
+    Checking tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+    Checking tauri-plugin-opener v2.4.0
+    Checking tauri-plugin-http v2.5.2
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 1m 43s
+```
+
+Full log: logs/fluely-integrated-cargo.log
+
+## fluely-overlay-cargo — 2026-10-13T05:40:43.892Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo check --manifest-path src-tauri\Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Updating crates.io index
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 17.93s
+```
+
+Full log: logs/fluely-overlay-cargo.log
+
+## fluely-tests — 2026-10-13T05:48:36.754Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 86 - a blind brain receives semantic image understanding and later questions retain the unchanged scene
+  ---
+  duration_ms: 3.7222
+  type: 'test'
+  ...
+# Subtest: missing vision is shown explicitly and never blamed on the blind brain provider
+ok 87 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.4005
+  type: 'test'
+  ...
+1..87
+# tests 87
+# suites 0
+# pass 86
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 22498.2709
+```
+
+Full log: logs/fluely-tests.log
+
+## fluely-check — 2026-10-13T05:49:00.042Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 425 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-check.log
+
+## fluely-frontend-build — 2026-10-13T05:50:26.621Z
+
+Directory: <workspace>
+
+Command: `npm run build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/asciidoc-Dv7Oe6Be.js                        131.51 kB │ gzip:   9.34 kB
+dist/assets/mdx-Cmh6b_Ma.js                             136.11 kB │ gzip:  23.35 kB
+dist/assets/architectureDiagram-5GKGNRK7-CPdVo1D2.js    151.83 kB │ gzip:  43.15 kB
+dist/assets/objective-cpp-CLxacb5B.js                   171.97 kB │ gzip:  30.62 kB
+dist/assets/javascript-BMMyXqK5.js                      174.82 kB │ gzip:  16.51 kB
+dist/assets/tsx-COt5Ahok.js                             175.54 kB │ gzip:  16.51 kB
+dist/assets/jsx-g9-lgVsj.js                             177.79 kB │ gzip:  16.61 kB
+dist/assets/typescript-DlfHMoPT.js                      181.07 kB │ gzip:  16.03 kB
+dist/assets/angular-ts-C26w9mnW.js                      183.82 kB │ gzip:  16.63 kB
+dist/assets/code-block-IT6T5CEO-zG9FPm0A.js             186.31 kB │ gzip:  60.73 kB
+dist/assets/vue-vine-CCdTUzyM.js                        190.22 kB │ gzip:  18.07 kB
+dist/assets/wolfram-lXgVvXCa.js                         262.39 kB │ gzip:  77.14 kB
+dist/assets/cytoscape.esm-BB4DxJjf.js                   443.04 kB │ gzip: 141.98 kB
+dist/assets/wasm-CG6Dc4jp.js                            622.34 kB │ gzip: 230.29 kB
+dist/assets/cpp-CofmeUqb.js                             626.08 kB │ gzip:  44.82 kB
+dist/assets/mermaid.core-DjgRzK4E.js                    644.44 kB │ gzip: 157.20 kB
+dist/assets/cynefin-OW5HDTMX-CPlxAoPz.js                687.91 kB │ gzip: 154.14 kB
+dist/assets/emacs-lisp-C9XAeP06.js                      779.85 kB │ gzip: 196.03 kB
+dist/assets/index-QT9Gb6Sw.js                         1,722.82 kB │ gzip: 517.37 kB
+✓ built in 1m 3s
+```
+
+Full log: logs/fluely-frontend-build.log
+
+## fluely-rust-tests — 2026-10-13T05:48:39.772Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test shell_store::tests::creates_parent_directory_and_preserves_utf8 ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test structured_core::tests::finish_publishes_unclosed_sections_and_literal_prefixes ... ok
+test structured_core::tests::parse_all_three_tags ... ok
+test structured_core::tests::parse_exact_tag_names_only ... ok
+test structured_core::tests::parse_latex_angle_brackets_untouched ... ok
+test structured_core::tests::parse_missing_side ... ok
+test structured_core::tests::parse_partial_main_visible_before_close ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 85 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.76s
+```
+
+Full log: logs/fluely-rust-tests.log
+
+## fluely-tests-native — 2026-10-13T05:53:35.450Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 87 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.8475
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 88 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.5846
+  type: 'test'
+  ...
+1..88
+# tests 88
+# suites 0
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12237.2265
+```
+
+Full log: logs/fluely-tests-native.log
+
+## fluely-clippy — 2026-10-13T05:58:10.753Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri\Cargo.toml --all-targets -- -D warnings`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+    = help: to override `-D warnings` add `#[allow(clippy::useless_conversion)]`
+help: consider removing the `.into_iter()`
+    |
+242 -                     pre_speech.extend(mono.into_iter());
+242 +                     pre_speech.extend(mono);
+    |
+
+error: this expression creates a reference which is immediately dereferenced by the compiler
+   --> src\lib.rs:231:65
+    |
+231 |                 if let Err(e) = window::create_dashboard_window(&app_handle) {
+    |                                                                 ^^^^^^^^^^^ help: change this to: `app_handle`
+    |
+    = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#needless_borrow
+    = note: `-D clippy::needless-borrow` implied by `-D warnings`
+    = help: to override `-D warnings` add `#[allow(clippy::needless_borrow)]`
+
+error: could not compile `fluely` (lib) due to 16 previous errors
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `fluely` (lib test) due to 18 previous errors
+```
+
+Full log: logs/fluely-clippy.log
+
+## fluely-clippy-final — 2026-10-13T06:01:57.362Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri\Cargo.toml --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 10.42s
+```
+
+Full log: logs/fluely-clippy-final.log
+
+## fluely-node-final — 2026-10-13T06:04:21.096Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 87 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 3.5861
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 88 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 2.9048
+  type: 'test'
+  ...
+1..88
+# tests 88
+# suites 0
+# pass 88
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 38248.8706
+```
+
+Full log: logs/fluely-node-final.log
+
+## fluely-rust-final — 2026-10-13T06:04:34.229Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_missing_side ... ok
+test structured_core::tests::parse_partial_main_visible_before_close ... ok
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test providers::tests::registry_persists_metadata_limits_and_usage_through_atomic_store ... ok
+test shell_store::tests::recovers_from_a_stale_partial_temporary_file ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test shell_store::tests::creates_parent_directory_and_preserves_utf8 ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 85 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.75s
+```
+
+Full log: logs/fluely-rust-final.log
+
+## fluely-frontend-final — 2026-10-13T06:08:36.835Z
+
+Directory: <workspace>
+
+Command: `npm run build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/tsx-COt5Ahok.js                             175.54 kB │ gzip:  16.51 kB
+dist/assets/jsx-g9-lgVsj.js                             177.79 kB │ gzip:  16.61 kB
+dist/assets/typescript-DlfHMoPT.js                      181.07 kB │ gzip:  16.03 kB
+dist/assets/angular-ts-C26w9mnW.js                      183.82 kB │ gzip:  16.63 kB
+dist/assets/code-block-IT6T5CEO-D1eQYXFu.js             186.31 kB │ gzip:  60.73 kB
+dist/assets/vue-vine-CCdTUzyM.js                        190.22 kB │ gzip:  18.07 kB
+dist/assets/wolfram-lXgVvXCa.js                         262.39 kB │ gzip:  77.14 kB
+dist/assets/cytoscape.esm-BB4DxJjf.js                   443.04 kB │ gzip: 141.98 kB
+dist/assets/wasm-CG6Dc4jp.js                            622.34 kB │ gzip: 230.29 kB
+dist/assets/cpp-CofmeUqb.js                             626.08 kB │ gzip:  44.82 kB
+dist/assets/mermaid.core-DfdJ7fZk.js                    644.44 kB │ gzip: 157.20 kB
+dist/assets/cynefin-OW5HDTMX-DoWrh18D.js                687.91 kB │ gzip: 154.14 kB
+dist/assets/emacs-lisp-C9XAeP06.js                      779.85 kB │ gzip: 196.03 kB
+dist/assets/index-C4KdDXcz.js                         1,724.13 kB │ gzip: 517.68 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 47.21s
+```
+
+Full log: logs/fluely-frontend-final.log
+
+## fluely-windows-release — 2026-10-13T06:03:04.307Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+   --> src\lib.rs:263:23
+    |
+263 |     let mut context = tauri::generate_context!();
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `<workspace>\src-tauri\../dist\assets\mermaid.core-KjF9Bh8E.js`: Не удается найти указанный файл. (os error 2)
+   --> src\lib.rs:263:23
+    |
+263 |     let mut context = tauri::generate_context!();
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: couldn't read `<workspace>\src-tauri\../dist\assets\chunk-XXDRQBXY-BrGZ3B9x.js`: Не удается найти указанный файл. (os error 2)
+   --> src\lib.rs:263:23
+    |
+263 |     let mut context = tauri::generate_context!();
+    |                       ^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error: could not compile `fluely` (lib) due to 59 previous errors
+failed to build app: failed to build app
+       Error failed to build app: failed to build app
+```
+
+Full log: logs/fluely-windows-release.log
+
+## fluely-ui-tests-final — 2026-10-13T06:13:03.751Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 88 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.0244
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 89 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.5323
+  type: 'test'
+  ...
+1..89
+# tests 89
+# suites 0
+# pass 89
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11981.4272
+```
+
+Full log: logs/fluely-ui-tests-final.log
+
+## fluely-static-final — 2026-10-13T06:13:16.164Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 428 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-static-final.log
+
+## fluely-windows-final — 2026-10-13T06:12:51.623Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-DVFVwB73.js                         1,724.24 kB │ gzip: 517.72 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 38.32s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 14s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-windows-final.log
+
+## fluely-verified-node — 2026-10-13T06:17:54.382Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 88 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.7798
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 89 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.4841
+  type: 'test'
+  ...
+1..89
+# tests 89
+# suites 0
+# pass 89
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 12942.3873
+```
+
+Full log: logs/fluely-verified-node.log
+
+## fluely-verified-check — 2026-10-13T06:18:07.793Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 428 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-verified-check.log
+
+## fluely-native-clippy — 2026-10-13T06:19:51.952Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri\Cargo.toml --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 19.33s
+```
+
+Full log: logs/fluely-native-clippy.log
+
+## fluely-verified-package — 2026-10-13T06:17:24.945Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.88 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 36.55s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 28s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-verified-package.log
+
+## fluely-native-tests-complete — 2026-10-13T06:28:15.669Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_latex_angle_brackets_untouched ... ok
+test structured_core::tests::parse_missing_side ... ok
+test shell_store::tests::recovers_from_a_stale_partial_temporary_file ... ok
+test structured_core::tests::parse_partial_main_visible_before_close ... ok
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test providers::tests::registry_persists_metadata_limits_and_usage_through_atomic_store ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 85 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.45s
+```
+
+Full log: logs/fluely-native-tests-complete.log
+
+## fluely-taskbar-clippy — 2026-10-13T06:29:12.873Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri\Cargo.toml --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.20s
+```
+
+Full log: logs/fluely-taskbar-clippy.log
+
+## fluely-taskbar-package — 2026-10-13T06:26:08.208Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.88 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 31.60s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 22s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-taskbar-package.log
+
+## fluely-native-ui — 2026-10-13T06:31:02.530Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 28, in <module>
+AssertionError: {'ProcessId': 14160, 'Handle': '0x7202ee', 'Title': 'Fluely - Dashboard', 'ClassName': 'Tauri Window', 'Visible': True, 'IsForeground': False, 'Rectangle': {'Left': 361, 'Top': 93, 'Right': 1175, 'Bottom': 731}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 262416, 'ExtendedStylesHex': '0x00040110', 'ExtendedStylesQueryError': 0, 'DecodedStyles': [], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}
+```
+
+Full log: logs/fluely-native-ui.log
+
+## fluely-native-final-build — 2026-10-13T06:34:39.322Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.88 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 32.17s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 03s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-native-final-build.log
+
+## fluely-native-ui-fixed — 2026-10-13T06:41:29.427Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 70, in <module>
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+AssertionError: {'TimestampUtc': '2026-10-13T06:41:36.3881165Z', 'SelectedProcesses': [{'ProcessId': 9404, 'Name': 'fluely-smoke', 'Running': True}], 'ForegroundProcessId': 14644, 'ForegroundIsSelected': False, 'Windows': [{'ProcessId': 9404, 'Handle': '0x2207ba', 'Title': 'panel-free', 'ClassName': 'Tauri Window', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 144, 'Top': 80, 'Right': 284, 'Bottom': 220}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 134480280, 'ExtendedStylesHex': '0x08040198', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}, {'ProcessId': 9404, 'Handle': '0x80a52', 'Title': 'answer', 'ClassName': 'Tauri Window', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 408, 'Top': 168, 'Right': 1128, 'Bottom': 648}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 135004600, 'ExtendedStylesHex': '0x080c01b8', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}, {'ProcessId': 9404, 'Handle': '0x1409ec', 'Title': 'status', 'ClassName': 'Tauri Window', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 1164, 'Top': 716, 'Right': 1524, 'Bottom': 804}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 135004600, 'ExtendedStylesHex': '0x080c01b8', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}, {'ProcessId': 9404, 'Handle': '0x190170', 'Title': '', 'ClassName': 'global_hotkey_app', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 77, 'Top': 77, 'Right': 1229, 'Bottom': 669}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 134742432, 'ExtendedStylesHex': '0x080801a0', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 0, 'DisplayAffinityHex': '0x00000000', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_NONE; capture exclusion not configured'}, {'ProcessId': 9404, 'Handle': '0x4402e6', 'Title': 'Fluely — AI Assistant', 'ClassName': 'Tauri Window', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 102, 'Top': 102, 'Right': 702, 'Bottom': 156}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 134480144, 'ExtendedStylesHex': '0x08040110', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['NOACTIVATE'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}, {'ProcessId': 9404, 'Handle': '0xa0a80', 'Title': 'Fluely - Dashboard', 'ClassName': 'Tauri Window', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 361, 'Top': 93, 'Right': 1175, 'Bottom': 731}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 262416, 'ExtendedStylesHex': '0x00040110', 'ExtendedStylesQueryError': 0, 'DecodedStyles': [], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 0, 'DisplayAffinityHex': '0x00000000', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_NONE; capture exclusion not configured'}, {'ProcessId': 9404, 'Handle': '0x120916', 'Title': '', 'ClassName': 'Tao Thread Event Target', 'Visible': True, 'IsForeground': False, 'Rectangle': {'Left': 0, 'Top': 0, 'Right': 14, 'Bottom': 14}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 134742176, 'ExtendedStylesHex': '0x080800a0', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOOLWINDOW', 'NOACTIVATE', 'LAYERED', 'TRANSPARENT'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 0, 'DisplayAffinityHex': '0x00000000', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_NONE; capture exclusion not configured'}, {'ProcessId': 9404, 'Handle': '0x60a9e', 'Title': 'MSCTFIME UI', 'ClassName': 'MSCTFIME UI', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 0, 'Top': 0, 'Right': 0, 'Bottom': 0}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 0, 'ExtendedStylesHex': '0x00000000', 'ExtendedStylesQueryError': 0, 'DecodedStyles': [], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 0, 'DisplayAffinityHex': '0x00000000', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_NONE; capture exclusion not configured'}, {'ProcessId': 9404, 'Handle': '0x3902d8', 'Title': 'Default IME', 'ClassName': 'IME', 'Visible': False, 'IsForeground': False, 'Rectangle': {'Left': 0, 'Top': 0, 'Right': 0, 'Bottom': 0}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 0, 'ExtendedStylesHex': '0x00000000', 'ExtendedStylesQueryError': 0, 'DecodedStyles': [], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 0, 'DisplayAffinityHex': '0x00000000', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_NONE; capture exclusion not configured'}], 'Note': 'Native state only. 0x11 confirms configured affinity; recorder/screenshot tests remain separate.'}
+```
+
+Full log: logs/fluely-native-ui-fixed.log
+
+## fluely-native-ui-confirmed — 2026-10-13T06:44:13.125Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+  File "<string>", line 83, in <module>
+AssertionError: {'ProcessId': 9404, 'Handle': '0x2008ca', 'Title': 'strip-right', 'ClassName': 'Tauri Window', 'Visible': True, 'IsForeground': False, 'Rectangle': {'Left': 1482, 'Top': 314, 'Right': 1536, 'Bottom': 500}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 134480280, 'ExtendedStylesHex': '0x08040198', 'ExtendedStylesQueryError': 0, 'DecodedStyles': ['TOPMOST', 'TOOLWINDOW', 'NOACTIVATE'], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}
+```
+
+Full log: logs/fluely-native-ui-confirmed.log
+
+## fluely-delivery-build — 2026-10-13T06:41:39.574Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-Gqfgg7e8.js                         1,725.24 kB │ gzip: 518.08 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 34.34s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 11s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-delivery-build.log
+
+## fluely-native-ui-full — 2026-10-13T06:47:21.836Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 85, in <module>
+AssertionError: {'width': 68, 'height': 233}
+```
+
+Full log: logs/fluely-native-ui-full.log
+
+## fluely-delivery-tests — 2026-10-13T06:47:34.121Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 89 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.5025
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 90 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.9098
+  type: 'test'
+  ...
+1..90
+# tests 90
+# suites 0
+# pass 90
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11040.3969
+```
+
+Full log: logs/fluely-delivery-tests.log
+
+## fluely-delivery-check — 2026-10-13T06:47:45.663Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 430 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-delivery-check.log
+
+## fluely-native-ui-pass — 2026-10-13T06:49:48.187Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+compact_geometry_and_custom_recovery True
+chat_full_physical_workarea True
+native_mic_owned_and_stopped True
+alias_prepared_without_autostart True
+```
+
+Full log: logs/fluely-native-ui-pass.log
+
+## fluely-managed-cpu-inference — 2026-10-13T06:51:55.292Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+managed_brain_text  Hello!
+managed_semantic_image  Red
+managed_whisper_transcription And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.
+independent_local_provider_registration True
+managed_server_cleanup True
+```
+
+Full log: logs/fluely-managed-cpu-inference.log
+
+## fluely-release-ui — 2026-10-13T06:58:35.650Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+compact_geometry_and_custom_recovery True
+chat_full_physical_workarea True
+native_mic_owned_and_stopped True
+alias_prepared_without_autostart True
+```
+
+Full log: logs/fluely-release-ui.log
+
+## fluely-startup-owned — 2026-10-13T07:03:29.631Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 8, in <module>
+  File "<string>", line 4, in invoke
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+RuntimeError: JavaScript evaluation failed at line 0, column 0: Open own startup setting: Windows error 5; expression: window.__TAURI_INTERNALS__.invoke("save_identity_config",{"config": {"executable_alias": "my program.exe", "startup_name": "Fluely-smoke-5c326db3d43a4eaba0af...
+own_startup_entry_removed True
+```
+
+Full log: logs/fluely-startup-owned.log
+
+## fluely-provider-tsc — 2026-10-13T10:53:33.171Z
+
+Directory: <workspace>
+
+Command: `npx tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 npx
+npm notice run tsc --noEmit
+```
+
+Full log: logs/fluely-provider-tsc.log
+
+## fluely-new-dependencies — 2026-10-13T10:53:59.586Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo fetch --manifest-path src-tauri/Cargo.toml`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+      Adding rodio v0.20.1 (available: v0.23.0)
+      Adding symphonia v0.5.5
+      Adding symphonia-bundle-mp3 v0.5.5
+      Adding symphonia-core v0.5.5
+      Adding symphonia-metadata v0.5.5
+      Adding tar v0.4.46
+      Adding xattr v1.6.1
+ Downloading crates ...
+  Downloaded derive_arbitrary v1.4.2
+  Downloaded xattr v1.6.1
+  Downloaded symphonia v0.5.5
+  Downloaded filetime v0.2.29
+  Downloaded symphonia-metadata v0.5.5
+  Downloaded ogg v0.8.0
+  Downloaded symphonia-bundle-mp3 v0.5.5
+  Downloaded tar v0.4.46
+  Downloaded lewton v0.10.2
+  Downloaded rodio v0.20.1
+  Downloaded symphonia-core v0.5.5
+  Downloaded claxon v0.4.3
+```
+
+Full log: logs/fluely-new-dependencies.log
+
+## fluely-expanded-node-tests — 2026-10-13T10:55:19.281Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 103 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 2.2522
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 104 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.4193
+  type: 'test'
+  ...
+1..104
+# tests 104
+# suites 0
+# pass 103
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14214.1013
+```
+
+Full log: logs/fluely-expanded-node-tests.log
+
+## fluely-expanded-check — 2026-10-13T10:58:40.878Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 451 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-expanded-check.log
+
+## fluely-expanded-rust-tests — 2026-10-13T10:59:06.253Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+   Compiling tauri-plugin-http v2.5.2
+   Compiling tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+   Compiling tauri-plugin-autostart v2.5.0
+   Compiling tauri-plugin-global-shortcut v2.3.0
+   Compiling tauri-plugin-shell v2.3.1
+   Compiling tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
+   Compiling sqlx-macros-core v0.8.6
+   Compiling sqlx-macros v0.8.6
+   Compiling tokio-rustls v0.26.2
+   Compiling hyper-rustls v0.27.7
+   Compiling reqwest v0.12.23
+   Compiling sqlx v0.8.6
+error[E0063]: missing fields `context_window`, `credential_id`, `display_name` and 5 other fields in initializer of `providers::metadata::ProviderEntry`
+   --> src\local_engines.rs:321:5
+    |
+321 |     ProviderEntry{id:format!("fluely-local-{}",config.kind),kind:config.kind.clone(),preset:if stt{"custom"}else{"openai-compatible...
+    |     ^^^^^^^^^^^^^ missing `context_window`, `credential_id`, `display_name` and 5 other fields
+
+For more information about this error, try `rustc --explain E0063`.
+error: could not compile `fluely` (lib test) due to 1 previous error
+```
+
+Full log: logs/fluely-expanded-rust-tests.log
+
+## fluely-expanded-node-tests2 — 2026-10-13T11:01:56.130Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 106 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.7925
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 107 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.9202
+  type: 'test'
+  ...
+1..107
+# tests 107
+# suites 0
+# pass 107
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11236.1767
+```
+
+Full log: logs/fluely-expanded-node-tests2.log
+
+## fluely-live-model-discovery — 2026-10-13T11:06:13.708Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs scripts/model-discovery-smoke.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+(node:1280) ExperimentalWarning: `--experimental-loader` may be removed in the future; instead use `register()`:
+--import 'data:text/javascript,import { register } from "node:module"; import { pathToFileURL } from "node:url"; register("./scripts/ts-loader.mjs", pathToFileURL("./"));'
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"source":"OpenRouter official public API","models":459,"imageCapable":297,"audioCapable":45,"contextMetadata":459,"outputMetadata":451}
+```
+
+Full log: logs/fluely-live-model-discovery.log
+
+## fluely-provider-reviewed-check — 2026-10-13T11:07:09.795Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 456 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-provider-reviewed-check.log
+
+## fluely-expanded-node-tests3 — 2026-10-13T11:11:54.862Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 119 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.7558
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 120 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.6227
+  type: 'test'
+  ...
+1..120
+# tests 120
+# suites 0
+# pass 120
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11192.4331
+```
+
+Full log: logs/fluely-expanded-node-tests3.log
+
+## fluely-final-source-check — 2026-10-13T11:13:07.345Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 457 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-final-source-check.log
+
+## fluely-expanded-native-tests-final — 2026-10-13T11:13:58.582Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test sleep::audio::tests::malformed_track_is_rejected ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test structured_core::tests::parse_partial_main_visible_before_close ... ok
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 100 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.50s
+```
+
+Full log: logs/fluely-expanded-native-tests-final.log
+
+## fluely-expanded-clippy — 2026-10-13T11:16:09.694Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 11.85s
+```
+
+Full log: logs/fluely-expanded-clippy.log
+
+## fluely-expanded-tests-final — 2026-10-13T11:21:57.725Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 122 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.1237
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 123 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.0304
+  type: 'test'
+  ...
+1..123
+# tests 123
+# suites 0
+# pass 122
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14874.4528
+```
+
+Full log: logs/fluely-expanded-tests-final.log
+
+## fluely-expanded-release-build — 2026-10-13T11:21:47.224Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+   Compiling tinyvec v1.9.0
+   Compiling tar v0.4.46
+   Compiling lewton v0.10.2
+   Compiling symphonia-metadata v0.5.5
+   Compiling symphonia-bundle-mp3 v0.5.5
+   Compiling symphonia v0.5.5
+   Compiling rodio v0.20.1
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 52s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-expanded-release-build.log
+
+## fluely-expanded-native-ui — 2026-10-13T15:50:44.468Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+compact_geometry_and_custom_recovery True
+chat_full_physical_workarea True
+native_mic_owned_and_stopped True
+alias_prepared_without_autostart True
+```
+
+Full log: logs/fluely-expanded-native-ui.log
+
+## fluely-final-check — 2026-10-13T15:50:55.400Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 461 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-final-check.log
+
+## fluely-native-provider-models — 2026-10-13T15:51:37.375Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-provider-models-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_provider_models_modal_cancel_history_capabilities_two_keys True
+native_vision_picker_only_image_capable_models True
+owned_provider_fixture_cleanup True
+```
+
+Full log: logs/fluely-native-provider-models.log
+
+## fluely-final-rust-tests — 2026-10-13T15:56:02.113Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 104 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.47s
+```
+
+Full log: logs/fluely-final-rust-tests.log
+
+## fluely-owned-autostart — 2026-10-13T15:58:27.397Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 8, in <module>
+  File "<string>", line 4, in invoke
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+RuntimeError: JavaScript evaluation failed at line 0, column 0: Open own startup setting: Windows error 5; expression: window.__TAURI_INTERNALS__.invoke("save_identity_config",{"config": {"executable_alias": "my program.exe", "startup_name": "Fluely-smoke-cdc55a9e83d14167b751...
+own_startup_entry_removed True
+```
+
+Full log: logs/fluely-owned-autostart.log
+
+## fluely-final-reviewed-tests — 2026-10-13T16:00:28.767Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 122 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.8451
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 123 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.7526
+  type: 'test'
+  ...
+1..123
+# tests 123
+# suites 0
+# pass 123
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 11591.6321
+```
+
+Full log: logs/fluely-final-reviewed-tests.log
+
+## fluely-final-native-regressions — 2026-10-13T16:06:24.457Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_partial_main_visible_before_close ... ok
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 105 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.43s
+```
+
+Full log: logs/fluely-final-native-regressions.log
+
+## fluely-release-clippy-final — 2026-10-13T16:07:39.489Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.85s
+```
+
+Full log: logs/fluely-release-clippy-final.log
+
+## fluely-native-managed-gguf-asr — 2026-10-13T16:09:35.850Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 137, in _runtime_evaluate
+    r = cdp("Runtime.evaluate", session_id=session_id, expression=expression, returnByValue=True, awaitPromise=await_promise)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 74, in cdp
+    return _send(
+           ^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 68, in _send
+    if "error" in r: raise RuntimeError(r["error"])
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+RuntimeError: Separator is not found, and chunk exceed the limit
+managed_gguf_asr_loaded 1.562
+managed_gguf_asr_owned_cleanup True
+```
+
+Full log: logs/fluely-native-managed-gguf-asr.log
+
+## fluely-native-managed-gguf-asr2 — 2026-10-13T16:10:27.562Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 21, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+managed_gguf_asr_loaded 0.75
+managed_gguf_asr_owned_cleanup True
+RuntimeError: JavaScript evaluation failed at line 0, column 0: ASR inference: unsupported language; expression: window.__TAURI_INTERNALS__.invoke('transcribe_gguf_asr_audio',{audioBase64:window.__asrFixture,providerId:'fluely-local-gguf-asr'})
+```
+
+Full log: logs/fluely-native-managed-gguf-asr2.log
+
+## fluely-verified-release-build — 2026-10-13T16:10:31.871Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-DhK48RSq.js                         1,756.85 kB │ gzip: 529.00 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 24.73s
+   Compiling fluely v0.2.0 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 43s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
+```
+
+Full log: logs/fluely-verified-release-build.log
+
+## fluely-final-managed-gguf-asr — 2026-10-13T16:16:00.381Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+managed_gguf_asr_loaded 1.531
+managed_gguf_asr_auto_transcript And so my fellow Americans ask not what your country can do for you ask what you can do for your country.
+managed_gguf_asr_seconds 1.204
+malformed_wav_rejected_without_worker_crash True
+managed_gguf_asr_owned_cleanup True
+```
+
+Full log: logs/fluely-final-managed-gguf-asr.log
+
+## fluely-final-sleep-vision-native — 2026-10-13T16:18:04.618Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 27, in <module>
+  File "<string>", line 11, in settle
+AssertionError: Sleep pipeline did not settle
+sleep_vision_fixture_cleanup True
+```
+
+Full log: logs/fluely-final-sleep-vision-native.log
+
+## fluely-release-final-check — 2026-10-13T16:19:43.127Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.0 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 463 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-release-final-check.log
+
+## fluely-service-snapshot-diagnostic — 2026-10-13T16:21:51.483Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\service-snapshot-inspect.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+['plugins']
+37
+{'ready': True, 'error': None, 'sleeping': False}
+None
+```
+
+Full log: logs/fluely-service-snapshot-diagnostic.log
+
+## fluely-final-sleep-vision-native2 — 2026-10-13T16:23:26.024Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+sleep_system_only_fragmented_code_native_alarm_route Колонки (Realtek(R) Audio)
+sleep_vision_fixture_cleanup True
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 44, in <module>
+AssertionError
+```
+
+Full log: logs/fluely-final-sleep-vision-native2.log
+
+## fluely-final-sleep-vision-native3 — 2026-10-13T16:24:31.226Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+sleep_system_only_fragmented_code_native_alarm_route Колонки (Realtek(R) Audio)
+sleep_wake_restores_capture_flags True
+native_pixel_to_text_complete_maps 3801
+sleep_vision_fixture_cleanup True
+```
+
+Full log: logs/fluely-final-sleep-vision-native3.log
+
+## fluely-final-managed-whisper-vision — 2026-10-13T16:36:49.073Z
+
+Directory: <workspace>
+
+Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+managed_brain_text  Hello!
+managed_semantic_image  Red
+managed_whisper_transcription And so my fellow Americans ask not what your country can do for you, ask what you can do for your country.
+independent_local_provider_registration True
+managed_server_cleanup True
+```
+
+Full log: logs/fluely-final-managed-whisper-vision.log

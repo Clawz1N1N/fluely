@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useEffect, useState } from "react";
 import { Button } from "@/components";
 import {
@@ -20,6 +21,7 @@ export const PermissionFlow = ({
   onPermissionGranted,
   onPermissionDenied,
 }: PermissionFlowProps) => {
+  useI18n();
   const [permissionState, setPermissionState] =
     useState<PermissionState>("checking");
   const [checkAttempts, setCheckAttempts] = useState(0);
@@ -86,8 +88,8 @@ export const PermissionFlow = ({
   const stateConfig = {
     checking: {
       icon: <LoaderIcon className="w-5 h-5 animate-spin" />,
-      title: "Checking Permissions",
-      description: "Verifying system audio access...",
+      title: t("Checking Permissions"),
+      description: t("Verifying system audio access..."),
       bgColor: "bg-blue-50",
       borderColor: "border-blue-200",
       textColor: "text-blue-800",
@@ -95,8 +97,8 @@ export const PermissionFlow = ({
     },
     granted: {
       icon: <CheckCircle2Icon className="w-5 h-5" />,
-      title: "Permission Granted",
-      description: "Starting capture...",
+      title: t("Permission Granted"),
+      description: t("Starting capture..."),
       bgColor: "bg-green-50",
       borderColor: "border-green-200",
       textColor: "text-green-800",
@@ -104,8 +106,8 @@ export const PermissionFlow = ({
     },
     requesting: {
       icon: <LoaderIcon className="w-5 h-5 animate-spin" />,
-      title: "Waiting for Permission",
-      description: `Enable Pluely in System Settings (${checkAttempts}/20)`,
+      title: t("Waiting for Permission"),
+      description: t('Enable Fluely in System Settings ({attempt}/20)', {attempt: checkAttempts}),
       bgColor: "bg-orange-50",
       borderColor: "border-orange-200",
       textColor: "text-orange-800",
@@ -113,8 +115,8 @@ export const PermissionFlow = ({
     },
     denied: {
       icon: <ShieldAlertIcon className="w-5 h-5" />,
-      title: "Permission Required",
-      description: "Grant access to capture system audio",
+      title: t("Permission Required"),
+      description: t("Grant access to capture system audio"),
       bgColor: "bg-muted/50",
       borderColor: "border-border",
       textColor: "text-muted-foreground",
@@ -145,15 +147,13 @@ export const PermissionFlow = ({
           {permissionState === "denied" && (
             <div className="mt-3 space-y-2">
               <Button onClick={requestPermission} size="sm" className="w-full">
-                Grant Permission
-              </Button>
+                {t("Grant Permission")}</Button>
               <button
                 type="button"
                 onClick={() => setShowManual(!showManual)}
                 className="w-full flex items-center justify-center gap-1 text-xs text-muted-foreground hover:text-foreground"
               >
-                Manual setup
-                <ChevronDownIcon
+                {t("Manual setup")}<ChevronDownIcon
                   className={cn(
                     "w-3 h-3 transition-transform",
                     showManual && "rotate-180"
@@ -162,10 +162,10 @@ export const PermissionFlow = ({
               </button>
               {showManual && (
                 <ol className="text-xs text-muted-foreground space-y-1 list-decimal list-inside pt-2 border-t border-border/50">
-                  <li>Open System Settings</li>
-                  <li>Go to Privacy & Security</li>
-                  <li>Select Screen & System Audio Recording</li>
-                  <li>Enable Pluely</li>
+                  <li>{t("Open System Settings")}</li>
+                  <li>{t("Go to Privacy & Security")}</li>
+                  <li>{t("Select Screen & System Audio Recording")}</li>
+                  <li>{t("Enable Fluely")}</li>
                 </ol>
               )}
             </div>
@@ -179,8 +179,7 @@ export const PermissionFlow = ({
                 onClick={checkPermission}
                 className="text-xs"
               >
-                Check Now
-              </Button>
+                {t("Check Now")}</Button>
             </div>
           )}
         </div>

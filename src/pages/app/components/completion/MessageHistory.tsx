@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { MessageSquareText, ChevronUp, ChevronDown } from "lucide-react";
 import {
   Popover,
@@ -23,13 +24,14 @@ export const MessageHistory = ({
   messageHistoryOpen,
   setMessageHistoryOpen,
 }: MessageHistoryProps) => {
+  useI18n();
   return (
     <Popover open={messageHistoryOpen} onOpenChange={setMessageHistoryOpen}>
       <PopoverTrigger asChild>
         <Button
           size="icon"
           variant="outline"
-          aria-label="View Current Conversation"
+          aria-label={t("View Current Conversation")}
           className="relative cursor-pointer w-12 h-7 px-2 flex gap-1 items-center justify-center"
         >
           <div className="flex items-center justify-center text-xs font-medium">
@@ -48,11 +50,9 @@ export const MessageHistory = ({
           <div className="flex items-center justify-between">
             <div className="flex items-center flex-col">
               <h2 className="text-lg font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-                Current Conversation
-              </h2>
+                {t("Current Conversation")}</h2>
               <p className="text-xs text-muted-foreground">
-                {conversationHistory.length} messages in this conversation
-              </p>
+                {conversationHistory.length} {t("messages in this conversation")}</p>
             </div>
             <div className="flex items-center gap-2">
               <Button
@@ -63,8 +63,7 @@ export const MessageHistory = ({
                 }}
                 className="text-xs"
               >
-                New Chat
-              </Button>
+                {t("New Chat")}</Button>
               <Button
                 size="sm"
                 variant="ghost"
@@ -96,7 +95,7 @@ export const MessageHistory = ({
                 >
                   <div className="flex items-center gap-2 mb-2">
                     <span className="text-xs font-medium text-muted-foreground uppercase">
-                      {message.role === "user" ? "You" : "AI"}
+                      {message.role === "user" ? t("You") : "AI"}
                     </span>
                     <span className="text-xs text-muted-foreground">
                       {new Date(message.timestamp).toLocaleTimeString([], {

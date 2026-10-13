@@ -1,21 +1,20 @@
 {
-  "name": "pluely",
+  "name": "fluely",
   "private": false,
-  "version": "0.1.9",
-  "description": "The Open Source Alternative to Cluely - A lightning-fast, privacy-first AI assistant that works seamlessly during meetings, interviews, and conversations without anyone knowing.",
+  "version": "0.2.0",
+  "description": "Fluely: configurable desktop AI overlay with local and cloud models, speech and screen vision",
   "author": {
-    "name": "Srikanth Nani",
-    "email": "mail@srikanthnani.com",
-    "url": "https://www.srikanthnani.com"
+    "name": "Clawz1N1N",
+    "url": "https://github.com/Clawz1N1N"
   },
   "license": "GPL-3.0",
-  "homepage": "https://github.com/iamsrikanthnani/pluely#readme",
+  "homepage": "https://github.com/Clawz1N1N/fluely",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/iamsrikanthnani/pluely.git"
+    "url": "git+https://github.com/Clawz1N1N/fluely.git"
   },
   "bugs": {
-    "url": "https://github.com/iamsrikanthnani/pluely/issues"
+    "url": "https://github.com/Clawz1N1N/fluely/issues"
   },
   "keywords": [
     "ai-assistant",
@@ -98,5 +97,11 @@
   "allowScripts": {
     "@tailwindcss/oxide@4.1.12": true,
     "esbuild@0.25.9": true
-  }
+  },
+  "contributors": [
+    {
+      "name": "Srikanth Nani",
+      "url": "https://github.com/iamsrikanthnani"
+    }
+  ]
 }

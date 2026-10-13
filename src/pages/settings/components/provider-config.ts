@@ -1,3 +1,4 @@
+import { t } from "@/lib/i18n";
 import type { ProviderEntry } from '@/lib/overlay/provider-types';
 import { providerSecretKey } from '@/lib/storage/credential-store';
 
@@ -16,7 +17,7 @@ export async function saveProviderConfiguration(provider: ProviderEntry, apiKey:
       await ports.setSecret(key, apiKey);
       if (await ports.getSecret(key) !== apiKey) throw new Error('verification');
     } catch {
-      throw new Error('Не вдалося зберегти й перевірити ключ у захищеному сховищі. Налаштування провайдера не змінено.');
+      throw new Error(t("Не вдалося зберегти й перевірити ключ у захищеному сховищі. Налаштування провайдера не змінено."));
     }
     metadata.secret_keys = [...new Set([...metadata.secret_keys, 'API_KEY'])];
   }
@@ -37,9 +38,9 @@ export const PROVIDER_PRESETS = [
 
 export function parseProviderVariables(source: string): Record<string, string> {
   let parsed: unknown;
-  try { parsed = JSON.parse(source); } catch { throw new Error('Змінні мають бути коректним JSON-об’єктом.'); }
+  try { parsed = JSON.parse(source); } catch { throw new Error(t("Змінні мають бути коректним JSON-об’єктом.")); }
   if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || Object.values(parsed).some(value => typeof value !== 'string')) {
-    throw new Error('Змінні мають бути JSON-об’єктом із текстовими значеннями.');
+    throw new Error(t("Змінні мають бути JSON-об’єктом із текстовими значеннями."));
   }
   return parsed as Record<string, string>;
 }
@@ -50,15 +51,15 @@ function secretVariable(name: string): boolean {
 }
 
 export function validateProviderConfiguration(provider: ProviderEntry): void {
-  if (!provider.id.trim() || !provider.model.trim()) throw new Error('Укажіть ідентифікатор і модель провайдера.');
+  if (!provider.id.trim() || !provider.model.trim()) throw new Error(t("Укажіть ідентифікатор і модель провайдера."));
   let url: URL;
-  try { url = new URL(provider.base_url); } catch { throw new Error('Укажіть коректну базову URL-адресу.'); }
-  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Базова адреса має бути HTTP(S) без вбудованих ключів.');
-  if (!Number.isInteger(provider.rank)) throw new Error('Пріоритет має бути цілим числом.');
+  try { url = new URL(provider.base_url); } catch { throw new Error(t("Укажіть коректну базову URL-адресу.")); }
+  if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error(t("Базова адреса має бути HTTP(S) без вбудованих ключів."));
+  if (!Number.isInteger(provider.rank)) throw new Error(t("Пріоритет має бути цілим числом."));
   for (const value of [provider.limit_per_second, provider.limit_per_minute, provider.limit_per_hour, provider.limit_per_day]) {
-    if (!Number.isInteger(value) || value < 0 || value > 4_294_967_295) throw new Error('Ліміти мають бути невід’ємними цілими числами; 0 означає без обмежень.');
+    if (!Number.isInteger(value) || value < 0 || value > 4_294_967_295) throw new Error(t("Ліміти мають бути невід’ємними цілими числами; 0 означає без обмежень."));
   }
   for (const key of Object.keys(provider.variables)) {
-    if (secretVariable(key) || provider.secret_keys.some(secret => secret.toLowerCase() === key.toLowerCase())) throw new Error('Ключі й токени вводьте в захищене поле API-ключа, а не в змінні.');
+    if (secretVariable(key) || provider.secret_keys.some(secret => secret.toLowerCase() === key.toLowerCase())) throw new Error(t("Ключі й токени вводьте в захищене поле API-ключа, а не в змінні."));
   }
 }

@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Dialog,
   DialogContent,
@@ -25,6 +26,7 @@ export const DeleteSystemPrompt = ({
   promptName,
   onDelete,
 }: DeleteSystemPromptProps) => {
+  useI18n();
   const [isDeleting, setIsDeleting] = useState(false);
 
   const handleConfirmDelete = async () => {
@@ -50,18 +52,16 @@ export const DeleteSystemPrompt = ({
               <AlertTriangle className="h-5 w-5 text-destructive" />
             </div>
             <div className="flex-1">
-              <DialogTitle>Delete System Prompt</DialogTitle>
+              <DialogTitle>{t("Delete System Prompt")}</DialogTitle>
               <DialogDescription className="mt-1">
-                Are you sure you want to delete "{promptName}"?
+                {t('Delete "{name}"?', {name: promptName})}
               </DialogDescription>
             </div>
           </div>
         </DialogHeader>
         <div className="py-3">
           <p className="text-sm text-muted-foreground">
-            This action cannot be undone. This will permanently delete the
-            system prompt from the database.
-          </p>
+            {t("This action cannot be undone. This will permanently delete the system prompt from the database.")}</p>
         </div>
         <DialogFooter>
           <Button
@@ -69,14 +69,13 @@ export const DeleteSystemPrompt = ({
             onClick={() => onOpenChange(false)}
             disabled={isDeleting}
           >
-            Cancel
-          </Button>
+            {t("Cancel")}</Button>
           <Button
             variant="destructive"
             onClick={handleConfirmDelete}
             disabled={isDeleting}
           >
-            {isDeleting ? "Deleting..." : "Delete"}
+            {isDeleting ? t("Deleting...") : t("Delete")}
           </Button>
         </DialogFooter>
       </DialogContent>

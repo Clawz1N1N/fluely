@@ -17,18 +17,13 @@ use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 
 /// Which TTS backend to use.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum TtsBackend {
+    #[default]
     System,
     Piper,
     Cloud,
-}
-
-impl Default for TtsBackend {
-    fn default() -> Self {
-        TtsBackend::System
-    }
 }
 
 /// TTS settings.
@@ -183,8 +178,7 @@ mod tests {
     use super::*;
     #[test]
     fn speech_settings_reject_nan_and_preserve_independent_backend() {
-        let mut settings = TtsSettings::default();
-        settings.rate = f32::NAN;
+        let settings = TtsSettings {rate:f32::NAN,..Default::default()};
         assert!(normalize(settings).is_err());
         let settings = normalize(TtsSettings { backend: TtsBackend::Cloud, rate: 9.0, ..TtsSettings::default() }).unwrap();
         assert_eq!(settings.rate, 2.0);

@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { ServiceController } from '../src/lib/overlay/service-controller.ts';
 import { INITIAL_SERVICE_STATE } from '../src/lib/overlay/contracts.ts';
+import { t } from '../src/lib/i18n/index.ts';
 
 function fixture() {
   const handlers=new Map(),calls=[],events=[];
@@ -30,7 +31,7 @@ test('system transcript uses counted STT barrier before flushing one combined ba
   await f.controller.audio(new Blob(['wav']),'[system]');
   const relevant=f.calls.filter(c=>['continuous_set_audio_pending','continuous_add_transcript','flush_continuous'].includes(c.name));
   assert.deepEqual(relevant.map(c=>[c.name,c.args]),[
-    ['continuous_set_audio_pending',{pending:true}],['continuous_add_transcript',{channel:'[system]',text:'Почуте'}],
+    ['continuous_set_audio_pending',{pending:true}],['continuous_add_transcript',{channel:'[system]',text:'Почуте',expectedEpoch:'0'}],
     ['continuous_set_audio_pending',{pending:false}],['flush_continuous',undefined],
   ]);
   await f.controller.stop();
@@ -38,7 +39,7 @@ test('system transcript uses counted STT barrier before flushing one combined ba
 test('failed batch still acknowledges its exact ID and exposes a visible error',async()=>{
   const f=fixture();f.controller.ports.answer=async function*(){throw Error('Помилка');};
   await f.controller.start();await f.controller.batch({request_id:7,frames:[],transcript:[],questions:['Q']});
-  assert.equal(f.controller.snapshot.error,'Помилка');
+  assert.equal(f.controller.snapshot.error,t('Помилка'));
   assert.deepEqual(f.calls.find(c=>c.name==='continuous_request_done').args,{requestId:7});
   await f.controller.stop();
 });
@@ -99,5 +100,83 @@ test('speech errors do not turn a successful AI batch into a failed chat result'
     assert.equal(f.controller.snapshot.main,'Відповідь');
     assert.equal(f.controller.snapshot.requestError,null);
     assert.equal(f.controller.snapshot.error,'TTS unavailable');
+  }finally{await f.controller.stop();}
+});
+
+test('native microphone opens only after Listen and delivers WAV through the mic channel',async()=>{
+  const f=fixture();const original=f.controller.ports.invoke;
+  f.controller.ports.invoke=async(name,args)=>name==='get_capture_settings'?{system_audio:false,microphone:true}:original(name,args);
+  await f.controller.start();
+  try{
+    assert.equal(f.calls.filter(c=>c.name==='start_microphone').length,0);
+    await f.controller.action({id:'mic-on',action:'listen',source:'button'});
+    assert.equal(f.calls.filter(c=>c.name==='start_microphone').length,1);
+    assert.ok(f.handlers.has('microphone-input'));
+    const header=new Uint8Array(44);header.set(new TextEncoder().encode('RIFF'));header.set(new TextEncoder().encode('WAVE'),8);
+    await f.handlers.get('microphone-input')(Buffer.from(header).toString('base64'));
+    assert.ok(f.calls.some(c=>c.name==='continuous_add_transcript'&&c.args.channel==='[mic]'));
+    await f.controller.action({id:'mic-off',action:'listen',source:'button'});
+    assert.equal(f.calls.filter(c=>c.name==='stop_microphone').length,1);
+  }finally{await f.controller.stop();}
+});
+test('disabling microphone capture live closes native input and shutdown never reopens it',async()=>{
+  const f=fixture();let enabled=true;const original=f.controller.ports.invoke;
+  f.controller.ports.invoke=async(name,args)=>name==='get_capture_settings'?{system_audio:false,microphone:enabled}:original(name,args);
+  await f.controller.start();
+  try{
+    await f.controller.action({id:'mic-on',action:'listen',source:'button'});enabled=false;
+    await f.controller.refreshStatus();
+    assert.equal(f.calls.filter(c=>c.name==='stop_microphone').length,1);
+    await f.controller.stop();enabled=true;await f.controller.refreshStatus();
+    assert.equal(f.calls.filter(c=>c.name==='start_microphone').length,1);
+  }finally{await f.controller.stop();}
+});
+test('native microphone failure rolls back Listen and closes an already started system capture',async()=>{
+  const f=fixture();const original=f.controller.ports.invoke;
+  f.controller.ports.invoke=async(name,args)=>{
+    if(name==='get_capture_settings')return{system_audio:true,microphone:true};
+    if(name==='start_microphone')throw new Error('Native microphone unavailable');
+    return original(name,args);
+  };
+  await f.controller.start();try{
+    await f.controller.action({id:'bad-mic',action:'listen',source:'button'});
+    assert.equal(f.controller.snapshot.listening,false);
+    assert.match(f.controller.snapshot.error,/Native microphone unavailable/);
+    assert.ok(f.calls.some(c=>c.name==='stop_system_audio_capture'));
+  }finally{await f.controller.stop();}
+});
+test('Screen vision upgrades an older manual profile to interval capture before starting',async()=>{
+  const f=fixture();const original=f.controller.ports.invoke;
+  const capture={mode:'manual',interval:5,monitor:'primary',microphone:false,system_audio:false};
+  f.controller.ports.invoke=async(name,args)=>{
+    if(name==='get_capture_settings')return{...capture};
+    if(name==='update_capture_settings')Object.assign(capture,args.settings);
+    return original(name,args);
+  };
+  await f.controller.start();try{
+    await f.controller.action({id:'vision-on',action:'continuous',source:'button'});
+    const settings=f.calls.findIndex(c=>c.name==='update_capture_settings');
+    const start=f.calls.findIndex(c=>c.name==='start_continuous');
+    assert.ok(settings>=0&&settings<start);assert.equal(capture.mode,'interval');
+  }finally{await f.controller.stop();}
+});
+test('stopping Listen transcribes the final owned native speech segment exactly once',async()=>{
+  const f=fixture();const original=f.controller.ports.invoke;
+  const header=new Uint8Array(44);header.set(new TextEncoder().encode('RIFF'));header.set(new TextEncoder().encode('WAVE'),8);
+  const finalAudio=Buffer.from(header).toString('base64');
+  f.controller.ports.invoke=async(name,args)=>{
+    if(name==='get_capture_settings')return{system_audio:false,microphone:true};
+    if(name==='stop_microphone'){
+      assert.equal(f.controller.snapshot.listening,false);
+      await f.handlers.get('microphone-input')?.(finalAudio);
+    }
+    return original(name,args);
+  };
+  await f.controller.start();try{
+    await f.controller.action({id:'final-on',action:'listen',source:'button'});
+    await f.controller.action({id:'final-off',action:'listen',source:'button'});
+    assert.equal(f.calls.filter(c=>c.name==='continuous_add_transcript'&&c.args.channel==='[mic]').length,1);
+    await f.handlers.get('microphone-input')(finalAudio);
+    assert.equal(f.calls.filter(c=>c.name==='continuous_add_transcript'&&c.args.channel==='[mic]').length,1);
   }finally{await f.controller.stop();}
 });

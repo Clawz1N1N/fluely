@@ -16,28 +16,39 @@ use serde::{Deserialize, Serialize};
 use std::sync::Mutex;
 use std::sync::atomic::{AtomicBool, Ordering};
 
+#[path = "vision/pixel_text.rs"]
+mod pixel_text;
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
+#[serde(rename_all = "kebab-case")]
+pub enum VisionMethod {
+    #[default]
+    Semantic,
+    PixelText,
+}
+
 /// Which vision strategy to use when the brain model
 /// cannot accept images.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum VisionMode {
     Ocr,
     #[serde(rename = "ocr+ui", alias = "ocrui")]
     OcrUi,
     Vlm,
+    #[default]
     Full,
-}
-
-impl Default for VisionMode {
-    fn default() -> Self {
-        VisionMode::Ocr
-    }
 }
 
 /// Settings for the vision pipeline.
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(default)]
 pub struct VisionSettings {
+    pub method: VisionMethod,
+    /// Explicit registered image-capable model; None uses available ranked models.
+    pub vision_provider_id: Option<String>,
+    pub pixel_width: u32,
+    pub pixel_colors: bool,
     pub mode: VisionMode,
     /// max characters of screen text (cap)
     pub max_chars: usize,
@@ -50,7 +61,11 @@ pub struct VisionSettings {
 impl Default for VisionSettings {
     fn default() -> Self {
         VisionSettings {
-            mode: VisionMode::Ocr,
+            method: VisionMethod::Semantic,
+            vision_provider_id: None,
+            pixel_width: 64,
+            pixel_colors: true,
+            mode: VisionMode::Full,
             max_chars: 8000,
             ui_max_depth: 8,
             ui_max_chars: 4000,
@@ -187,8 +202,7 @@ pub mod ocr_windows {
         img: &DynamicImage,
         max_chars: usize,
     ) -> Result<ScreenContext, String> {
-        let mut ctx = ScreenContext::default();
-        ctx.ocr = ocr_image(img)?;
+        let ctx = ScreenContext {ocr:ocr_image(img)?,..Default::default()};
         let _ = max_chars;
         Ok(ctx)
     }
@@ -238,6 +252,11 @@ pub fn update_vision_settings(
     settings.max_chars = settings.max_chars.clamp(64, 32000);
     settings.ui_max_chars = settings.ui_max_chars.clamp(64, 16000);
     settings.ui_max_depth = settings.ui_max_depth.min(16);
+    settings.pixel_width = settings.pixel_width.clamp(24, 96);
+    if settings.method == VisionMethod::PixelText && settings.max_chars < 1024 {
+        return Err("Pixel-to-text needs at least 1024 context characters".into());
+    }
+    settings.vision_provider_id = settings.vision_provider_id.filter(|id| !id.trim().is_empty());
     let mut current = state.settings.lock().map_err(|e| e.to_string())?;
     let path = crate::app_paths::data_dir(&app)?.join("vision_settings.json");
     crate::shell_store::replace_file(&path, &serde_json::to_vec_pretty(&settings).map_err(|e| e.to_string())?)
@@ -266,6 +285,22 @@ pub async fn build_screen_context(
             .map_err(|e| format!("base64: {}", e))?;
         let img = image::load_from_memory(&bytes)
             .map_err(|e| format!("image: {}", e))?;
+
+        if settings.method == VisionMethod::PixelText {
+            // Spatial pixels remain the primary evidence even if OCR is unavailable.
+            let budget = settings.max_chars.min(4096);
+            let mut text = pixel_text::pixel_text_context(&img, settings.pixel_width, settings.pixel_colors, budget)?;
+            let remaining = budget.saturating_sub(text.chars().count());
+            if remaining > 128 {
+                if let Ok(ocr) = ocr_windows::ocr_context(&img, remaining.saturating_sub(30)) {
+                    if !ocr.ocr.is_empty() {
+                        text.push_str("[SUPPLEMENTAL OCR]\n");
+                        text.push_str(&ocr.to_text(remaining.saturating_sub(30)));
+                    }
+                }
+            }
+            return Ok(text);
+        }
 
         match settings.mode {
             VisionMode::Ocr => {

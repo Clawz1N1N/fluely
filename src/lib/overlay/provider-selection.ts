@@ -1,11 +1,11 @@
 import type {ProviderEntry,ProviderKind,ProviderStatus} from './provider-types';
-interface Ports {pick(kind:ProviderKind,excluded:string[]):Promise<ProviderEntry|null>;status(kind:ProviderKind):Promise<ProviderStatus>;wait(milliseconds:number,signal:AbortSignal):Promise<void>}
+interface Ports {pick(kind:ProviderKind,excluded:string[],preferredProviderId?:string):Promise<ProviderEntry|null>;status(kind:ProviderKind):Promise<ProviderStatus>;wait(milliseconds:number,signal:AbortSignal):Promise<void>}
 /** Quota/429 neutral waits persist; terminal failures are attempted once per request. */
-export async function selectRankedProvider(kind:ProviderKind,excluded:string[],signal:AbortSignal,ports:Ports):Promise<ProviderEntry> {
+export async function selectRankedProvider(kind:ProviderKind,excluded:string[],signal:AbortSignal,ports:Ports,preferredProviderId?:string):Promise<ProviderEntry> {
   while(!signal.aborted){
-    const entry=await ports.pick(kind,excluded);if(entry)return entry;
+    const entry=await ports.pick(kind,excluded,preferredProviderId);if(entry)return entry;
     const status=await ports.status(kind);
-    const enabled=status.providers.filter(provider=>provider.enabled&&provider.kind===kind);
+    const enabled=status.providers.filter(provider=>provider.enabled&&(kind==='vision'?['brain','vision'].includes(provider.kind)&&provider.supports_images:provider.kind===kind)&&(!preferredProviderId||provider.id===preferredProviderId));
     if(!enabled.length)throw new Error(`Налаштуйте провайдер ${kind} у налаштуваннях.`);
     if(enabled.every(provider=>excluded.includes(provider.id)))throw new Error(`Усі провайдери ${kind} відхилили запит. Перевірте ключі, моделі та адреси.`);
     await ports.wait(Math.min(1000,Math.max(100,(status.nextAllowedAt??Date.now()+1000)-Date.now())),signal);

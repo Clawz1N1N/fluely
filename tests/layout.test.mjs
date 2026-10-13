@@ -1,0 +1,13 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createPreset,validateLayout,panelExtent,moveAction,reorderAction,movePanel,LAYOUT_ACTIONS} from '../src/lib/overlay/layout.ts';
+const monitor={key:'left',x:-1920,y:-240,width:1920,height:1040,scale:1.5};
+test('each preset assigns every control exactly once and fits the monitor workarea',()=>{
+  for(const preset of ['buttons','sides','topbottom']){const panels=createPreset(preset,monitor);validateLayout(panels);assert.deepEqual(panels.flatMap(p=>p.actions.map(a=>a.action)).sort(),[...LAYOUT_ACTIONS].sort());for(const panel of panels){const extent=panelExtent(panel);assert.ok(panel.x>=monitor.x&&panel.y>=monitor.y);assert.ok(panel.x+Math.round(extent.width*monitor.scale)<=monitor.x+monitor.width);assert.ok(panel.y+Math.round(extent.height*monitor.scale)<=monitor.y+monitor.height);}}
+});
+test('moving and reordering preserves enabled state and never mutates caller data',()=>{
+  const panels=createPreset('sides',monitor);panels[0].actions[0].enabled=false;const before=structuredClone(panels);const action=panels[0].actions[0].action;
+  const moved=moveAction(panels,action,panels[1].id);validateLayout(moved);assert.deepEqual(panels,before);assert.equal(moved[1].actions.at(-1).enabled,false);const ordered=reorderAction(moved,moved[1].id,moved[1].actions.length-1,-1);assert.equal(ordered[1].actions.at(-2).action,action);
+});
+test('disabled controls do not create invisible native window margins',()=>{const panel=createPreset('topbottom',monitor)[0];panel.actions.forEach(a=>a.enabled=false);assert.deepEqual(panelExtent(panel),{width:0,height:0});panel.actions[0].enabled=true;assert.deepEqual(panelExtent(panel),{width:panel.button_size+2*panel.padding,height:panel.button_size+2*panel.padding});});
+test('physical drag clamps free panels across negative monitor origins with DPI scaling',()=>{const panel=createPreset('topbottom',monitor)[0];const moved=movePanel(panel,9999,9999,monitor);const extent=panelExtent(panel);assert.equal(moved.x,monitor.x+monitor.width-Math.round(extent.width*monitor.scale));assert.equal(moved.y,monitor.y+monitor.height-Math.round(extent.height*monitor.scale));assert.equal(moved.monitor,monitor.key);});
+test('validation rejects malformed geometry and duplicate or missing controls',()=>{const panels=createPreset('sides',monitor);for(const change of [{columns:0},{button_size:97},{opacity:NaN},{x:0.5},{id:'../x'}])assert.throws(()=>validateLayout([{...panels[0],...change},panels[1]]));assert.throws(()=>validateLayout([panels[0],panels[0]]));assert.throws(()=>validateLayout([]));});

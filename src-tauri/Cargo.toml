@@ -1,12 +1,12 @@
 [package]
-name = "pluely"
-version = "0.1.9"
-description = "The Open Source Alternative to Cluely - A lightning-fast, privacy-first AI assistant that works seamlessly during meetings, interviews, and conversations without anyone knowing."
-authors = ["Srikanth Nani <mail@srikanthnani.com>"]
+name = "fluely"
+version = "0.2.0"
+description = "Configurable desktop AI overlay with local and cloud models, speech and screen vision"
+authors = ["Clawz1N1N", "Srikanth Nani <mail@srikanthnani.com>"]
 license = "GPL-3.0"
-repository = "https://github.com/iamsrikanthnani/pluely"
-homepage = "https://github.com/iamsrikanthnani/pluely"
-documentation = "https://github.com/iamsrikanthnani/pluely/wiki"
+repository = "https://github.com/Clawz1N1N/fluely"
+homepage = "https://github.com/Clawz1N1N/fluely"
+documentation = "https://github.com/Clawz1N1N/fluely/wiki"
 readme = "../README.md"
 keywords = ["ai-assistant", "tauri", "desktop-app", "privacy-first", "meeting-assistant"]
 categories = ["gui", "multimedia", "accessibility", "science", "development-tools"]
@@ -18,7 +18,7 @@ edition = "2021"
 # The `_lib` suffix may seem redundant but it is necessary
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
-name = "pluely_lib"
+name = "fluely_lib"
 crate-type = ["rlib"]
 
 [build-dependencies]
@@ -33,10 +33,15 @@ tauri-plugin-global-shortcut = "2"
 tauri-plugin-keychain = "2.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
+zip = { version = "2", default-features = false, features = ["deflate"] }
+ring = "0.17"
+flate2 = "1"
+tar = "0.4"
 image = "0.25.6"
 xcap = "0.0.12"
 base64 = "0.22"
 cpal = "0.15.3"
+rodio = { version = "0.20", default-features = false, features = ["wav", "mp3", "vorbis", "flac"] }
 hound = "3.5.1"
 tokio = { version = "1.0", features = ["full"] }
 dotenv = "0.15"
@@ -54,7 +59,7 @@ tauri-nspanel = { git = "https://github.com/ahkohd/tauri-nspanel", branch = "v2"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 wasapi = "0.19.0"
-windows = { version = "0.61", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_Graphics_Gdi", "Media_Ocr", "Graphics_Imaging", "Storage_Streams", "Globalization", "Foundation", "Win32_UI_Accessibility", "Win32_System_Com", "Win32_System_WinRT"] }
+windows = { version = "0.61", features = ["Win32_Foundation", "Win32_UI_WindowsAndMessaging", "Win32_Graphics_Gdi", "Media_Ocr", "Graphics_Imaging", "Storage_Streams", "Globalization", "Foundation", "Win32_UI_Accessibility", "Win32_System_Com", "Win32_System_WinRT", "Win32_UI_Controls_Dialogs", "Win32_System_Registry", "Win32_System_LibraryLoader", "Win32_Storage_FileSystem", "Win32_Security", "Win32_System_Threading", "Win32_System_JobObjects"] }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 libpulse-binding = "2.30.1"

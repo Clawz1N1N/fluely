@@ -40,6 +40,7 @@ impl Default for CaptureState {
 
 #[tauri::command]
 pub async fn start_screen_capture(app: tauri::AppHandle) -> Result<(), String> {
+    crate::sleep::ensure_awake(&app)?;
     // Get all monitors
     let capture_monitors = Monitor::all().map_err(|e| format!("Failed to get monitors: {}", e))?;
 
@@ -70,6 +71,7 @@ pub async fn start_screen_capture(app: tauri::AppHandle) -> Result<(), String> {
 
     // Capture all monitors and store their info
     for (idx, monitor) in capture_monitors.iter().enumerate() {
+        crate::sleep::ensure_awake(&app)?;
         let captured_image = monitor.capture_image().map_err(|e| {
             state.overlay_active.store(false, Ordering::SeqCst);
             format!("Failed to capture monitor {}: {}", idx, e)
@@ -94,6 +96,10 @@ pub async fn start_screen_capture(app: tauri::AppHandle) -> Result<(), String> {
 
     // Create overlay windows for all monitors
     for (idx, monitor) in capture_monitors.iter().enumerate() {
+        if crate::sleep::is_sleeping(&app) {
+            let _ = close_overlay_window(app.clone());
+            return Err("Screen capture is unavailable during Sleep".into());
+        }
         let (logical_width, logical_height, logical_x, logical_y) =
             if let Some(display) = tauri_monitors.get(idx) {
                 let scale_factor = display.scale_factor();
@@ -144,6 +150,10 @@ pub async fn start_screen_capture(app: tauri::AppHandle) -> Result<(), String> {
         // Wait a short moment for content to load before showing
         thread::sleep(Duration::from_millis(100));
 
+        if crate::sleep::is_sleeping(&app) {
+            let _ = close_overlay_window(app.clone());
+            return Err("Screen capture is unavailable during Sleep".into());
+        }
         overlay.show().ok();
         overlay.set_always_on_top(true).ok();
 
@@ -202,6 +212,7 @@ pub async fn capture_selected_area(
     coords: SelectionCoords,
     monitor_index: usize,
 ) -> Result<String, String> {
+    crate::sleep::ensure_awake(&app)?;
     // Get the stored captured monitors
     let state = app.state::<CaptureState>();
     let mut captured_monitors = state.captured_monitors.lock().unwrap();
@@ -253,6 +264,7 @@ pub async fn capture_selected_area(
     }
 
     // Emit event with base64 data
+    crate::sleep::ensure_awake(&app)?;
     app.emit("captured-selection", &base64_str)
         .map_err(|e| format!("Failed to emit captured-selection event: {}", e))?;
 
@@ -263,6 +275,7 @@ pub async fn capture_selected_area(
 
 #[tauri::command]
 pub async fn capture_to_base64(window: tauri::WebviewWindow) -> Result<String, String> {
+    crate::sleep::ensure_awake(window.app_handle())?;
     let monitor_fallback = window
         .current_monitor()
         .ok()

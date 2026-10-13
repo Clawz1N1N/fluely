@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useCallback, useEffect, useState } from "react";
 import {
   createSystemPrompt,
@@ -15,6 +16,7 @@ import { safeLocalStorage } from "@/lib";
 import { useApp } from "@/contexts";
 
 export const useSystemPrompts = () => {
+  useI18n();
   const { setSystemPrompt } = useApp();
   const [prompts, setPrompts] = useState<SystemPrompt[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +41,7 @@ export const useSystemPrompts = () => {
       setPrompts(result);
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to fetch system prompts";
+        err instanceof Error ? err.message : t("Failed to fetch system prompts");
       setError(errorMessage);
       console.error("Error fetching system prompts:", err);
     } finally {
@@ -59,7 +61,7 @@ export const useSystemPrompts = () => {
         return result;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to create system prompt";
+          err instanceof Error ? err.message : t("Failed to create system prompt");
         setError(errorMessage);
         console.error("Error creating system prompt:", err);
         throw err;
@@ -83,7 +85,7 @@ export const useSystemPrompts = () => {
         return result;
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to update system prompt";
+          err instanceof Error ? err.message : t("Failed to update system prompt");
         setError(errorMessage);
         console.error("Error updating system prompt:", err);
         throw err;
@@ -103,7 +105,7 @@ export const useSystemPrompts = () => {
         await fetchPrompts(); // Refresh list
       } catch (err) {
         const errorMessage =
-          err instanceof Error ? err.message : "Failed to delete system prompt";
+          err instanceof Error ? err.message : t("Failed to delete system prompt");
         setError(errorMessage);
         console.error("Error deleting system prompt:", err);
         throw err;
@@ -174,7 +176,7 @@ export const useSystemPrompts = () => {
           STORAGE_KEYS.SELECTED_SYSTEM_PROMPT_ID,
           promptId.toString()
         );
-        // Clear any selected Pluely prompt when user selects their own prompt
+        // Clear any selected Fluely prompt when user selects their own prompt
         safeLocalStorage.removeItem("selected_pluely_prompt");
       }
     },

@@ -187,6 +187,16 @@ body {
   overflow: hidden;
 }
 
+html[data-fluely-dashboard],html[data-fluely-dashboard] body,html[data-fluely-dashboard] #root {
+  background:transparent !important;
+}
+.fluely-dashboard-canvas {
+  background:rgb(from var(--background) r g b / var(--opacity,0.9));
+}
+html[data-fluely-dashboard] [data-sidebar="sidebar"] {
+  background:rgb(from var(--sidebar) r g b / var(--opacity,0.9));
+}
+
 /* Streamdown code block styling */
 [data-streamdown="code-block"] code {
   color: inherit !important;

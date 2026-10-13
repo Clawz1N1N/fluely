@@ -227,6 +227,10 @@ fn validate_kind(kind: &str) -> Result<(), String> {
     }
 }
 
+fn belongs_to_account(provider: &ProviderEntry, credential: &str) -> bool {
+    provider.credential_id == credential || (provider.credential_id.is_empty() && provider.id == credential)
+}
+
 #[tauri::command]
 pub fn list_providers(app: AppHandle) -> Result<Vec<ProviderEntry>, String> {
     initialize(&app)?;
@@ -255,6 +259,37 @@ pub fn upsert_provider(app: AppHandle, provider: ProviderEntry) -> Result<(), St
     Ok(())
 }
 
+/// Publish one credential's selected models atomically, after its keychain write.
+#[tauri::command]
+pub fn save_provider_models(app: AppHandle, credential_id: String, kind: String, providers: Vec<ProviderEntry>) -> Result<(), String> {
+    validate_kind(&kind)?;
+    if credential_id.is_empty() || credential_id.len() > 256 || providers.len() > 10_000 {
+        return Err("Invalid provider account".into());
+    }
+    let mut ids = HashSet::new();
+    for provider in &providers {
+        provider.validate()?;
+        if provider.credential_id != credential_id || provider.kind != kind || !ids.insert(provider.id.clone()) {
+            return Err("Selected models must belong to the same credential and kind".into());
+        }
+    }
+    update(&app, |registry, _| {
+        if providers.iter().any(|incoming| registry.providers.iter().any(|stored| stored.id == incoming.id &&
+            (!belongs_to_account(stored, &credential_id) || stored.kind != kind))) {
+            return Err("Model ID belongs to a different account".into());
+        }
+        let removed: Vec<_> = registry.providers.iter().filter(|p| belongs_to_account(p, &credential_id) && p.kind == kind && !ids.contains(&p.id)).map(|p| p.id.clone()).collect();
+        for id in removed { registry.providers.retain(|p| p.id != id); registry.core.remove(&id); }
+        for provider in providers {
+            if let Some(index) = registry.providers.iter().position(|p| p.id == provider.id) { registry.providers[index] = provider; }
+            else { registry.providers.push(provider); }
+        }
+        Ok(())
+    })?;
+    broadcast_status(&app, &kind);
+    Ok(())
+}
+
 #[tauri::command]
 pub fn remove_provider(app: AppHandle, id: String) -> Result<(), String> {
     update(&app, |registry, _| {
@@ -274,11 +309,20 @@ pub fn pick_provider(
     kind: String,
     needs_images: bool,
     exclude_ids: Option<Vec<String>>,
+    preferred_provider_id: Option<String>,
 ) -> Result<ProviderEntry, String> {
     validate_kind(&kind)?;
     let exclude_ids = exclude_ids.unwrap_or_default();
     let result = update(&app, |registry, now| {
-        let candidates = registry.candidates();
+        let mut candidates = registry.candidates();
+        if kind == "vision" {
+            for candidate in &mut candidates {
+                if ["brain", "vision"].contains(&candidate.kind.as_str()) && candidate.supports_images {
+                    candidate.kind = "vision".into();
+                } else { candidate.enabled = false; }
+            }
+        }
+        if let Some(preferred) = &preferred_provider_id { candidates.retain(|p| p.id == *preferred); }
         let id = registry
             .core
             .pick(&candidates, &kind, needs_images, &exclude_ids, now)
@@ -400,6 +444,15 @@ pub fn get_providers_status(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn legacy_account_upgrade_keeps_ownership_without_accepting_another_account() {
+        let mut entry: ProviderEntry = serde_json::from_str(r#"{"id":"legacy","kind":"brain","preset":"custom","base_url":"https://example.invalid","model":"test"}"#).unwrap();
+        assert!(belongs_to_account(&entry,"legacy"));
+        assert!(!belongs_to_account(&entry,"other"));
+        entry.credential_id="account".into();
+        assert!(belongs_to_account(&entry,"account"));
+        assert!(!belongs_to_account(&entry,"legacy"));
+    }
 
     fn provider() -> ProviderEntry {
         serde_json::from_str(r#"{"id":"p","kind":"brain","preset":"custom","base_url":"https://example.invalid/v1","model":"test","limit_per_minute":1}"#).unwrap()

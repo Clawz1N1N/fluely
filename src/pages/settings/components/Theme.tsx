@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useTheme } from "@/contexts";
 import { Header, Label, Slider, Button } from "@/components";
 import { MonitorIcon, MoonIcon, SunIcon } from "lucide-react";
@@ -9,13 +10,14 @@ import {
 } from "@/components";
 
 export const Theme = () => {
+  useI18n();
   const { theme, transparency, setTheme, onSetTransparency } = useTheme();
 
   return (
     <div id="theme" className="relative space-y-3">
       <Header
-        title="Theme Customization"
-        description="Personalize your experience with custom theme and transparency settings"
+        title={t("Theme Customization")}
+        description={t("Personalize your experience with custom theme and transparency settings")}
         isMainTitle
       />
 
@@ -30,24 +32,21 @@ export const Theme = () => {
                 {theme === "system" ? (
                   <>
                     <MonitorIcon className="h-4 w-4" />
-                    System
-                  </>
+                    {t("System")}</>
                 ) : theme === "light" ? (
                   <>
                     <SunIcon className="h-4 w-4" />
-                    Light Mode
-                  </>
+                    {t("Light Mode")}</>
                 ) : (
                   <>
                     <MoonIcon className="h-4 w-4" />
-                    Dark Mode
-                  </>
+                    {t("Dark Mode")}</>
                 )}
               </Label>
               <p className="text-xs text-muted-foreground mt-1">
                 {theme === "light"
-                  ? "Using light theme for better visibility in bright environments"
-                  : "Using dark theme for comfortable viewing in low light"}
+                  ? t("Using light theme for better visibility in bright environments")
+                  : t("Using dark theme for comfortable viewing in low light")}
               </p>
             </div>
           </div>
@@ -66,14 +65,11 @@ export const Theme = () => {
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuItem onClick={() => setTheme("light")}>
-                Light
-              </DropdownMenuItem>
+                {t("Light")}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme("dark")}>
-                Dark
-              </DropdownMenuItem>
+                {t("Dark")}</DropdownMenuItem>
               <DropdownMenuItem onClick={() => setTheme("system")}>
-                System
-              </DropdownMenuItem>
+                {t("System")}</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
@@ -82,8 +78,8 @@ export const Theme = () => {
       {/* Transparency Slider */}
       <div className="space-y-2">
         <Header
-          title="Window Transparency"
-          description="Adjust the transparency level of the application window"
+          title={t("Window Transparency")}
+          description={t("Adjust the transparency level of the application window")}
         />
         <div className="space-y-3">
           <div className="flex items-center gap-4 mt-4">
@@ -98,9 +94,7 @@ export const Theme = () => {
           </div>
 
           <p className="text-xs text-muted-foreground/70">
-            💡 Tip: Higher transparency lets you see through the window, perfect
-            for dark overlay. Changes apply immediately.
-          </p>
+            {t("💡 Tip: Higher transparency lets you see through the window, perfect for dark overlay. Changes apply immediately.")}</p>
         </div>
       </div>
     </div>

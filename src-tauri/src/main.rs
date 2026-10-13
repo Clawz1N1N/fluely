@@ -2,5 +2,6 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    pluely_lib::run()
+    if fluely_lib::gguf_asr_worker_mode() { return; }
+    fluely_lib::run()
 }

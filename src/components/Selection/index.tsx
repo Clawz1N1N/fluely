@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Select,
   SelectContent,
@@ -22,6 +23,7 @@ export const Selection = ({
   isLoading?: boolean;
   disabled?: boolean;
 }) => {
+  useI18n();
   return (
     <Select value={selected || ""} onValueChange={(value) => onChange(value)}>
       <SelectTrigger
@@ -30,7 +32,7 @@ export const Selection = ({
       >
         {isLoading ? (
           <div className="flex items-center gap-2">
-            Loading... <Loader2 className="w-4 h-4 animate-spin" />
+            {t("Loading...")}<Loader2 className="w-4 h-4 animate-spin" />
           </div>
         ) : (
           <SelectValue
@@ -43,8 +45,7 @@ export const Selection = ({
         {options?.filter((provider) => provider.isCustom).length > 0 && (
           <div className="border-b border-input/50 pb-2">
             <div className="px-2 py-1 text-xs font-semibold text-muted-foreground">
-              Custom AI Providers
-            </div>
+              {t("Custom AI Providers")}</div>
             {options
               ?.filter((provider) => provider.isCustom)
               .map((provider) => (

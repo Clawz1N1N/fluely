@@ -1,21 +1,4 @@
-import { Header } from "@/components";
-import { UseSettingsReturn } from "@/types";
-import { Providers } from "./Providers";
-import { CustomProviders } from "./CustomProvider";
+import { ProviderModels } from '@/pages/settings/components/ProviderModels';
+import type { UseSettingsReturn } from '@/types';
 
-export const AIProviders = (settings: UseSettingsReturn) => {
-  return (
-    <div id="ai-providers" className="space-y-3">
-      <Header
-        title="AI Providers"
-        description="Select your preferred AI service provider to get started."
-        isMainTitle
-      />
-
-      {/* Custom Provider */}
-      <CustomProviders {...settings} />
-      {/* Providers Selection */}
-      <Providers {...settings} />
-    </div>
-  );
-};
+export const AIProviders = (_settings: UseSettingsReturn) => <ProviderModels initialKind="brain" />;

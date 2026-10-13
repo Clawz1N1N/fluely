@@ -1,3 +1,5 @@
+> Історичний звіт етапу Pluely 0.1.9. Поточний стан Fluely 0.2.0 і нові докази наведено в [актуальному звіті](../docs/release-0.2.0.md). Старі статуси нижче збережено для історії.
+
 # Актуальний стан — 2026-10-12
 
 Гілка custom-overlay. Runtime code checkpoint a8b063c; попередня інтеграція WIP0cbb9c6. Код зібрано в Windows x64 EXE/MSI/NSIS, доставлено ../RELEASE з SHA256 і portable launcher. Push/merge не виконувалися.

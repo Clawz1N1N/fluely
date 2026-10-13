@@ -2,7 +2,7 @@ import { getCurrentWindow } from "@tauri-apps/api/window";
 import { useShellDrag } from "./useShellDrag";
 import { Shimmer } from "./Shimmer";
 import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
-import { ShellControls, ServiceBadge, SHELL_ACTIONS } from './ShellControls';
+import { ShellControls, SHELL_ACTIONS } from './ShellControls';
 
 /**
  * A wide, short strip docked to the top or bottom edge
@@ -16,7 +16,7 @@ export const ShellTopStrip: React.FC = () => {
 
   return (
     <div
-      className="relative flex flex-row items-center gap-2 w-full h-full rounded-lg border border-white/45 px-3 cursor-move overflow-auto"
+      className="relative flex flex-row items-center gap-2 w-full h-full rounded-lg border border-white/45 p-2 cursor-move overflow-hidden"
       {...drag.handlers}
       style={{ userSelect: "none",backgroundColor:`rgba(23,23,23,${snapshot.shell.strip_opacity})`,textShadow:'0 1px 2px #000' }}
       data-side={side}
@@ -24,9 +24,7 @@ export const ShellTopStrip: React.FC = () => {
       title={connectionError ?? undefined}
     >
       <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
-      <span className="text-[10px] text-white/60">PLUELY</span>
       <ShellControls snapshot={snapshot} act={act} actions={side==='top'?SHELL_ACTIONS.slice(0,4):SHELL_ACTIONS.slice(4)} />
-      <ServiceBadge snapshot={snapshot} />
     </div>
   );
 };

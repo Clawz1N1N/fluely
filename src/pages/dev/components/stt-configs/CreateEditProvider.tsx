@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Card,
   Button,
@@ -19,6 +20,7 @@ interface CreateEditProviderProps {
 export const CreateEditProvider = ({
   customProviderHook,
 }: CreateEditProviderProps) => {
+  useI18n();
   const { allSttProviders } = useApp();
   // Use the provided hook instance or create a new one
   const hookInstance = customProviderHook || useCustomSttProviders();
@@ -47,18 +49,17 @@ export const CreateEditProvider = ({
           className="w-full h-11 border-1 border-input/50 focus:border-primary/50 transition-colors"
         >
           <PlusIcon className="h-4 w-4 mr-2" />
-          Add Custom STT Provider
-        </Button>
+          {t("Add Custom STT Provider")}</Button>
       ) : (
         <Card className="p-4 border border-input/50 bg-transparent">
           <div className="flex justify-between items-center">
             <Header
               title={
                 editingProvider
-                  ? `Edit STT Provider`
-                  : "Add Custom STT Provider"
+                  ? t("Edit STT Provider")
+                  : t("Add Custom STT Provider")
               }
-              description="Create a custom STT provider to use with your STT-powered applications."
+              description={t("Create a custom STT provider to use with your STT-powered applications.")}
             />
             <div className="w-[120px]">
               <Selection
@@ -66,11 +67,11 @@ export const CreateEditProvider = ({
                   ?.filter((provider) => !provider?.isCustom)
                   .map((provider) => {
                     return {
-                      label: provider?.id || "STT Provider",
+                      label: provider?.id || t("STT Provider"),
                       value: provider?.id || "STT Provider",
                     };
                   })}
-                placeholder={"Auto-fill"}
+                placeholder={t("Auto-fill")}
                 onChange={(value) => {
                   handleAutoFill(value);
                 }}
@@ -82,8 +83,8 @@ export const CreateEditProvider = ({
             {/* Basic Configuration */}
             <div className="space-y-1">
               <Header
-                title="Curl Command *"
-                description="The curl command to use with the STT provider."
+                title={t("Curl Command *")}
+                description={t("The curl command to use with the STT provider.")}
               />
               <Textarea
                 className={cn(
@@ -107,64 +108,49 @@ export const CreateEditProvider = ({
               <div className="bg-muted/50 p-4 rounded-lg space-y-4">
                 <div className="bg-card border p-3 rounded-lg">
                   <p className="text-sm font-medium text-primary mb-2">
-                    💡 Important: You can add custom variables or directly
-                    include your API keys/values
-                  </p>
+                    {t("💡 Important: You can add custom variables or directly include your API keys/values")}</p>
                   <p className="text-xs text-muted-foreground">
-                    No need to enter variables separately when selecting the
-                    provider - you can embed them directly in the curl command
-                    (e.g., replace YOUR_API_KEY with your actual key or use{" "}
+                    {t("No need to enter variables separately when selecting the provider - you can embed them directly in the curl command (e.g., replace YOUR_API_KEY with your actual key or use")}{" "}
                     <code className="bg-muted px-1 rounded text-xs">
                       {"{{MODEL}}"}
                     </code>{" "}
-                    for model name).
-                  </p>
+                    {t("for model name).")}</p>
                 </div>
 
                 <h4 className="text-sm font-semibold text-foreground">
-                  ⚠️ Required Variables for STT Providers:
-                </h4>
+                  {t("⚠️ Required Variables for STT Providers:")}</h4>
                 <div className="grid grid-cols-1 gap-3 text-sm">
                   <div className="flex items-center gap-3 p-3 bg-card border rounded-lg">
                     <code className="bg-muted px-2 py-1 rounded font-mono text-xs">
                       {"{{AUDIO}}"}
                     </code>
                     <span className="text-foreground font-medium">
-                      → REQUIRED: Base64 encoded audio data or audio file as wav
-                      file if you are using multipart/form-data (using -F or
-                      --form)
-                    </span>
+                      {t("→ REQUIRED: Base64 encoded audio data or audio file as wav file if you are using multipart/form-data (using -F or --form)")}</span>
                   </div>
                 </div>
 
                 <div className="space-y-3">
                   <p className="text-sm text-muted-foreground">
-                    <strong className="text-foreground">Quick Setup:</strong>{" "}
-                    Replace{" "}
+                    <strong className="text-foreground">{t("Quick Setup:")}</strong>{" "}
+                    {t("Replace")}{" "}
                     <code className="bg-muted px-1 rounded text-xs">
                       YOUR_API_KEY
                     </code>{" "}
-                    with your actual API key directly in the curl command.
-                  </p>
+                    {t("with your actual API key directly in the curl command.")}</p>
                   <p className="text-sm text-muted-foreground">
                     <strong className="text-foreground">
-                      Custom Variables:
-                    </strong>{" "}
-                    You can add your own variables using the same{" "}
+                      {t("Custom Variables:")}</strong>{" "}
+                    {t("You can add your own variables using the same")}{" "}
                     <code className="bg-muted px-1 rounded text-xs">
                       {"{{VARIABLE_NAME}}"}
                     </code>{" "}
-                    format and they'll be available for configuration when you
-                    select this provider.
-                  </p>
+                    {t("format and they'll be available for configuration when you select this provider.")}</p>
                   <p className="text-xs text-muted-foreground italic">
-                    💡 Tip: The{" "}
+                    {t("💡 Tip: The")}{" "}
                     <code className="bg-muted px-1 rounded text-xs">
                       {"{{AUDIO}}"}
                     </code>{" "}
-                    variable is essential for STT functionality - make sure it's
-                    properly included in your curl command.
-                  </p>
+                    {t("variable is essential for STT functionality - make sure it's properly included in your curl command.")}</p>
                 </div>
               </div>
             </div>
@@ -173,8 +159,8 @@ export const CreateEditProvider = ({
           <div className="space-y-0">
             <div className="flex justify-between items-center space-x-2">
               <Header
-                title="Streaming"
-                description="streaming is used to stream the response from the AI provider."
+                title={t("Streaming")}
+                description={t("streaming is used to stream the response from the AI provider.")}
               />
               <Switch
                 checked={formData.streaming}
@@ -188,15 +174,13 @@ export const CreateEditProvider = ({
               />
             </div>
             <span className="text-xs italic text-red-500">
-              Streaming is not supported for STT providers. it will be fixed in
-              the future.
-            </span>
+              {t("Streaming is not supported for STT providers. it will be fixed in the future.")}</span>
           </div>
           {/* Response Configuration */}
           <div className="space-y-2">
             <Header
-              title="Response Content Path *"
-              description="The path to extract content from the API response."
+              title={t("Response Content Path *")}
+              description={t("The path to extract content from the API response.")}
             />
 
             <TextInput
@@ -209,7 +193,7 @@ export const CreateEditProvider = ({
                 }))
               }
               error={errors.responseContentPath}
-              notes="The path to extract content from the API response. Examples: text, transcript, results[0].alternatives[0].transcript"
+              notes={t("The path to extract content from the API response. Examples: text, transcript, results[0].alternatives[0].transcript")}
             />
           </div>
 
@@ -219,8 +203,7 @@ export const CreateEditProvider = ({
               onClick={() => setShowForm(!showForm)}
               className="h-11 border-1 border-input/50 focus:border-primary/50 transition-colors"
             >
-              Cancel
-            </Button>
+              {t("Cancel")}</Button>
             <Button
               onClick={handleSave}
               disabled={!formData.curl.trim()}
@@ -230,12 +213,11 @@ export const CreateEditProvider = ({
               )}
             >
               {errors.curl ? (
-                "Invalid cURL, try again"
+                t("Invalid cURL, try again")
               ) : (
                 <>
                   <SaveIcon className="h-4 w-4 mr-2" />
-                  {editingProvider ? "Update" : "Save"} Provider
-                </>
+                  {editingProvider ? t("Update") : t("Save")} {t("Provider")}</>
               )}
             </Button>
           </div>

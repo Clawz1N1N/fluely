@@ -10,30 +10,28 @@ import type { Message } from '@/types';
 import {selectRankedProvider,abortableDelay} from './provider-selection';
 import curl2Json from '@bany/curl-to-json';
 import {deepVariableReplacer,getByPath} from '../functions/common.function';
+import {discoverModels,type ModelInfo} from './model-catalog';
+import {fitModelHistory,outputParameters,imageMime} from './model-request';
 
 export async function providerVariables(entry: ProviderEntry): Promise<Record<string, string>> {
   const variables = { ...entry.variables };
   for (const key of entry.secret_keys) {
-    const value = await getSecret(providerSecretKey(entry.id, key));
+    const value = await getSecret(providerSecretKey(entry.credential_id||entry.id, key));
     if (value !== null) variables[key] = value;
   }
   return variables;
 }
-export async function pickProvider(kind: ProviderKind, excludeIds: string[] = []): Promise<ProviderEntry | null> {
-  try { return await invoke('pick_provider', { kind, needsImages: false, excludeIds }); }
+export async function pickProvider(kind: ProviderKind, excludeIds: string[] = [], preferredProviderId?:string): Promise<ProviderEntry | null> {
+  try { return await invoke('pick_provider', { kind, needsImages: kind==='vision', excludeIds,preferredProviderId:preferredProviderId??null }); }
   catch(error) { if(String(error).startsWith('Neutral mode'))return null;throw error; }
 }
 export async function providerStatus(kind: ProviderKind = 'brain'): Promise<ProviderStatus> {
   return invoke('get_providers_status', { kind });
 }
-export async function fetchProviderModels(entry:ProviderEntry,enteredKey?:string):Promise<string[]> {
+export async function fetchProviderModels(entry:ProviderEntry,enteredKey?:string,signal?:AbortSignal):Promise<ModelInfo[]> {
   const variables=enteredKey===undefined?await providerVariables(entry):{};
   const key=enteredKey??variables.API_KEY??variables.api_key;
-  const headers:Record<string,string>={};if(key)headers[entry.preset==='google'?'x-goog-api-key':'Authorization']=entry.preset==='google'?key:`Bearer ${key}`;
-  const response=await providerFetch(`${entry.base_url.replace(/\/$/,'')}/models`,{headers});
-  if(!response.ok)throw ProviderHttpError.fromResponse(response);
-  const json=await response.json();const models=json.data??json.models??[];
-  return models.map((model:{id?:string;name?:string})=>model.id??model.name?.replace(/^models\//,'')).filter((id:unknown)=>typeof id==='string');
+  return discoverModels(entry,key,providerFetch,signal);
 }
 export async function reportProvider(entry: ProviderEntry, error?: unknown): Promise<void> {
   await invoke('report_provider_result', { providerId: entry.id, ok: error === undefined,
@@ -59,6 +57,7 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
     return;
   }
   prompt=buildEnhancedSystemPrompt(prompt);
+  history=fitModelHistory(entry,prompt,text,history);
   const headers: Record<string,string> = { 'Content-Type':'application/json' };
   const apiKey = variables.API_KEY ?? variables.api_key;
   let url: string, body: unknown;
@@ -66,14 +65,20 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
     if (apiKey) headers['x-goog-api-key'] = apiKey;
     const content = (role: string, value: Message['content']) => ({role: role === 'assistant' ? 'model':'user', parts: [{text:typeof value === 'string' ? value : JSON.stringify(value)}]});
     const parts: unknown[] = [{text}];
-    for (const data of images) parts.push({inline_data:{mime_type:'image/jpeg',data}});
+    for (const data of images) parts.push({inline_data:{mime_type:imageMime(data),data}});
     url = `${entry.base_url.replace(/\/$/,'')}/models/${encodeURIComponent(entry.model)}:streamGenerateContent?alt=sse`;
-    body = {system_instruction:{parts:[{text:prompt}]},contents:[...history.map(m=>content(m.role,m.content)),{role:'user',parts}]};
+    body = {system_instruction:{parts:[{text:prompt}]},contents:[...history.map(m=>content(m.role,m.content)),{role:'user',parts}],generationConfig:outputParameters(entry)};
+  } else if(entry.preset==='anthropic') {
+    if(apiKey)headers['x-api-key']=apiKey;
+    headers['anthropic-version']='2023-06-01';
+    url=`${entry.base_url.replace(/\/$/,'')}/messages`;
+    const content=images.length?[...images.map(data=>({type:'image',source:{type:'base64',media_type:imageMime(data),data}})),{type:'text',text}]:text;
+    body={model:entry.model,max_tokens:entry.max_output_tokens??4096,stream:true,system:prompt,messages:[...history.filter(m=>m.role==='user'||m.role==='assistant').map(m=>({role:m.role,content:typeof m.content==='string'?m.content:JSON.stringify(m.content)})),{role:'user',content}]};
   } else {
     if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
-    const content = images.length ? [{type:'text',text},...images.map(data=>({type:'image_url',image_url:{url:`data:image/jpeg;base64,${data}`}}))] : text;
+    const content = images.length ? [...images.map(data=>({type:'image_url',image_url:{url:`data:${imageMime(data)};base64,${data}`}})),{type:'text',text}] : text;
     url = `${entry.base_url.replace(/\/$/,'')}/chat/completions`;
-    body = {model:entry.model,stream:true,messages:[{role:'system',content:prompt},...history,{role:'user',content}]};
+    body = {model:entry.model,stream:true,...outputParameters(entry),messages:[{role:'system',content:prompt},...history,{role:'user',content}]};
   }
   const response = await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
   if (!response.ok) throw ProviderHttpError.fromResponse(response);
@@ -85,6 +90,12 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
 }
 
 export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, signal?: AbortSignal): Promise<string> {
+  if(entry.preset==='local-gguf-asr'){
+    if(signal?.aborted)throw new DOMException('Aborted','AbortError');
+    const bytes=new Uint8Array(await audio.arrayBuffer());let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);
+    const text=await invoke<string>('transcribe_gguf_asr_audio',{audioBase64:btoa(binary),providerId:entry.id});
+    if(signal?.aborted)throw new DOMException('Aborted','AbortError');return text;
+  }
   if(entry.preset==='system-stt'){
     const bytes=new Uint8Array(await audio.arrayBuffer());
     let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);

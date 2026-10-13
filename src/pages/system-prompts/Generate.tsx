@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Popover,
   PopoverContent,
@@ -17,6 +18,7 @@ interface GenerateSystemPromptProps {
 export const GenerateSystemPrompt = ({
   onGenerate,
 }: GenerateSystemPromptProps) => {
+  useI18n();
   const { allAiProviders, selectedAIProvider } = useApp();
   const [userPrompt, setUserPrompt] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
@@ -25,7 +27,7 @@ export const GenerateSystemPrompt = ({
 
   const handleGenerate = async () => {
     if (!userPrompt.trim()) {
-      setError("Please describe what you want");
+      setError(t("Please describe what you want"));
       return;
     }
 
@@ -37,7 +39,7 @@ export const GenerateSystemPrompt = ({
         (p) => p.id === selectedAIProvider.provider
       );
       if (!provider && !('__TAURI_INTERNALS__' in window)) {
-        setError("Please select an AI provider in Dev Space first");
+        setError(t("Please select an AI provider in Dev Space first"));
         return;
       }
 
@@ -62,11 +64,11 @@ export const GenerateSystemPrompt = ({
           .replace(/\s+/g, " ");
         onGenerate(promptText, promptName);
         setIsOpen(false);
-        setUserPrompt("");
+        setUserPrompt('');
       }
     } catch (err) {
       const errorMessage =
-        err instanceof Error ? err.message : "Failed to generate prompt";
+        err instanceof Error ? err.message : t("Failed to generate prompt");
       setError(errorMessage);
       console.error("Error generating system prompt:", err);
     } finally {
@@ -78,13 +80,12 @@ export const GenerateSystemPrompt = ({
     <Popover open={isOpen} onOpenChange={setIsOpen}>
       <PopoverTrigger asChild>
         <Button
-          aria-label="Generate with AI"
+          aria-label={t("Generate with AI")}
           size="sm"
           variant="outline"
           className="w-fit"
         >
-          <SparklesIcon className="h-4 w-4" /> Generate with AI
-        </Button>
+          <SparklesIcon className="h-4 w-4" /> {t("Generate with AI")}</Button>
       </PopoverTrigger>
       <PopoverContent
         align="end"
@@ -93,15 +94,13 @@ export const GenerateSystemPrompt = ({
       >
         <div className="space-y-3">
           <div>
-            <p className="text-sm font-medium mb-1">Generate a system prompt</p>
+            <p className="text-sm font-medium mb-1">{t("Generate a system prompt")}</p>
             <p className="text-xs text-muted-foreground">
-              Describe the AI behavior you want, and we'll generate a prompt
-              for you.
-            </p>
+              {t("Describe the AI behavior you want, and we'll generate a prompt for you.")}</p>
           </div>
 
           <Textarea
-            placeholder="e.g., I want an AI that helps me with code reviews and focuses on best practices..."
+            placeholder={t("e.g., I want an AI that helps me with code reviews and focuses on best practices...")}
             className="min-h-[100px] resize-none border-1 border-input/50 focus:border-primary/50 transition-colors"
             value={userPrompt}
             onChange={(e) => {
@@ -111,7 +110,7 @@ export const GenerateSystemPrompt = ({
             disabled={isGenerating}
           />
 
-          {error && <p className="text-xs text-destructive">{error}</p>}
+          {error && <p className="text-xs text-destructive">{t(error)}</p>}
 
           <Button
             className="w-full"
@@ -121,13 +120,11 @@ export const GenerateSystemPrompt = ({
             {isGenerating ? (
               <>
                 <SparklesIcon className="h-4 w-4 animate-pulse" />
-                Generating...
-              </>
+                {t("Generating...")}</>
             ) : (
               <>
                 <SparklesIcon className="h-4 w-4" />
-                Generate
-              </>
+                {t("Generate")}</>
             )}
           </Button>
         </div>

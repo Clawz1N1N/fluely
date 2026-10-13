@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Input,
   Card,
@@ -23,11 +24,12 @@ import {
 } from "lucide-react";
 import { DeleteSystemPrompt } from "./Delete";
 import { CreateEditDialog } from "./CreateEditDialog";
-import { PluelyPrompts } from "./PluelyPrompts";
+import { FluelyPrompts } from "./FluelyPrompts";
 import { useState } from "react";
 import { PageLayout } from "@/layouts";
 
 const SystemPrompts = () => {
+  useI18n();
   const {
     prompts,
     isLoading,
@@ -165,13 +167,13 @@ const SystemPrompts = () => {
 
   return (
     <PageLayout
-      title="System Prompts"
-      description="Manage your AI behavior profiles and create new ones"
+      title={t("System Prompts")}
+      description={t("Manage your AI behavior profiles and create new ones")}
     >
       {/* Error Display */}
       {error && (
         <div className="mb-4 rounded-lg border border-destructive/20 bg-destructive/10 p-3">
-          <p className="text-sm text-destructive">{error}</p>
+          <p className="text-sm text-destructive">{t(error)}</p>
         </div>
       )}
       {/* Search Bar */}
@@ -180,7 +182,7 @@ const SystemPrompts = () => {
           <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
             type="text"
-            placeholder="Search system prompts..."
+            placeholder={t("Search system prompts...")}
             className="pl-9 focus-visible:ring-0 focus-visible:ring-offset-0"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
@@ -188,15 +190,14 @@ const SystemPrompts = () => {
         </div>
         <Button variant="default" size="default" onClick={handleCreateClick}>
           <PlusIcon className="size-4" />
-          Create New
-        </Button>
+          {t("Create New")}</Button>
       </div>
       {filteredPrompts.length === 0 ? (
         <Empty
           isLoading={isLoading}
           icon={WandSparklesIcon}
-          title="No prompts found"
-          description="Create a new prompt to get started"
+          title={t("No prompts found")}
+          description={t("Create a new prompt to get started")}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 pb-4">
@@ -252,8 +253,7 @@ const SystemPrompts = () => {
                         }}
                       >
                         <Pencil className="size-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
+                        {t("Edit")}</DropdownMenuItem>
                       <DropdownMenuItem
                         variant="destructive"
                         onClick={(e) => {
@@ -262,8 +262,7 @@ const SystemPrompts = () => {
                         }}
                       >
                         <Trash2 className="size-4 mr-2" />
-                        Delete
-                      </DropdownMenuItem>
+                        {t("Delete")}</DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
                 </div>
@@ -294,8 +293,8 @@ const SystemPrompts = () => {
         onDelete={handleDeleteConfirm}
       />
 
-      {/* Pluely Default Prompts */}
-      <PluelyPrompts />
+      {/* Fluely Default Prompts */}
+      <FluelyPrompts />
     </PageLayout>
   );
 };

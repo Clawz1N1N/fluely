@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   AI_PROVIDERS,
   DEFAULT_SYSTEM_PROMPT,
@@ -22,7 +23,6 @@ import { invoke } from "@tauri-apps/api/core";
 import { credentialStore } from '@/lib/storage/secure.storage';
 import { listen } from "@tauri-apps/api/event";
 import { getCurrentWindow } from "@tauri-apps/api/window";
-import { enable, disable } from "@tauri-apps/plugin-autostart";
 import {
   ReactNode,
   createContext,
@@ -70,6 +70,7 @@ const AppContext = createContext<IContextType | undefined>(undefined);
 
 // Create the provider component
 export const AppProvider = ({ children }: { children: ReactNode }) => {
+  useI18n();
   const [credentialsLoaded, setCredentialsLoaded] = useState(false);
   const [securityWarning, setSecurityWarning] = useState<string | null>(null);
   const [systemPrompt, setSystemPrompt] = useState<string>(
@@ -204,7 +205,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
       setSecurityWarning(null);
       setCredentialsLoaded(true);
     }).catch(error => {
-      setSecurityWarning(error instanceof Error ? error.message : 'Захищене сховище недоступне.');
+      setSecurityWarning(error instanceof Error ? error.message : t("Захищене сховище недоступне."));
     });
 
     // Load customizable state
@@ -301,23 +302,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initializeAutostart = async () => {
       try {
-        const autostartInitialized = safeLocalStorage.getItem(
-          STORAGE_KEYS.AUTOSTART_INITIALIZED
-        );
-
-        // Only apply autostart on the very first launch
-        if (!autostartInitialized) {
-          const autostartEnabled = customizable?.autostart?.isEnabled ?? true;
-
-          if (autostartEnabled) {
-            await enable();
-          } else {
-            await disable();
-          }
-
-          // Mark as initialized so this never runs again
-          safeLocalStorage.setItem(STORAGE_KEYS.AUTOSTART_INITIALIZED, "true");
-        }
+        const identity=await invoke<{config:{autostart:boolean}}>('get_identity_status');
+        setCustomizable(updateAutostart(identity.config.autostart));
       } catch (error) {
         console.debug("Autostart initialization skipped:", error);
       }
@@ -498,11 +484,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const newState = updateAutostart(isEnabled);
     setCustomizable(newState);
     try {
-      if (isEnabled) {
-        await enable();
-      } else {
-        await disable();
-      }
+      const identity=await invoke<{config:{executable_alias:string;startup_name:string;autostart:boolean}}>('get_identity_status');
+      await invoke('save_identity_config',{config:{...identity.config,autostart:isEnabled}});
       loadData();
     } catch (error) {
       console.error("Failed to toggle autostart:", error);

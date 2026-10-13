@@ -12,6 +12,11 @@ pub struct RunGeneration {
 }
 
 impl RunGeneration {
+    pub fn active_token(&self) -> Option<u64> {
+        use std::sync::atomic::Ordering;
+        let token = self.generation.load(Ordering::SeqCst);
+        self.is_active(token).then_some(token)
+    }
     // The caller serializes start/stop with its lifecycle lock.
     pub fn start(&self) -> Option<u64> {
         use std::sync::atomic::Ordering;
@@ -103,6 +108,15 @@ impl<F, T> Default for BatchQueue<F, T> {
 }
 
 impl<F, T> BatchQueue<F, T> {
+    pub fn discard_context(&mut self) -> Vec<String> {
+        self.frames.clear();
+        self.transcript.clear();
+        self.questions.clear();
+        self.first_pending = None;
+        // Keep in_flight, next_request_id and audio_pending: their owners still
+        // acknowledge/release exactly once after the transition cancels them.
+        std::mem::take(&mut self.client_ids)
+    }
     fn mark_pending(&mut self, now: Instant) {
         self.first_pending.get_or_insert(now);
     }
@@ -149,7 +163,11 @@ impl<F, T> BatchQueue<F, T> {
         };
         Ok(())
     }
-    pub fn client(&mut self,id:String) { if !self.client_ids.contains(&id) { self.client_ids.push(id); } }
+    pub fn client(&mut self, id: String) {
+        if !self.client_ids.contains(&id) {
+            self.client_ids.push(id);
+        }
+    }
     pub fn dispatch(&mut self) -> Option<Dispatch<F, T>> {
         if self.in_flight.is_some() || self.audio_pending > 0 || self.first_pending.is_none() {
             return None;
@@ -192,6 +210,30 @@ impl<F, T> BatchQueue<F, T> {
 mod tests {
     use super::*;
     use std::collections::HashMap;
+    #[test]
+    fn sleep_boundary_discards_stale_context_preserving_inflight_ack_and_counted_stt() {
+        let now = Instant::now();
+        let mut queue = BatchQueue::<u8, String>::default();
+        queue.question("active".into(), now).unwrap();
+        let active = queue.dispatch().unwrap();
+        queue.frames(vec![1], 3, now);
+        queue.transcript("old system".into(), now);
+        queue.question("old mic question".into(), now).unwrap();
+        queue.client("pending-client".into());
+        queue.audio(true).unwrap();
+        assert_eq!(queue.discard_context(), ["pending-client"]);
+        queue.transcript("new system".into(), now);
+        assert!(queue.dispatch().is_none());
+        queue.acknowledge(active.request_id).unwrap();
+        assert!(queue.dispatch().is_none());
+        queue.audio(false).unwrap();
+        let fresh = queue.dispatch().unwrap();
+        assert!(fresh.frames.is_empty());
+        assert!(fresh.questions.is_empty());
+        assert!(fresh.client_ids.is_empty());
+        assert_eq!(fresh.transcript, ["new system"]);
+        assert!(fresh.request_id > active.request_id);
+    }
 
     #[test]
     fn restarting_never_reactivates_the_old_worker() {

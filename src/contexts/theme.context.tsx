@@ -92,20 +92,21 @@ export function ThemeProvider({
   // Apply transparency globally
   useEffect(() => {
     const root = window.document.documentElement;
-    const opacity = (100 - transparency) / 100;
+    const opacity = (100 - Math.max(0,Math.min(100,transparency))) / 100;
 
     // Apply opacity to CSS variables
     root.style.setProperty("--opacity", opacity.toString());
 
     // Apply backdrop filter when transparency is active
     if (transparency > 0) {
-      root.style.setProperty("--backdrop-blur", "blur(12px)");
+      root.style.setProperty("--backdrop-blur", "none");
     } else {
       root.style.setProperty("--backdrop-blur", "none");
     }
   }, [transparency]);
 
   const onSetTransparency = (transparency: number) => {
+    transparency=Number.isFinite(transparency)?Math.max(0,Math.min(100,transparency)):10;
     localStorage.setItem(STORAGE_KEYS.TRANSPARENCY, transparency.toString());
     setTransparency(transparency);
   };

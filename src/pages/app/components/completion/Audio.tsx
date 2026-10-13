@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { InfoIcon, MicIcon } from "lucide-react";
 import { Popover, PopoverContent, PopoverTrigger, Button } from "@/components";
 import { AutoSpeechVAD } from "./AutoSpeechVad";
@@ -12,10 +13,11 @@ export const Audio = ({
   submit,
   setState,
 }: UseCompletionReturn) => {
+  useI18n();
   const { selectedSttProvider, selectedAudioDevices } =
     useApp();
 
-  const speechProviderStatus = selectedSttProvider.provider;
+  const speechProviderStatus = selectedSttProvider.provider||'__TAURI_INTERNALS__' in window;
 
   return (
     <Popover open={micOpen} onOpenChange={setMicOpen}>
@@ -26,7 +28,7 @@ export const Audio = ({
             submit={submit}
             setState={setState}
             setEnableVAD={setEnableVAD}
-            microphoneDeviceId={selectedAudioDevices.input.id}
+            microphoneDeviceId={selectedAudioDevices.input.id==='default'?undefined:selectedAudioDevices.input.name}
           />
         ) : (
           <Button
@@ -35,7 +37,7 @@ export const Audio = ({
               setEnableVAD(!enableVAD);
             }}
             className="cursor-pointer"
-            title="Toggle voice input"
+            title={t("Toggle voice input")}
           >
             <MicIcon className="h-4 w-4" />
           </Button>
@@ -52,22 +54,19 @@ export const Audio = ({
       >
         <div className="text-sm select-none">
           <div className="font-semibold text-orange-600 mb-1">
-            Speech Provider Configuration Required
-          </div>
+            {t("Speech Provider Configuration Required")}</div>
           <p className="text-muted-foreground">
             {!speechProviderStatus ? (
               <>
                 <div className="mt-2 flex flex-row gap-1 items-center text-orange-600">
                   <InfoIcon size={16} />
                   {selectedSttProvider.provider ? null : (
-                    <p>PROVIDER IS MISSING</p>
+                    <p>{t("PROVIDER IS MISSING")}</p>
                   )}
                 </div>
 
                 <span className="block mt-2">
-                  Please go to settings and configure your speech provider to
-                  enable voice input.
-                </span>
+                  {t("Please go to settings and configure your speech provider to enable voice input.")}</span>
               </>
             ) : null}
           </p>

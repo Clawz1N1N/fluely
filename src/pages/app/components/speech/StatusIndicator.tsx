@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { AlertCircleIcon, LoaderIcon } from "lucide-react";
 
 type Props = {
@@ -15,6 +16,7 @@ export const StatusIndicator = ({
   isAIProcessing,
   capturing,
 }: Props) => {
+  useI18n();
   // Don't show anything if not capturing and no error
   if (!capturing && !error && !isProcessing && !isAIProcessing) {
     return null;
@@ -26,22 +28,22 @@ export const StatusIndicator = ({
       {error && !setupRequired ? (
         <div className="flex items-center gap-2 text-red-600">
           <AlertCircleIcon className="w-4 h-4" />
-          <span className="text-xs font-medium">{error}</span>
+          <span className="text-xs font-medium">{t(error)}</span>
         </div>
       ) : isAIProcessing ? (
         <div className="flex items-center gap-2 animate-pulse">
           <LoaderIcon className="w-4 h-4 animate-spin" />
-          <span className="text-xs font-medium">Generating response...</span>
+          <span className="text-xs font-medium">{t("Generating response...")}</span>
         </div>
       ) : isProcessing ? (
         <div className="flex items-center gap-2 animate-pulse">
           <LoaderIcon className="w-4 h-4 animate-spin" />
-          <span className="text-xs font-medium">Transcribing...</span>
+          <span className="text-xs font-medium">{t("Transcribing...")}</span>
         </div>
       ) : capturing ? (
         <div className="flex items-center gap-2 text-green-600 animate-pulse">
           <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-          <span className="text-xs font-medium">Listening...</span>
+          <span className="text-xs font-medium">{t("Listening...")}</span>
         </div>
       ) : null}
     </div>

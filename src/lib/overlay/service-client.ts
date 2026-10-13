@@ -4,11 +4,13 @@ import { executeAction } from './action-client';
 import type { ServiceSnapshot,ActionRequest } from './contracts';
 interface AnswerTransport {
   listen(receive:(state:ServiceSnapshot)=>void):Promise<()=>void>;
+  cancelled?(receive:(ids:string[])=>void):Promise<()=>void>;
   action:Parameters<typeof executeAction>[1];
   source():string;
 }
 const nativeTransport:AnswerTransport={
   listen:receive=>listen<ServiceSnapshot>('service-state',event=>receive(event.payload)),
+  cancelled:receive=>listen<string[]>('sleep-requests-cancelled',event=>receive(event.payload)),
   action:{listen:receive=>listen('shell-action-result',event=>receive(event.payload as {id:string;ok:boolean;error?:string})),send:request=>emitTo('main','shell-action',request)},
   source:()=>getCurrentWindow().label,
 };
@@ -25,7 +27,9 @@ export async function requestServiceAnswer(question:string,images:string[]=[],si
     else resolve([state.main,state.side,state.speak].filter(Boolean).join('\n\n'));
   });
   signal?.addEventListener('abort',stop,{once:true});
+  let cancelledOff:(()=>void)|undefined;
   try {
+    cancelledOff=await transport.cancelled?.(ids=>{if(ids.includes(id))reject(new Error('Request cancelled by Sleep mode transition.'));});
     if(signal?.aborted)throw new DOMException('Aborted','AbortError');
     const request:ActionRequest={id,clientId:id,action:'ask',question,images,source:transport.source()};
     await executeAction(request,{
@@ -36,5 +40,5 @@ export async function requestServiceAnswer(question:string,images:string[]=[],si
       },
     });
     return await response;
-  }finally{off();signal?.removeEventListener('abort',stop);}
+  }finally{off();cancelledOff?.();signal?.removeEventListener('abort',stop);}
 }

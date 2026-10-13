@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useCallback, useRef, useState } from "react";
 
 type UseCopyToClipboardProps = {
@@ -7,8 +8,9 @@ type UseCopyToClipboardProps = {
 
 export function useCopyToClipboard({
   text,
-  copyMessage = "Copied to clipboard!",
+  copyMessage = t("Copied to clipboard!"),
 }: UseCopyToClipboardProps) {
+  useI18n();
   const [isCopied, setIsCopied] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -26,7 +28,7 @@ export function useCopyToClipboard({
         }, 2000);
       })
       .catch(() => {
-        console.error("Failed to copy to clipboard.");
+        console.error(t("Failed to copy to clipboard."));
       });
   }, [text, copyMessage]);
 

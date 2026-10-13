@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 "use client"
 
 import * as React from "react"
@@ -30,8 +31,8 @@ function Command({
 }
 
 function CommandDialog({
-  title = "Command Palette",
-  description = "Search for a command to run...",
+  title = t("Command Palette"),
+  description = t("Search for a command to run..."),
   children,
   className,
   showCloseButton = true,
@@ -42,6 +43,7 @@ function CommandDialog({
   className?: string
   showCloseButton?: boolean
 }) {
+  useI18n();
   return (
     <Dialog {...props}>
       <DialogHeader className="sr-only">

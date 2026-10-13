@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Header, Selection } from "@/components";
 import { LANGUAGES } from "@/lib";
 import { updateLanguage } from "@/lib/storage/response-settings.storage";
@@ -5,6 +6,7 @@ import { useState, useEffect, useMemo } from "react";
 import { getResponseSettings } from "@/lib";
 
 export const LanguageSelector = () => {
+  const { language } = useI18n();
  const [selectedLanguage, setSelectedLanguage] = useState<string>("english");
 
   useEffect(() => {
@@ -19,16 +21,16 @@ export const LanguageSelector = () => {
 
   const languageOptions = useMemo(() => {
     return LANGUAGES.map((lang) => ({
-      label: `${lang.flag} ${lang.name}`,
+      label: `${lang.flag} ${t(lang.name)}`,
       value: lang.id,
     }));
-  }, []);
+  }, [language]);
 
   return (
     <div className="space-y-4">
       <Header
-        title="Response Language"
-        description="Select the language for AI responses. Setting applies globally to all providers and conversations. Language support may vary depending on your selected LLM provider"
+        title={t("Response Language")}
+        description={t("Select the language for AI responses. Setting applies globally to all providers and conversations. Language support may vary depending on your selected LLM provider")}
         isMainTitle
       />
 
@@ -37,7 +39,7 @@ export const LanguageSelector = () => {
           selected={selectedLanguage}
           onChange={handleLanguageChange}
           options={languageOptions}
-          placeholder="Select a language"
+          placeholder={t("Select a language")}
           disabled={false}
         />
       </div>

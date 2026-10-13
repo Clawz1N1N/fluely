@@ -78,7 +78,7 @@ pub fn setup_global_shortcuts<R: Runtime>(
 pub fn handle_shortcut_action<R: Runtime>(app: &AppHandle<R>, action_id: &str) {
     match action_id {
         "toggle_dashboard" => handle_toggle_dashboard(app),
-        "toggle_window" => handle_toggle_window(app),
+        "toggle_window" | "hide_all" => handle_toggle_window(app),
         "focus_input" => handle_focus_input(app),
         "answer_interaction" => {
             let app=app.clone();
@@ -449,13 +449,7 @@ fn handle_toggle_dashboard<R: Runtime>(app: &AppHandle<R>) {
                 }
             }
             Ok(false) => {
-                // Window is hidden, show and focus it
-                if let Err(e) = dashboard_window.show() {
-                    eprintln!("Failed to show dashboard window: {}", e);
-                }
-                if let Err(e) = dashboard_window.set_focus() {
-                    eprintln!("Failed to focus dashboard window: {}", e);
-                }
+                if let Err(e)=show_dashboard_window(app){eprintln!("Failed to show dashboard window: {e}");}
             }
             Err(e) => {
                 eprintln!("Failed to check dashboard visibility: {}", e);

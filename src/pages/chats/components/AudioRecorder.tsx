@@ -1,221 +1,43 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Button } from "@/components";
-import { AudioVisualizer } from "@/pages/app/components/speech/audio-visualizer";
-import { fetchSTT } from "@/lib";
-import { useApp } from "@/contexts";
-import { StopCircle, Send } from "lucide-react";
+import {useEffect,useRef,useState} from 'react';
+import {Button} from '@/components';
+import {StopCircle,Send} from 'lucide-react';
+import {fetchSTT} from '@/lib';
+import {useApp} from '@/contexts';
+import {t,useI18n} from '@/lib/i18n';
+import {openMicrophoneSession} from '@/lib/overlay/microphone-session';
 
-interface AudioRecorderProps {
-  onTranscriptionComplete: (text: string) => void;
-  onCancel: () => void;
+interface AudioRecorderProps{onTranscriptionComplete:(text:string)=>void;onCancel:()=>void}
+export function AudioRecorder({onTranscriptionComplete,onCancel}:AudioRecorderProps){
+  useI18n();
+  const {selectedSttProvider,allSttProviders,selectedAudioDevices}=useApp();
+  const [duration,setDuration]=useState(0),[sending,setSending]=useState(false),[ready,setReady]=useState(false),[error,setError]=useState('');
+  const transcript=useRef<string[]>([]),abort=useRef(new AbortController()),session=useRef<Awaited<ReturnType<typeof openMicrophoneSession>>|undefined>(undefined);
+  const sendingRef=useRef(false);
+  useEffect(()=>{
+    let disposed=false;
+    abort.current=new AbortController();
+    const controller=abort.current;
+    const start=Date.now();
+    const timer=setInterval(()=>setDuration(Date.now()-start),250);
+    void openMicrophoneSession(async audio=>{
+      if(controller.signal.aborted)return;
+      const text=await fetchSTT({audio,provider:allSttProviders.find(p=>p.id===selectedSttProvider.provider),selectedProvider:selectedSttProvider,signal:controller.signal});
+      if(!controller.signal.aborted&&text.trim())transcript.current.push(text.trim());
+    },failure=>{if(!disposed)setError(String(failure));},selectedAudioDevices.input.id==='default'?undefined:selectedAudioDevices.input.name).then(value=>{
+      if(disposed)void value.finish().catch(console.error);else {session.current=value;setReady(true);}
+    }).catch(failure=>{if(!disposed)setError(String(failure));});
+    const limit=setTimeout(()=>{void send();},180_000);
+    return()=>{disposed=true;clearInterval(timer);clearTimeout(limit);controller.abort();void session.current?.finish().catch(console.error);};
+  },[]);
+  const send=async()=>{
+    if(sendingRef.current||!session.current)return;
+    sendingRef.current=true;setSending(true);
+    try{await session.current.finish();const text=transcript.current.join(' ');if(text)onTranscriptionComplete(text);else onCancel();}
+    catch(failure){setError(String(failure));setSending(false);sendingRef.current=false;}
+  };
+  return <div className="rounded-lg border p-3">
+    <div role="status" className="flex items-center gap-2 text-sm"><span className="h-2 w-2 rounded-full bg-red-500 animate-pulse"/>{t('Recording...')} {Math.floor(duration/60000)}:{String(Math.floor(duration/1000)%60).padStart(2,'0')} / 3:00</div>
+    {error&&<p role="alert" className="text-sm text-destructive">{t(error)}</p>}
+    <div className="mt-2 flex gap-2"><Button size="icon" variant="outline" title={t('Stop recording')} onClick={onCancel}><StopCircle className="h-4 w-4"/></Button><Button size="icon" title={t('Send to AI')} disabled={sending||!ready} onClick={()=>void send()}><Send className="h-4 w-4"/></Button></div>
+  </div>;
 }
-
-const MAX_DURATION = 3 * 60 * 1000;
-
-export const AudioRecorder = ({
-  onTranscriptionComplete,
-  onCancel,
-}: AudioRecorderProps) => {
-  const { selectedSttProvider, allSttProviders, selectedAudioDevices } =
-    useApp();
-  const [audioStream, setAudioStream] = useState<MediaStream | null>(null);
-  const [isTranscribing, setIsTranscribing] = useState(false);
-  const [duration, setDuration] = useState(0);
-
-  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
-  const startTimeRef = useRef<number>(0);
-  const durationIntervalRef = useRef<NodeJS.Timeout | null>(null);
-  const maxDurationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const streamRef = useRef<MediaStream | null>(null);
-
-  // Cleanup function - stops all tracks and clears refs
-  const cleanup = useCallback(() => {
-    // Clear timers
-    if (durationIntervalRef.current) {
-      clearInterval(durationIntervalRef.current);
-      durationIntervalRef.current = null;
-    }
-    if (maxDurationTimeoutRef.current) {
-      clearTimeout(maxDurationTimeoutRef.current);
-      maxDurationTimeoutRef.current = null;
-    }
-
-    // Stop media recorder
-    if (mediaRecorderRef.current?.state === "recording") {
-      try {
-        mediaRecorderRef.current.stop();
-      } catch (e) {
-        // Ignore errors when stopping
-      }
-    }
-    mediaRecorderRef.current = null;
-
-    // Stop all audio tracks - this is critical for releasing the microphone
-    const stream = streamRef.current;
-    if (stream) {
-      stream.getTracks().forEach((track) => {
-        track.stop();
-        track.enabled = false;
-      });
-      streamRef.current = null;
-    }
-
-    // Also stop from state
-    if (audioStream) {
-      audioStream.getTracks().forEach((track) => {
-        track.stop();
-        track.enabled = false;
-      });
-    }
-    setAudioStream(null);
-  }, [audioStream]);
-
-  useEffect(() => {
-    startRecording();
-
-    // Cleanup on unmount
-    return () => {
-      cleanup();
-    };
-  }, []);
-
-  const startRecording = async () => {
-    try {
-      const deviceId = selectedAudioDevices?.input?.id;
-
-      const audioConstraints: MediaTrackConstraints =
-        deviceId && deviceId !== "default"
-          ? { deviceId: { exact: deviceId } }
-          : {};
-
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: audioConstraints,
-      });
-
-      // Store in both ref and state
-      streamRef.current = stream;
-      setAudioStream(stream);
-
-      const mimeType = MediaRecorder.isTypeSupported("audio/webm")
-        ? "audio/webm"
-        : "audio/ogg";
-
-      const recorder = new MediaRecorder(stream, { mimeType });
-      mediaRecorderRef.current = recorder;
-      audioChunksRef.current = [];
-      startTimeRef.current = Date.now();
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) {
-          audioChunksRef.current.push(e.data);
-        }
-      };
-
-      recorder.start(100);
-
-      durationIntervalRef.current = setInterval(() => {
-        setDuration(Date.now() - startTimeRef.current);
-      }, 100);
-
-      maxDurationTimeoutRef.current = setTimeout(() => {
-        if (mediaRecorderRef.current?.state === "recording") {
-          handleSend();
-        }
-      }, MAX_DURATION);
-    } catch (error) {
-      console.error("Failed to start recording:", error);
-      cleanup();
-      onCancel();
-    }
-  };
-
-  const handleStop = () => {
-    cleanup();
-    onCancel();
-  };
-
-  const handleSend = async () => {
-    if (!mediaRecorderRef.current || isTranscribing) return;
-
-    setIsTranscribing(true);
-
-    const mimeType = mediaRecorderRef.current.mimeType;
-    const chunks = [...audioChunksRef.current];
-
-    // Cleanup immediately after getting chunks
-    cleanup();
-
-    try {
-      const audioBlob = new Blob(chunks, { type: mimeType });
-
-      const provider = allSttProviders.find(
-        (p) => p.id === selectedSttProvider.provider
-      );
-
-      const text = await fetchSTT({
-        provider: provider,
-        selectedProvider: selectedSttProvider,
-        audio: audioBlob,
-      });
-
-      onTranscriptionComplete(text);
-    } catch (error) {
-      console.error("Transcription failed:", error);
-      onCancel();
-    }
-  };
-
-  const formatTime = (ms: number) => {
-    const seconds = Math.floor(ms / 1000);
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  return (
-    <div className="border bg-background rounded-lg overflow-hidden">
-      <div className="h-12 relative bg-muted/20">
-        {audioStream ? (
-          <div className="h-full w-full pt-3">
-            <AudioVisualizer stream={audioStream} isRecording={true} />
-          </div>
-        ) : (
-          <div className="h-full flex items-center justify-center text-sm text-muted-foreground">
-            Initializing...
-          </div>
-        )}
-      </div>
-      <div className="flex items-center justify-between px-4 py-2.5 border-t bg-muted/5">
-        <div className="flex items-center gap-2">
-          <div className="h-2 w-2 bg-red-500 rounded-full animate-pulse" />
-          <span className="text-sm font-mono tabular-nums font-medium">
-            {formatTime(duration)}
-          </span>
-          <span className="text-xs text-muted-foreground">/ 3:00</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            size="icon"
-            variant="outline"
-            onClick={handleStop}
-            disabled={isTranscribing}
-            className="h-8 w-8"
-            title="Stop recording"
-          >
-            <StopCircle className="h-4 w-4" />
-          </Button>
-          <Button
-            size="icon"
-            onClick={handleSend}
-            disabled={isTranscribing}
-            className="h-8 w-8"
-            title={isTranscribing ? "Sending..." : "Send to AI"}
-          >
-            <Send className="h-4 w-4" />
-          </Button>
-        </div>
-      </div>
-    </div>
-  );
-};

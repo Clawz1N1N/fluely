@@ -6,6 +6,8 @@ export interface RequestLimits {
 export interface ProviderEntry {
   id: string; kind: ProviderKind; preset: string; base_url: string; model: string;
   supports_images: boolean; rank: number; enabled: boolean;
+  provider_id?: string; credential_id?: string; display_name?: string; model_display_name?: string; provider_name?:string;
+  supports_audio?: boolean; context_window?: number | null; max_output_tokens?: number | null;
   limit_per_second: number; limit_per_minute: number; limit_per_hour: number; limit_per_day: number;
   curl: string | null; streaming: boolean; response_content_path: string;
   variables: Record<string, string>; secret_keys: string[];

@@ -13,6 +13,8 @@ import {
   Responses,
 } from "@/pages";
 import { DashboardLayout } from "@/layouts";
+import {StatusWindow} from '@/components/Shell/StatusWindow';
+import {ShellPanel} from '@/components/Shell/Panel';
 import {
   ShellSideStrip,
   ShellTopStrip,
@@ -42,6 +44,8 @@ export default function AppRoutes() {
         <Route path="/shell/top-strip" element={<ShellTopStrip />} />
         <Route path="/shell/button/:action" element={<ShellButton />} />
         <Route path="/shell/answer" element={<AnswerWindow />} />
+        <Route path="/shell/status" element={<StatusWindow />} />
+        <Route path="/shell/panel/:id" element={<ShellPanel />} />
       </Routes>
     </Router>
   );

@@ -11,7 +11,7 @@
 // Geometry and saved placements use physical desktop coordinates per monitor.
 
 use serde::{Deserialize, Serialize};
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -32,18 +32,14 @@ use windows::Win32::UI::WindowsAndMessaging::{
 };
 
 /// The UI mode of the shell.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize, Default)]
 #[serde(rename_all = "lowercase")]
 pub enum UiMode {
+    #[default]
     SideStrips,
     TopBottomStrips,
     Buttons,
-}
-
-impl Default for UiMode {
-    fn default() -> Self {
-        UiMode::SideStrips
-    }
+    Custom,
 }
 
 impl UiMode {
@@ -52,6 +48,7 @@ impl UiMode {
             Self::SideStrips => "sidestrips",
             Self::TopBottomStrips => "topbottomstrips",
             Self::Buttons => "buttons",
+            Self::Custom => "custom",
         }
     }
 }
@@ -78,6 +75,8 @@ pub struct ShellLayout {
     pub strip_opacity:f64,
     #[serde(default)]
     pub button_opacities:HashMap<String,f64>,
+    #[serde(default)]
+    pub custom_panels:Vec<crate::overlay_layout::CustomPanel>,
     pub placements: HashMap<String, WindowPlacement>,
     #[serde(default)]
     pub placements_by_monitor: HashMap<String, HashMap<String, WindowPlacement>>,
@@ -94,6 +93,7 @@ impl ShellLayout {
             answer_opacity: 0.32,
             strip_opacity:default_strip_opacity(),
             button_opacities:HashMap::new(),
+            custom_panels:Vec::new(),
             placements: HashMap::new(),
             placements_by_monitor: HashMap::new(),
         }
@@ -108,6 +108,7 @@ pub struct ShellState {
     answer_editing: AtomicBool,
     hidden: AtomicBool,
     answer_was_visible: AtomicBool,
+    hidden_windows:Mutex<HashSet<String>>,
     #[cfg(target_os = "windows")]
     previous_foreground: Mutex<Option<isize>>,
 }
@@ -115,6 +116,7 @@ pub struct ShellState {
 impl Default for ShellState {
     fn default() -> Self {
         ShellState {
+            hidden_windows:Mutex::new(HashSet::new()),
             layout: Mutex::new(ShellLayout::default_for_mode(UiMode::default())),
             watchdog_active: Arc::new(Mutex::new(false)),
             lifecycle: Mutex::new(()),
@@ -180,8 +182,8 @@ fn update_layout<R: Runtime>(
 }
 
 /// Default strip/button geometry.
-pub const STRIP_THICKNESS: u32 = 56;
-pub const STRIP_LENGTH_RATIO: f64 = 0.6;
+pub const STRIP_THICKNESS: u32 = 54;
+pub const STRIP_LENGTH: u32 = 186;
 pub const BUTTON_SIZE: u32 = 44;
 
 struct MonitorGeometry {
@@ -231,7 +233,7 @@ fn placement_for_monitor(layout: &ShellLayout, label: &str, monitor: &MonitorGeo
 }
 
 fn is_shell_label(label: &str) -> bool {
-    label == "answer" || label.starts_with("strip-") || label.starts_with("button-")
+    label == "answer" || label == "status" || label.starts_with("strip-") || label.starts_with("button-") || label.starts_with("panel-")
 }
 
 pub fn shell_axis(label: &str) -> &'static str {
@@ -295,8 +297,14 @@ pub fn create_shell_window<R: Runtime>(
     }
     if label == "answer" {
         setup_answer_window(app, &window);
-    } else if !app.state::<ShellState>().hidden.load(Ordering::SeqCst) {
+    } else if label!="status" && !app.state::<ShellState>().hidden.load(Ordering::SeqCst) {
         window.show().map_err(|e| format!("Show {label}: {e}"))?;
+    } else if label.starts_with("strip-")||label.starts_with("button-")||label.starts_with("panel-") {
+        let state=app.state::<ShellState>();
+        let mut remembered=state.hidden_windows.lock().map_err(|e|e.to_string())?;
+        if remembered.iter().any(|label|label.starts_with("strip-")||label.starts_with("button-")||label.starts_with("panel-")){
+            remembered.insert(label.to_string());
+        }
     }
 
     Ok(window)
@@ -365,6 +373,9 @@ fn apply_window_policy<R: Runtime>(app: &AppHandle<R>, label: &str) -> Result<()
                 window.set_ignore_cursor_events(!editing).map_err(|e|format!("Answer cursor policy: {e}"))?;
                 window.set_resizable(editing).map_err(|e|e.to_string())?;
             }
+        }
+        if label=="status" {
+            if let Some(window)=app.get_webview_window(&label){window.set_ignore_cursor_events(true).map_err(|e|e.to_string())?;}
         }
         #[cfg(target_os = "windows")]
         {
@@ -456,6 +467,11 @@ fn persist_placement<R: Runtime>(
         layout.placements.insert(label.to_string(), placement.clone());
         layout.placements_by_monitor.entry(monitor.to_string()).or_default()
             .insert(label.to_string(), placement);
+        if let Some(id)=label.strip_prefix("panel-") {
+            if let Some(panel)=layout.custom_panels.iter_mut().find(|panel|panel.id==id){
+                panel.x=x;panel.y=y;panel.monitor=Some(monitor.to_string());
+            }
+        }
     })?;
     Ok(())
 }
@@ -480,7 +496,7 @@ pub fn start_watchdog<R: Runtime>(app: &AppHandle<R>) {
         let labels: Vec<String> = app_handle
             .webview_windows()
             .keys()
-            .filter(|l| l.starts_with("strip-") || l.starts_with("button-") || *l == "answer")
+            .filter(|l| is_shell_label(l))
             .cloned()
             .collect();
         for label in &labels {
@@ -528,6 +544,7 @@ pub async fn set_ui_mode(app: AppHandle, mode: String) -> Result<(), String> {
         "sidestrips" | "side" => UiMode::SideStrips,
         "topbottomstrips" | "top" => UiMode::TopBottomStrips,
         "buttons" => UiMode::Buttons,
+        "custom" => UiMode::Custom,
         _ => return Err(format!("Unknown ui_mode: {}", mode)),
     };
     update_layout(&app, |layout| layout.ui_mode = parsed)?;
@@ -578,7 +595,8 @@ pub fn set_shell_opacity(app:AppHandle,label:String,opacity:f64)->Result<(),Stri
 #[tauri::command]
 pub async fn reset_shell_layout(app: AppHandle) -> Result<(), String> {
     update_layout(&app, |layout| {
-        *layout = ShellLayout::default_for_mode(layout.ui_mode)
+        let mode=if layout.ui_mode==UiMode::Custom{UiMode::Buttons}else{layout.ui_mode};
+        *layout = ShellLayout::default_for_mode(mode)
     })?;
     // Re-create the shell from the (reset) layout.
     crate::shell::rebuild_shell(&app)?;
@@ -604,6 +622,11 @@ fn toggle_shell_visibility_locked<R: Runtime>(app: &AppHandle<R>) -> Result<(), 
     let state = app.state::<ShellState>();
     let hide = !state.hidden.load(Ordering::SeqCst);
     if hide {
+        let mut remembered=state.hidden_windows.lock().map_err(|e|e.to_string())?;
+        remembered.clear();
+        for (label,window) in app.webview_windows(){
+            if label!="main"&&window.is_visible().map_err(|e|e.to_string())?{remembered.insert(label);}
+        }
         let answer_visible = app.get_webview_window("answer")
             .map(|window| window.is_visible()).transpose().map_err(|e| e.to_string())?.unwrap_or(false);
         state.answer_was_visible.store(answer_visible, Ordering::SeqCst);
@@ -611,11 +634,12 @@ fn toggle_shell_visibility_locked<R: Runtime>(app: &AppHandle<R>) -> Result<(), 
     }
     state.hidden.store(hide, Ordering::SeqCst);
     for (label, window) in app.webview_windows() {
-        if !is_shell_label(&label) { continue; }
+        if label=="main" { continue; }
         if hide { window.hide().map_err(|e| e.to_string())?; }
-        else if label != "answer" || state.answer_was_visible.load(Ordering::SeqCst) {
-            apply_window_policy(app, &label)?;
+        else if state.hidden_windows.lock().map_err(|e|e.to_string())?.contains(&label) {
+            if is_shell_label(&label){apply_window_policy(app, &label)?;}
             window.show().map_err(|e| e.to_string())?;
+            if label=="dashboard"{crate::window::apply_dashboard_policy(&window)?;}
             if label == "answer" { app.emit("answer-visibility-changed", true).map_err(|e| e.to_string())?; }
         }
     }
@@ -634,7 +658,7 @@ fn close_strip_windows<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     let labels: Vec<String> = app
         .webview_windows()
         .keys()
-        .filter(|l| l.starts_with("strip-") || l.starts_with("button-"))
+        .filter(|l| l.starts_with("strip-") || l.starts_with("button-") || l.starts_with("panel-"))
         .cloned()
         .collect();
     for label in &labels {
@@ -667,12 +691,18 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
         .lifecycle
         .lock()
         .map_err(|e| format!("Shell lifecycle: {e}"))?;
-    close_strip_windows(app)?;
-    let layout = state
+    let mut layout = state
         .layout
         .lock()
         .map_err(|e| format!("Layout lock: {e}"))?
         .clone();
+
+    if layout.ui_mode==UiMode::Custom{crate::overlay_layout::validate_layout(&layout.custom_panels)?;}
+    close_strip_windows(app)?;
+
+    for panel in &layout.custom_panels {
+        layout.placements.insert(format!("panel-{}",panel.id),WindowPlacement{x:panel.x,y:panel.y,monitor:panel.monitor.clone()});
+    }
 
     let primary = primary_geometry(app)?;
     let monitors = desktop_monitors(app)?;
@@ -693,7 +723,7 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
     match layout.ui_mode {
         UiMode::SideStrips => {
             // Left and right tall strips. Default width 56, ~60% height.
-            let sh = primary.bounds.height as f64 * STRIP_LENGTH_RATIO / primary.scale;
+            let sh = STRIP_LENGTH as f64;
             mk("strip-left", "/shell/side-strip", STRIP_THICKNESS as f64, sh, 0)?;
             mk(
                 "strip-right",
@@ -704,7 +734,7 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
             )?;
         }
         UiMode::TopBottomStrips => {
-            let sw = primary.bounds.width as f64 * STRIP_LENGTH_RATIO / primary.scale;
+            let sw = STRIP_LENGTH as f64;
             mk("strip-top", "/shell/top-strip", sw, STRIP_THICKNESS as f64, 0)?;
             mk(
                 "strip-bottom",
@@ -736,15 +766,33 @@ pub fn rebuild_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
                 )?;
             }
         }
+        UiMode::Custom => {
+            crate::overlay_layout::validate_layout(&layout.custom_panels)?;
+            for panel in &layout.custom_panels {
+                if panel.actions.iter().all(|action|!action.enabled){continue;}
+                let extent=crate::overlay_layout::panel_extent(panel)?;
+                mk(&format!("panel-{}",panel.id),&format!("/shell/panel/{}",panel.id),extent.width as f64,extent.height as f64,0)?;
+            }
+        }
     }
     ensure_answer_window(app)?;
+    if app.get_webview_window("status").is_none(){
+        let size=geometry::physical_extent(360.0,88.0,primary.scale);
+        let margin=(12.0*primary.scale).round() as i32;
+        create_shell_window(app,"status","/shell/status",360.0,88.0,
+            primary.bounds.x+primary.bounds.width as i32-size.width as i32-margin,
+            primary.bounds.y+primary.bounds.height as i32-size.height as i32-margin)?;
+    }
     emit_shell_settings(app)?;
     Ok(())
 }
 
 /// Initialize the shell: rebuild on startup and start the watchdog.
 pub fn init_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
-    let loaded = load_layout(app);
+    let mut loaded = load_layout(app);
+    if loaded.ui_mode==UiMode::Custom&&crate::overlay_layout::validate_layout(&loaded.custom_panels).is_err(){
+        loaded.ui_mode=UiMode::Buttons;loaded.custom_panels.clear();
+    }
     let state = app.state::<ShellState>();
     *state
         .layout
@@ -757,6 +805,43 @@ pub fn init_shell<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
 
 /// Tauri command: get shell settings (shimmer, speed, opacity, mode).
 #[tauri::command]
+pub fn get_layout_monitors(app:AppHandle)->Result<serde_json::Value,String>{
+    Ok(serde_json::Value::Array(desktop_monitors(&app)?.iter().map(|m|serde_json::json!({"key":m.key,"x":m.bounds.x,"y":m.bounds.y,"width":m.bounds.width,"height":m.bounds.height,"scale":m.scale})).collect()))
+}
+
+#[tauri::command]
+pub async fn set_custom_layout(app:AppHandle,mut panels:Vec<crate::overlay_layout::CustomPanel>)->Result<(),String>{
+    crate::overlay_layout::validate_layout(&panels)?;
+    let monitors=desktop_monitors(&app)?;
+    let bounds:Vec<_>=monitors.iter().map(|m|m.bounds).collect();
+    for panel in &mut panels{
+        let monitor=panel.monitor.as_ref().and_then(|key|monitors.iter().find(|m|&m.key==key))
+            .or_else(||geometry::choose_monitor(Point{x:panel.x,y:panel.y},Extent{width:1,height:1},&bounds).map(|index|&monitors[index]))
+            .ok_or("No monitors available")?;
+        let extent=crate::overlay_layout::panel_extent(panel)?;
+        let size=geometry::physical_extent(extent.width as f64,extent.height as f64,monitor.scale);
+        if size.width>monitor.bounds.width||size.height>monitor.bounds.height{return Err("A group is larger than its monitor workarea. Reduce its columns, button size, gap or padding.".into());}
+        let position=geometry::clamp(Point{x:panel.x,y:panel.y},size,monitor.bounds);
+        panel.x=position.x;panel.y=position.y;panel.monitor=Some(monitor.key.clone());
+    }
+    update_layout(&app,|layout|{layout.ui_mode=UiMode::Custom;layout.custom_panels=panels;})?;
+    tauri::async_runtime::spawn_blocking(move||rebuild_shell(&app)).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
+pub fn set_status_visibility(app:AppHandle,visible:bool)->Result<(),String>{
+    if let Some(window)=app.get_webview_window("status"){
+        if visible&&!app.state::<ShellState>().hidden.load(Ordering::SeqCst){window.show()}else{window.hide()}.map_err(|e|e.to_string())?;
+    }
+    Ok(())
+}
+
+#[tauri::command]
+pub async fn toggle_all_windows(app:AppHandle)->Result<(),String>{
+    tauri::async_runtime::spawn_blocking(move||toggle_shell_visibility(&app)).await.map_err(|e|e.to_string())?
+}
+
+#[tauri::command]
 pub fn get_shell_settings(app: AppHandle) -> Result<serde_json::Value, String> {
     let state = app.state::<ShellState>();
     let layout = state.layout.lock().unwrap();
@@ -766,6 +851,7 @@ pub fn get_shell_settings(app: AppHandle) -> Result<serde_json::Value, String> {
         "answer_opacity": layout.answer_opacity,
         "strip_opacity":layout.strip_opacity,
         "button_opacities":layout.button_opacities,
+        "custom_panels":layout.custom_panels,
         "ui_mode": layout.ui_mode.as_str(),
     }))
 }
@@ -778,14 +864,13 @@ fn emit_shell_settings<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
 
 fn setup_answer_window<R: Runtime>(app: &AppHandle<R>, window: &tauri::WebviewWindow<R>) {
     let app_handle = app.clone();
-    window.on_window_event(move |event| match event {
-        tauri::WindowEvent::CloseRequested { api, .. } => {
+    window.on_window_event(move |event| {
+        if let tauri::WindowEvent::CloseRequested { api, .. }=event {
             api.prevent_close();
             if let Err(error) = hide_answer(&app_handle) {
                 eprintln!("Hide answer: {error}");
             }
         }
-        _ => {}
     });
 }
 
@@ -871,10 +956,8 @@ fn set_editing_policy_on_main_thread<R: Runtime>(
     #[cfg(target_os = "windows")]
     if let Some(target) = restore_previous {
         unsafe {
-            if GetForegroundWindow() == hwnd && IsWindow(Some(target)).as_bool() {
-                if !SetForegroundWindow(target).as_bool() {
+            if GetForegroundWindow() == hwnd && IsWindow(Some(target)).as_bool() && !SetForegroundWindow(target).as_bool() {
                     eprintln!("Windows did not restore the previous foreground window");
-                }
             }
         }
     }
@@ -900,6 +983,7 @@ fn hide_answer<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
 /// Open idempotently: stale UI state must never turn an open answer into a close.
 #[tauri::command]
 pub async fn show_answer_window(app: AppHandle) -> Result<(), String> {
+    crate::sleep::ensure_awake(&app)?;
     let state = app.state::<ShellState>();
     let _lifecycle = state.lifecycle.lock().map_err(|e| e.to_string())?;
     let window = ensure_answer_window(&app)?;
@@ -912,6 +996,7 @@ pub async fn show_answer_window(app: AppHandle) -> Result<(), String> {
 /// Automatic responses respect the global hide switch.
 #[tauri::command]
 pub async fn present_answer_window(app: AppHandle) -> Result<bool, String> {
+    crate::sleep::ensure_awake(&app)?;
     let state = app.state::<ShellState>();
     let _lifecycle = state.lifecycle.lock().map_err(|e| e.to_string())?;
     if state.hidden.load(Ordering::SeqCst) { return Ok(false); }
@@ -925,6 +1010,7 @@ pub async fn present_answer_window(app: AppHandle) -> Result<bool, String> {
 /// Enable activation only while the answer chat is being edited.
 #[tauri::command]
 pub fn set_answer_editing(app: AppHandle, editing: bool) -> Result<(), String> {
+    if editing { crate::sleep::ensure_awake(&app)?; }
     set_editing_policy(&app, editing)
 }
 
@@ -934,6 +1020,7 @@ pub fn get_answer_interaction(app:AppHandle)->bool {
 }
 
 pub fn toggle_answer_interaction<R:Runtime>(app:&AppHandle<R>)->Result<(),String>{
+    crate::sleep::ensure_awake(app)?;
     let state=app.state::<ShellState>();
     let _lifecycle=state.lifecycle.lock().map_err(|e|e.to_string())?;
     let editing=!app.state::<ShellState>().answer_editing.load(Ordering::SeqCst);
@@ -958,6 +1045,7 @@ pub fn close_answer_window(app: AppHandle) -> Result<(), String> {
 /// Tauri command: toggle the persistent answer window, creating it if needed.
 #[tauri::command]
 pub async fn toggle_answer_window(app: AppHandle) -> Result<(), String> {
+    crate::sleep::ensure_awake(&app)?;
     let state = app.state::<ShellState>();
     let _lifecycle = state
         .lifecycle

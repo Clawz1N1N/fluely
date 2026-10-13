@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useState } from "react";
 import { TYPE_PROVIDER } from "@/types";
 import { SPEECH_TO_TEXT_PROVIDERS } from "@/config";
@@ -11,6 +12,7 @@ import {
 } from "@/lib";
 
 export function useCustomSttProviders() {
+  useI18n();
   const { loadData } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [editingProvider, setEditingProvider] = useState<string | null>(null);
@@ -77,12 +79,12 @@ export function useCustomSttProviders() {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.curl.trim()) {
-      newErrors.curl = "Curl command is required";
+      newErrors.curl = t("Curl command is required");
     } else {
       const hasAudioVar = formData.curl.includes("{{AUDIO}}");
 
       if (!hasAudioVar) {
-        newErrors.curl = "cURL command must contain {{AUDIO}}.";
+        newErrors.curl = t("cURL command must contain {{AUDIO}}.");
       } else {
         const validation = validateCurl(formData.curl, []);
         if (!validation.isValid) {
@@ -92,7 +94,7 @@ export function useCustomSttProviders() {
     }
 
     if (!formData.responseContentPath?.trim()) {
-      newErrors.responseContentPath = "Response content path is required";
+      newErrors.responseContentPath = t("Response content path is required");
     }
 
     setErrors(newErrors);

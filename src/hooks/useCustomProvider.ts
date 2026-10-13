@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useState } from "react";
 import { TYPE_PROVIDER } from "@/types";
 import { AI_PROVIDERS } from "@/config";
@@ -11,6 +12,7 @@ import {
 } from "@/lib";
 
 export function useCustomAiProviders() {
+  useI18n();
   const { loadData } = useApp();
   const [showForm, setShowForm] = useState(false);
   const [editingProvider, setEditingProvider] = useState<string | null>(null);
@@ -77,7 +79,7 @@ export function useCustomAiProviders() {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.curl.trim()) {
-      newErrors.curl = "Curl command is required";
+      newErrors.curl = t("Curl command is required");
     } else {
       const validation = validateCurl(formData.curl, ["TEXT"]);
       if (!validation.isValid) {
@@ -86,7 +88,7 @@ export function useCustomAiProviders() {
     }
 
     if (!formData.responseContentPath?.trim()) {
-      newErrors.responseContentPath = "Response content path is required";
+      newErrors.responseContentPath = t("Response content path is required");
     }
 
     setErrors(newErrors);

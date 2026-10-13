@@ -1,7 +1,9 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useState, useEffect } from "react";
 import { getAppVersion } from "@/lib";
 
 export const useVersion = () => {
+  useI18n();
   const [version, setVersion] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
@@ -15,8 +17,8 @@ export const useVersion = () => {
         setError(null);
       } catch (err) {
         console.error("Failed to fetch version:", err);
-        setError("Failed to load version");
-        setVersion("Unknown");
+        setError(t("Failed to load version"));
+        setVersion(t("Unknown"));
       } finally {
         setIsLoading(false);
       }

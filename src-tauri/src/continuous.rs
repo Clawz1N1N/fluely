@@ -32,7 +32,7 @@ pub struct CaptureSettings {
 impl Default for CaptureSettings {
     fn default() -> Self {
         Self {
-            mode: "manual".into(),
+            mode: "interval".into(),
             interval: 5,
             monitor: "primary".into(),
             max_frames: 3,
@@ -219,9 +219,11 @@ fn generation_is_active(state: &ContinuousState, token: u64) -> bool {
 }
 
 fn capture_frames(app: &AppHandle, force: bool, token: Option<u64>) -> Result<(), String> {
+    crate::sleep::ensure_awake(app)?;
     let settings = get_capture_settings(app.clone())?;
     let state = app.state::<ContinuousState>();
     let _capture = lock(&state.capture)?;
+    crate::sleep::ensure_awake(app)?;
     if token.is_some_and(|token| !generation_is_active(&state, token)) {
         return Ok(());
     }
@@ -261,6 +263,7 @@ fn capture_frames(app: &AppHandle, force: bool, token: Option<u64>) -> Result<()
         }
     }
     let _lifecycle = lock(&state.lifecycle)?;
+    crate::sleep::ensure_awake(app)?;
     if token.is_some_and(|token| !generation_is_active(&state, token)) {
         return Ok(());
     }
@@ -271,6 +274,9 @@ fn capture_frames(app: &AppHandle, force: bool, token: Option<u64>) -> Result<()
 
 #[tauri::command]
 pub fn continuous_add_question(app: AppHandle, question: String, client_id:Option<String>, images:Option<Vec<String>>) -> Result<(), String> {
+    crate::sleep::ensure_awake(&app)?;
+    if question.trim().is_empty(){return Err("Question is empty".into());}
+    if question.trim().len()>32_768{return Err("Question exceeds 32768 bytes".into());}
     if client_id.as_ref().is_some_and(|id|id.len()>128) {return Err("Client ID is too long".into());}
     let settings=get_capture_settings(app.clone())?;
     let mut frames=Vec::new();
@@ -285,12 +291,23 @@ pub fn continuous_add_question(app: AppHandle, question: String, client_id:Optio
         }
     }
     let state = app.state::<ContinuousState>();
+    // Keep a fresh scene and the question in one dispatch, even on a static
+    // desktop whose cached visual observations have expired. The counted
+    // barrier also protects against the periodic capture worker dispatching
+    // between frame ingestion and question ingestion.
+    struct Barrier<'a>(&'a ContinuousState);
+    impl Drop for Barrier<'_>{fn drop(&mut self){if let Ok(mut pending)=self.0.pending.lock(){let _=pending.audio(false);}}}
+    let token=state.run.active_token();
+    let barrier=if token.is_some(){lock(&state.pending)?.audio(true)?;Some(Barrier(&state))}else{None};
+    if let Some(token)=token{capture_frames(&app,true,Some(token))?;}
     {
         let mut pending=lock(&state.pending)?;
+        crate::sleep::ensure_awake(&app)?;
         pending.question(question,Instant::now())?;
         if let Some(id)=client_id {pending.client(id);}
         pending.frames(frames,settings.max_frames,Instant::now());
     }
+    drop(barrier);
     try_send_batch(&app)
 }
 
@@ -299,7 +316,11 @@ pub fn continuous_add_transcript(
     app: AppHandle,
     channel: String,
     text: String,
+    expected_epoch:Option<String>,
 ) -> Result<(), String> {
+    let epoch=crate::sleep::audio_epoch(&app);
+    if expected_epoch.is_some_and(|expected|expected!=epoch.to_string()){return Ok(());}
+    if crate::sleep::is_sleeping(&app)&&!matches!(channel.as_str(),"[system]"|"system"){return Ok(());}
     if !matches!(channel.as_str(), "[mic]" | "[system]" | "mic" | "system") {
         return Err(format!("Unknown transcript channel: {channel}"));
     }
@@ -310,7 +331,9 @@ pub fn continuous_add_transcript(
         return Err("Transcript segment exceeds 32768 bytes".into());
     }
     let state = app.state::<ContinuousState>();
-    lock(&state.pending)?.transcript(TranscriptSegment { channel, text }, Instant::now());
+    let mut pending=lock(&state.pending)?;
+    if epoch!=crate::sleep::audio_epoch(&app){return Ok(());}
+    pending.transcript(TranscriptSegment { channel, text }, Instant::now());
     Ok(())
 }
 
@@ -346,6 +369,7 @@ pub fn start_continuous(app: AppHandle) -> Result<(), String> {
     get_capture_settings(app.clone())?;
     let state = app.state::<ContinuousState>();
     let _lifecycle = lock(&state.lifecycle)?;
+    crate::sleep::ensure_awake(&app)?;
     let Some(token) = state.run.start() else {
         return Ok(());
     };
@@ -406,6 +430,13 @@ pub fn stop_continuous(app: AppHandle) -> Result<(), String> {
     state.run.stop();
     Ok(())
 }
+pub fn discard_pending_context(app:&AppHandle)->Result<Vec<String>,String>{
+    let state=app.state::<ContinuousState>();
+    // Match capture_frames lock order and wait for the last native capture
+    // commit before clearing context. STT barriers and active ACK stay intact.
+    let _capture=lock(&state.capture)?;let _lifecycle=lock(&state.lifecycle)?;
+    let result=lock(&state.pending)?.discard_context();Ok(result)
+}
 
 pub fn try_send_batch(app: &AppHandle) -> Result<(), String> {
     let state = app.state::<ContinuousState>();
@@ -454,8 +485,7 @@ mod tests {
 
     #[test]
     fn invalid_settings_do_not_enter_loop() {
-        let mut settings = CaptureSettings::default();
-        settings.mode = "unknown".into();
+        let settings = CaptureSettings {mode:"unknown".into(),..Default::default()};
         assert!(settings.normalized().is_err());
     }
 

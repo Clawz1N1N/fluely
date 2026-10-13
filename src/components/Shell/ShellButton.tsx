@@ -1,10 +1,12 @@
+import {t,useI18n} from '@/lib/i18n';
 import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
 import { useShellDrag } from './useShellDrag';
 import { Shimmer } from './Shimmer';
-import { ACTION_LABELS, ActionIcon, actionIsActive, SHELL_ACTIONS, serviceStatus, requestCounts, type ButtonAction } from './ShellControls';
+import { ACTION_LABELS, ActionIcon, actionIsActive, actionIsDisabled, SHELL_ACTIONS, serviceStatus, requestCounts, type ButtonAction } from './ShellControls';
 export type { ShellAction } from '@/lib/overlay/contracts';
 
 export const ShellButton: React.FC = () => {
+  useI18n();
   const { snapshot, act, connectionError } = useServiceSnapshot();
   const drag = useShellDrag('free');
   const routeAction = window.location.pathname.split('/').filter(Boolean).pop();
@@ -15,8 +17,8 @@ export const ShellButton: React.FC = () => {
   >
     <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed} />
     <button
-      type="button" aria-label={ACTION_LABELS[action]} title={connectionError ?? `${ACTION_LABELS[action]} · ${serviceStatus(snapshot)} · ${requestCounts(snapshot)}`}
-      aria-pressed={actionIsActive(action, snapshot)} disabled={!snapshot.ready}
+      type="button" aria-label={t(ACTION_LABELS[action])} title={connectionError ?? `${t(ACTION_LABELS[action])} · ${serviceStatus(snapshot)} · ${requestCounts(snapshot)}`}
+      aria-pressed={actionIsActive(action, snapshot)} disabled={actionIsDisabled(action,snapshot)}
       data-shell-drag
       onClick={() => { if (!drag.consumeClick()) void act(action); }}
       style={{backgroundColor:`rgba(${actionIsActive(action,snapshot)?'29,78,216':'23,23,23'},${snapshot.shell.button_opacities[action]??0.28})`}}

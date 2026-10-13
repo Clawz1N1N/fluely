@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { SparklesIcon } from "lucide-react";
 import { Button } from "@/components";
 import { cn } from "@/lib/utils";
@@ -6,6 +7,7 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { useMenuItems, useVersion } from "@/hooks";
 
 export const Sidebar = () => {
+  useI18n();
   const { version, isLoading } = useVersion();
   const { menu, footerLinks, footerItems } = useMenuItems();
 
@@ -23,10 +25,10 @@ export const Sidebar = () => {
         </div>
         <div className="flex flex-col">
           <h1 className="text-xs lg:text-md font-semibold text-foreground transition-all duration-300">
-            Pluely
+            Fluely
           </h1>
           <span className="text-[8px] lg:text-[10px] text-muted-foreground -mt-1 block">
-            {isLoading ? "Loading..." : `(v${version})`}
+            {isLoading ? t("Loading...") : `(v${version})`}
           </span>
         </div>
       </div>

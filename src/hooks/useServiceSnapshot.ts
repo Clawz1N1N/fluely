@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { useCallback, useEffect, useState } from 'react';
 import { emitTo, listen, type UnlistenFn } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
@@ -46,6 +47,7 @@ export async function sendShellAction(action: ShellAction, question?: string): P
 
 /** Visible windows observe the service; only the hidden main window executes actions. */
 export function useServiceSnapshot() {
+  useI18n();
   const [snapshot, setSnapshot] = useState<ServiceSnapshot>(INITIAL_SERVICE_STATE);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   useEffect(() => subscribeServiceSnapshots({
@@ -54,14 +56,14 @@ export function useServiceSnapshot() {
   }, state => {
     setSnapshot(current => state.revision >= current.revision ? state : current);
     setConnectionError(null);
-  }, () => setConnectionError('Не вдалося підключитися до служби.')), []);
+  }, () => setConnectionError(t("Не вдалося підключитися до служби."))), []);
   const act = useCallback(async (action: ShellAction, question?: string) => {
     try {
       await executeAction({action,id:crypto.randomUUID(),source:getCurrentWindow().label,...(question===undefined?{}:{question})},{
         listen:receive=>listen('shell-action-result',event=>receive(event.payload as {id:string;ok:boolean;error?:string})),
         send:request=>emitTo('main','shell-action',request),
       });setConnectionError(null);return true;
-    }catch(error){setConnectionError(error instanceof Error?error.message:'Не вдалося надіслати дію.');return false;}
+    }catch(error){setConnectionError(error instanceof Error?error.message:t("Не вдалося надіслати дію."));return false;}
   }, []);
   return { snapshot, act, connectionError };
 }

@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   Select,
   SelectContent,
@@ -14,6 +15,7 @@ import { safeLocalStorage } from "@/lib/storage";
 import { invoke } from "@tauri-apps/api/core";
 
 export const AudioSelection = () => {
+  useI18n();
   const { selectedAudioDevices, setSelectedAudioDevices } = useApp();
 
   const [isLoadingDevices, setIsLoadingDevices] = useState(false);
@@ -135,8 +137,8 @@ export const AudioSelection = () => {
       {/* Microphone Input Section */}
       <div className="space-y-3">
         <Header
-          title="Microphone"
-          description="Select your microphone for voice input and speech-to-text. If issues occur, adjust your system's default microphone in OS settings."
+          title={t("Microphone")}
+          description={t("Select your microphone for voice input and speech-to-text. If issues occur, adjust your system's default microphone in OS settings.")}
         />
 
         <div className="space-y-3">
@@ -153,17 +155,17 @@ export const AudioSelection = () => {
                     <MicIcon className="size-4" />
                     <div className="text-sm font-medium truncate">
                       {isLoadingDevices
-                        ? "Loading microphones..."
+                        ? t("Loading microphones...")
                         : devices?.input?.length === 0
-                        ? "No microphones found"
+                        ? t("No microphones found")
                         : devices?.input?.find(
                             (mic) => mic?.id === selectedAudioDevices.input.id
                           )?.name +
                             (devices?.input?.find(
                               (mic) => mic?.id === selectedAudioDevices.input.id
                             )?.is_default
-                              ? " (Default)"
-                              : "") || "Select a microphone"}
+                              ? t("(Default)")
+                              : "") || t("Select a microphone")}
                     </div>
                   </div>
                 </SelectTrigger>
@@ -173,7 +175,7 @@ export const AudioSelection = () => {
                       <div className="flex items-center gap-2">
                         <MicIcon className="size-4" />
                         <div className="font-medium truncate">{mic?.name} </div>
-                        {mic?.is_default && " (Default)"}
+                        {mic?.is_default && t("(Default)")}
                       </div>
                     </SelectItem>
                   ))}
@@ -187,7 +189,7 @@ export const AudioSelection = () => {
                 onClick={loadAudioDevices}
                 disabled={isLoadingDevices}
                 className="h-11 w-11 shrink-0"
-                title="Refresh microphone list"
+                title={t("Refresh microphone list")}
               >
                 <RefreshCwIcon
                   className={`size-4 ${isLoadingDevices ? "animate-spin" : ""}`}
@@ -199,9 +201,9 @@ export const AudioSelection = () => {
           {/* Success message */}
           {showSuccess.input && (
             <div className="text-xs text-green-500 bg-green-500/10 p-3 rounded-md">
-              <strong>✓ Microphone changed successfully!</strong>
+              <strong>{t("✓ Microphone changed successfully!")}</strong>
               <br />
-              Using: {selectedAudioDevices.input.name || "Unknown device"}
+              {t("Using:")}{selectedAudioDevices.input.name || t("Unknown device")}
             </div>
           )}
 
@@ -209,30 +211,23 @@ export const AudioSelection = () => {
           {devices?.input?.length === 0 && !isLoadingDevices && (
             <div className="text-xs text-amber-500 bg-amber-500/10 p-3 rounded-md">
               <strong>
-                ⚠️ Click the refresh button to load your microphone devices.
-              </strong>{" "}
-              If this doesn't work, try changing your default microphone in your
-              system settings.
-            </div>
+                {t("⚠️ Click the refresh button to load your microphone devices.")}</strong>{" "}
+              {t("If this doesn't work, try changing your default microphone in your system settings.")}</div>
           )}
         </div>
 
         {/* Tips */}
         <div className="text-xs text-muted-foreground/70">
           <p>
-            💡 <strong>Tip:</strong> When you select a microphone, the app will
-            immediately switch to that device. You can verify by hovering over
-            the microphone button in the main interface - it will show the
-            active device name.
-          </p>
+            💡 <strong>{t("Tip:")}</strong> {t("When you select a microphone, the app will immediately switch to that device. You can verify by hovering over the microphone button in the main interface - it will show the active device name.")}</p>
         </div>
       </div>
 
       {/* System Audio Output Section */}
       <div className="space-y-3">
         <Header
-          title="System Audio"
-          description="Select the output device to capture system sounds and application audio. If issues occur, set the correct default output in OS settings."
+          title={t("System Audio")}
+          description={t("Select the output device to capture system sounds and application audio. If issues occur, set the correct default output in OS settings.")}
         />
 
         <div className="space-y-3">
@@ -249,9 +244,9 @@ export const AudioSelection = () => {
                     <HeadphonesIcon className="size-4" />
                     <div className="text-sm font-medium truncate">
                       {isLoadingDevices
-                        ? "Loading output devices..."
+                        ? t("Loading output devices...")
                         : devices?.output?.length === 0
-                        ? "No output devices found"
+                        ? t("No output devices found")
                         : devices?.output?.find(
                             (output) =>
                               output?.id === selectedAudioDevices.output.id
@@ -260,8 +255,8 @@ export const AudioSelection = () => {
                               (output) =>
                                 output?.id === selectedAudioDevices.output.id
                             )?.is_default
-                              ? " (Default)"
-                              : "") || "Select an output device"}
+                              ? t("(Default)")
+                              : "") || t("Select an output device")}
                     </div>
                   </div>
                 </SelectTrigger>
@@ -271,7 +266,7 @@ export const AudioSelection = () => {
                       <div className="flex items-center gap-2">
                         <HeadphonesIcon className="size-4" />
                         <div className="font-medium truncate">
-                          {output?.name} {output?.is_default && " (Default)"}
+                          {output?.name} {output?.is_default && t("(Default)")}
                         </div>
                       </div>
                     </SelectItem>
@@ -286,7 +281,7 @@ export const AudioSelection = () => {
                 onClick={loadAudioDevices}
                 disabled={isLoadingDevices}
                 className="h-11 w-11 shrink-0"
-                title="Refresh output device list"
+                title={t("Refresh output device list")}
               >
                 <RefreshCwIcon
                   className={`size-4 ${isLoadingDevices ? "animate-spin" : ""}`}
@@ -298,9 +293,9 @@ export const AudioSelection = () => {
           {/* Success message */}
           {showSuccess.output && (
             <div className="text-xs text-green-500 bg-green-500/10 p-3 rounded-md">
-              <strong>✓ Output device changed successfully!</strong>
+              <strong>{t("✓ Output device changed successfully!")}</strong>
               <br />
-              Using: {selectedAudioDevices.output.name || "Unknown device"}
+              {t("Using:")}{selectedAudioDevices.output.name || t("Unknown device")}
             </div>
           )}
 
@@ -308,22 +303,15 @@ export const AudioSelection = () => {
           {devices?.output?.length === 0 && !isLoadingDevices && (
             <div className="text-xs text-amber-500 bg-amber-500/10 p-3 rounded-md">
               <strong>
-                ⚠️ Click the refresh button to load your system audio devices.
-              </strong>{" "}
-              If this doesn't work, try changing your default system audio
-              output in your system settings.
-            </div>
+                {t("⚠️ Click the refresh button to load your system audio devices.")}</strong>{" "}
+              {t("If this doesn't work, try changing your default system audio output in your system settings.")}</div>
           )}
         </div>
 
         {/* Tips */}
         <div className="text-xs text-muted-foreground/70">
           <p>
-            💡 <strong>Tip:</strong> System audio capture allows you to record
-            audio playing through your speakers or headphones. This is useful
-            for capturing conversation audio or system sounds along with your
-            voice.
-          </p>
+            💡 <strong>{t("Tip:")}</strong> {t("System audio capture allows you to record audio playing through your speakers or headphones. This is useful for capturing conversation audio or system sounds along with your voice.")}</p>
         </div>
       </div>
     </div>

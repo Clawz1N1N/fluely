@@ -1,9 +1,10 @@
 import type { StructuredAnswer } from './structured';
 import type { RequestLimits } from './provider-types';
+import type {CustomPanel} from './layout';
 
-export type UiMode = 'sidestrips' | 'topbottomstrips' | 'buttons';
+export type UiMode = 'sidestrips' | 'topbottomstrips' | 'buttons' | 'custom';
 export type ShellAction = 'listen' | 'screenshot' | 'continuous' | 'answer' | 'chat'
-  | 'tts' | 'mode' | 'settings' | 'ask' | 'snapshot' | 'reset'
+  | 'tts' | 'mode' | 'ui_mode' | 'dashboard' | 'settings' | 'ask' | 'snapshot' | 'reset'
   | 'tts_stop' | 'tts_pause' | 'tts_seek_back' | 'tts_seek_forward';
 export interface ActionRequest {
   action: ShellAction;
@@ -20,6 +21,7 @@ export interface ShellSettings {
   answer_opacity: number;
   strip_opacity:number;
   button_opacities:Record<string,number>;
+  custom_panels:CustomPanel[];
 }
 export interface SpeechState {
   enabled: boolean;
@@ -35,6 +37,7 @@ export interface ServiceSnapshot extends StructuredAnswer {
   revision: number;
   ready: boolean;
   listening: boolean;
+  sleeping:boolean;
   continuous: boolean;
   answerVisible: boolean;
   busy: boolean;
@@ -52,7 +55,7 @@ export interface ServiceSnapshot extends StructuredAnswer {
   tts: SpeechState;
 }
 export const INITIAL_SERVICE_STATE: ServiceSnapshot = {
-  revision: 0, ready: false, listening: false, continuous: false,
+  revision: 0, ready: false, listening: false, sleeping:false, continuous: false,
   answerVisible: false, busy: false, neutral: false, nextAllowedAt: null,
   currentModel: null, error: null, requestId: null,
   requestError:null,
@@ -60,6 +63,6 @@ export const INITIAL_SERVICE_STATE: ServiceSnapshot = {
   requestCounts: {per_second:0,per_minute:0,per_hour:0,per_day:0},
   requestLimits: {per_second:0,per_minute:0,per_hour:0,per_day:0},
   main: '', side: '', speak: '', history: [],
-  shell: { ui_mode: 'sidestrips', shimmer: false, shimmer_speed: 3, answer_opacity: 0.32,strip_opacity:0.28,button_opacities:{} },
+  shell: { ui_mode: 'sidestrips', shimmer: false, shimmer_speed: 3, answer_opacity: 0.32,strip_opacity:0.28,button_opacities:{},custom_panels:[] },
   tts: { enabled: true, speaking: false, paused: false, wordStart: -1, wordEnd: -1, rate: 1, voices: [] },
 };

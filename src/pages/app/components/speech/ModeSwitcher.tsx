@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { cn } from "@/lib/utils";
 import { AudioWaveformIcon, MicIcon } from "lucide-react";
 
@@ -12,6 +13,7 @@ export const ModeSwitcher = ({
   onModeChange,
   disabled = false,
 }: ModeSwitcherProps) => {
+  useI18n();
   return (
     <div
       className={cn(
@@ -32,10 +34,9 @@ export const ModeSwitcher = ({
       >
         <AudioWaveformIcon className="w-4 h-4 flex-shrink-0" />
         <div className="flex flex-col items-start">
-          <span className="text-xs font-medium leading-tight">Auto-detect</span>
+          <span className="text-xs font-medium leading-tight">{t("Auto-detect")}</span>
           <span className="text-[9px] font-normal opacity-60 leading-tight">
-            (voice activity)
-          </span>
+            {t("(voice activity)")}</span>
         </div>
       </button>
       <button
@@ -51,10 +52,9 @@ export const ModeSwitcher = ({
       >
         <MicIcon className="w-4 h-4 flex-shrink-0" />
         <div className="flex flex-col items-start">
-          <span className="text-xs font-medium leading-tight">Manual</span>
+          <span className="text-xs font-medium leading-tight">{t("Manual")}</span>
           <span className="text-[9px] font-normal opacity-60 leading-tight">
-            (press to record)
-          </span>
+            {t("(press to record)")}</span>
         </div>
       </button>
     </div>

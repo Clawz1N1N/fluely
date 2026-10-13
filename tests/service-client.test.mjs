@@ -24,3 +24,10 @@ for(const phase of ['snapshot','ack'])test(`abort during ${phase} listener insta
   }),{name:'AbortError'});
   assert.equal(sends,0);assert.equal(disposed,phase==='snapshot'?1:2);
 });
+test('Sleep discards a pending legacy question with a correlated cancellation and releases all listeners',async()=>{
+  let ack,cancelled,disposed=0;
+  await assert.rejects(requestServiceAnswer('old question',[],undefined,{
+    source:()=> 'test',listen:async()=>()=>disposed++,cancelled:async receive=>{cancelled=receive;return()=>disposed++;},
+    action:{listen:async receive=>{ack=receive;return()=>disposed++;},send:async request=>{ack({id:request.id,ok:true});cancelled([request.clientId]);}},
+  }),/cancelled by Sleep/);assert.equal(disposed,3);
+});

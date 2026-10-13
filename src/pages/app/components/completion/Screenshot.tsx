@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Button } from "@/components";
 import { LaptopMinimalIcon, Loader2, MousePointer2Icon } from "lucide-react";
 import { UseCompletionReturn } from "@/types";
@@ -11,10 +12,11 @@ export const Screenshot = ({
   captureScreenshot,
   isScreenshotLoading,
 }: UseCompletionReturn) => {
+  useI18n();
   const { supportsImages } = useApp();
   const captureMode = screenshotConfiguration.enabled
-    ? "Screenshot"
-    : "Selection";
+    ? t("Screenshot")
+    : t("Selection");
   const processingMode = screenshotConfiguration.mode;
 
   const isDisabled =
@@ -29,7 +31,7 @@ export const Screenshot = ({
       className="cursor-pointer"
       title={
         !supportsImages
-          ? "Screenshot not supported by current AI provider"
+          ? t("Screenshot not supported by current AI provider")
           : `${captureMode} mode (${processingMode}) - ${attachedFiles.length}/${MAX_FILES} files`
       }
       onClick={captureScreenshot}

@@ -4,15 +4,23 @@ mod app_paths;
 mod db;
 mod shortcuts;
 mod shell;
+mod overlay_layout;
 mod shell_store;
 mod continuous;
 mod vision;
+mod sleep;
 mod ui_automation;
 mod providers;
 mod structured;
 mod structured_core;
 mod tts;
 mod stt;
+mod local_engines;
+pub use local_engines::gguf_asr_worker_mode;
+mod microphone;
+mod file_picker;
+mod identity;
+mod locale;
 mod window;
 use std::sync::{Arc, Mutex};
 use tauri::Manager;
@@ -85,6 +93,7 @@ fn shortcut_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    if let Err(error)=app_paths::configure_process_profile(){eprintln!("Fluely profile: {error}");return;}
     let builder = tauri::Builder::default()
         .plugin(shortcut_plugin())
         .plugin(
@@ -93,6 +102,10 @@ pub fn run() {
                 .build(),
         )
         .manage(AudioState::default())
+        .manage(local_engines::LocalEngineState::default())
+        .manage(microphone::MicrophoneState::default())
+        .manage(sleep::SleepState::default())
+        .manage(identity::IdentityState::default())
         .manage(CaptureState::default())
         .manage(shortcuts::WindowVisibility {
             is_hidden: Mutex::new(false),
@@ -109,9 +122,38 @@ pub fn run() {
         .plugin(tauri_plugin_keychain::init())
         .plugin(tauri_plugin_shell::init()) // Add shell plugin
         .invoke_handler(tauri::generate_handler![
+            locale::get_system_locale,
+            local_engines::get_local_engine_configs,
+            local_engines::transcribe_gguf_asr_audio,
+            stt::list_system_stt_languages,
+            sleep::get_sleep_settings,
+            sleep::save_sleep_settings,
+            sleep::set_sleep_mode,
+            sleep::list_alarm_outputs,
+            sleep::play_sleep_alarm,
+            sleep::test_sleep_alarm,
+            sleep::stop_sleep_alarm,
+            sleep::pick_sleep_track,
+            local_engines::save_local_engine_config,
+            local_engines::get_local_engine_status,
+            local_engines::start_local_engine,
+            local_engines::stop_local_engine,
+            local_engines::restart_local_engine,
+            local_engines::test_local_engine,
+            local_engines::install_local_engine,
+            local_engines::install_recommended_local_model,
+            microphone::list_microphone_devices,
+            microphone::get_microphone_status,
+            microphone::start_microphone,
+            microphone::stop_microphone,
+            file_picker::pick_local_engine_file,
+            identity::get_identity_status,
+            identity::save_identity_config,
+            identity::restart_identity,
             get_app_version,
             window::set_window_height,
             window::open_dashboard,
+            window::open_dashboard_page,
             window::toggle_dashboard,
             window::move_window,
             capture::capture_to_base64,
@@ -147,6 +189,10 @@ pub fn run() {
             shell::reset_shell_layout,
             shell::find_shell_buttons,
             shell::get_shell_settings,
+            shell::get_layout_monitors,
+            shell::set_custom_layout,
+            shell::set_status_visibility,
+            shell::toggle_all_windows,
             shell::toggle_answer_window,
             shell::show_answer_window,
             shell::present_answer_window,
@@ -168,6 +214,7 @@ pub fn run() {
             vision::build_screen_context,
             providers::list_providers,
             providers::upsert_provider,
+            providers::save_provider_models,
             providers::remove_provider,
             providers::pick_provider,
             providers::report_provider_result,
@@ -198,7 +245,7 @@ pub fn run() {
             providers::initialize(app.handle())?;
             let app_handle = app.handle();
             if app_handle.get_webview_window("dashboard").is_none() {
-                if let Err(e) = window::create_dashboard_window(&app_handle) {
+                if let Err(e) = window::create_dashboard_window(app_handle) {
                     eprintln!("Failed to pre-create dashboard window on startup: {}", e);
                 }
             }
@@ -231,10 +278,19 @@ pub fn run() {
     let builder = builder.plugin(tauri_plugin_macos_permissions::init());
 
     let mut context = tauri::generate_context!();
+    match identity::bootstrap(&context.config().identifier){
+        Ok(true)=>return,
+        Ok(false)=>{},
+        Err(error)=>eprintln!("Fluely executable alias: {error}"),
+    }
     if app_paths::webview_dir().expect("Invalid explicit profile directory").is_some() {
         for window in &mut context.config_mut().app.windows { if window.label == "main" { window.create = false; } }
     }
-    builder
-        .run(context)
-        .expect("error while running tauri application");
+    builder.build(context).expect("error while building Fluely application").run(|app,event|{
+        if matches!(event,tauri::RunEvent::Exit){
+            app.state::<sleep::SleepState>().shutdown();
+            app.state::<microphone::MicrophoneState>().shutdown();
+            app.state::<local_engines::LocalEngineState>().shutdown();
+        }
+    });
 }

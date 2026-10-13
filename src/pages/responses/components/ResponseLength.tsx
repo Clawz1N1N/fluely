@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Card, Header } from "@/components";
 import { RESPONSE_LENGTHS } from "@/lib";
 import { updateResponseLength } from "@/lib/storage/response-settings.storage";
@@ -6,6 +7,7 @@ import { getResponseSettings } from "@/lib";
 import { CheckCircle2 } from "lucide-react";
 
 export const ResponseLength = () => {
+  useI18n();
  const [selectedLength, setSelectedLength] = useState<string>("auto");
 
   useEffect(() => {
@@ -21,8 +23,8 @@ export const ResponseLength = () => {
   return (
     <div className="space-y-4">
       <Header
-        title="Response Length"
-        description="Control how detailed the AI responses should be. Changes apply to all new conversations and will influence how the AI structures responses"
+        title={t("Response Length")}
+        description={t("Control how detailed the AI responses should be. Changes apply to all new conversations and will influence how the AI structures responses")}
         isMainTitle
       />
 
@@ -39,10 +41,10 @@ export const ResponseLength = () => {
           >
             <div className="space-y-1">
               <h3 className="text-sm lg:text-md font-semibold">
-                {length.title}
+                {t(length.title)}
               </h3>
               <p className="text-[10px] lg:text-xs text-muted-foreground">
-                {length.description}
+                {t(length.description)}
               </p>
             </div>
             {selectedLength === length.id && (

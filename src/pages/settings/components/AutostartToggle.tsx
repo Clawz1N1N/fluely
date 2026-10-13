@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Switch, Label, Header } from "@/components";
 import { useApp } from "@/contexts";
 
@@ -6,6 +7,7 @@ interface AutostartToggleProps {
 }
 
 export const AutostartToggle = ({ className }: AutostartToggleProps) => {
+  useI18n();
   const { customizable, toggleAutostart } = useApp();
 
   const isEnabled = customizable?.autostart?.isEnabled ?? true;
@@ -17,25 +19,25 @@ export const AutostartToggle = ({ className }: AutostartToggleProps) => {
   return (
     <div id="autostart" className={`space-y-2 ${className}`}>
       <Header
-        title="Launch on Startup"
-        description="Automatically open Pluely when your system starts"
+        title={t("Launch on Startup")}
+        description={t("Automatically open Fluely when your system starts")}
         isMainTitle
       />
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-3">
           <div>
-            <Label className="text-sm font-medium">Open on Start</Label>
+            <Label className="text-sm font-medium">{t("Open on Start")}</Label>
             <p className="text-xs text-muted-foreground mt-1">
               {isEnabled
-                ? "Pluely will launch automatically on system startup"
-                : "Pluely will not launch automatically"}
+                ? t("Fluely will launch automatically on system startup")
+                : t("Fluely will not launch automatically")}
             </p>
           </div>
         </div>
         <Switch
           checked={isEnabled}
           onCheckedChange={handleSwitchChange}
-          aria-label="Toggle autostart"
+          aria-label={t("Toggle autostart")}
         />
       </div>
     </div>

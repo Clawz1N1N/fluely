@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import {
   ResponseLength,
   LanguageSelector,
@@ -6,10 +7,11 @@ import {
 import { PageLayout } from "@/layouts";
 
 const Responses = () => {
+  useI18n();
   return (
     <PageLayout
-      title="Response Settings"
-      description="Customize how AI generates and displays responses"
+      title={t("Response Settings")}
+      description={t("Customize how AI generates and displays responses")}
     >
       {/* Response Length */}
       <ResponseLength />

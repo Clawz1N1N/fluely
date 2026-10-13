@@ -2,6 +2,11 @@ import { ShortcutAction } from "@/types";
 
 export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
   {
+    id: 'hide_all', name: 'Hide all windows',
+    description: 'Hide or restore every Fluely window, including settings and status',
+    defaultKey: { macos: 'cmd+alt+h', windows: 'ctrl+alt+h', linux: 'ctrl+alt+h' },
+  },
+  {
     id:'answer_interaction',name:'Переміщення та взаємодія з чатом',
     description:'Перемкнути пасивний прозорий чат і непрозорий режим введення/переміщення',
     defaultKey:{macos:'shift+backslash',windows:'shift+backslash',linux:'shift+backslash'},
@@ -39,7 +44,7 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
   {
     id: "focus_input",
     name: "Refocus Input Box",
-    description: "Bring Pluely forward and place the cursor in the input area",
+    description: "Bring Fluely forward and place the cursor in the input area",
     defaultKey: {
       macos: "cmd+shift+i",
       windows: "ctrl+shift+i",

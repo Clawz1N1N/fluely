@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Card, Updater, DragButton, CustomCursor, Button } from "@/components";
 import {
   SystemAudio,
@@ -14,6 +15,7 @@ import { ErrorLayout } from "@/layouts";
 import { getPlatform } from "@/lib";
 
 const App = () => {
+  useI18n();
   const { isHidden, systemAudio } = useApp();
   const { customizable } = useAppContext();
   const platform = getPlatform();
@@ -33,7 +35,7 @@ const App = () => {
       }}
       resetKeys={["app-error"]}
       onReset={() => {
-        console.log("Reset");
+        console.log(t("Reset"));
       }}
     >
       <div
@@ -71,7 +73,7 @@ const App = () => {
             <Button
               size={"icon"}
               className="cursor-pointer"
-              title="Open Dev Space"
+              title={t("Open Dev Space")}
               onClick={openDashboard}
             >
               <SparklesIcon className="h-4 w-4" />

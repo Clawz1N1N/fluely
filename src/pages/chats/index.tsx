@@ -1,3 +1,4 @@
+import { t, useI18n } from "@/lib/i18n";
 import { Badge, Input, Card, Empty } from "@/components";
 import { useHistory } from "@/hooks";
 import { PageLayout } from "@/layouts";
@@ -6,6 +7,7 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
+  const { language } = useI18n();
   const conversations = useHistory();
   const navigate = useNavigate();
   // Group conversations by date
@@ -28,16 +30,16 @@ const Dashboard = () => {
 
   return (
     <PageLayout
-      title="All conversations"
-      description="View all your conversations"
+      title={t("All conversations")}
+      description={t("View all your conversations")}
     >
       <>
         {conversations.conversations.length === 0 ? (
           <Empty
             isLoading={conversations.isLoading}
             icon={MessageCircleIcon}
-            title="No conversations found"
-            description="Start a new conversation to get started"
+            title={t("No conversations found")}
+            description={t("Start a new conversation to get started")}
           />
         ) : (
           <div className="flex flex-col gap-6 pb-8">
@@ -45,7 +47,7 @@ const Dashboard = () => {
               <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="text"
-                placeholder="Search conversations..."
+                placeholder={t("Search conversations...")}
                 className="pl-9 focus-visible:ring-0 focus-visible:ring-offset-0"
                 value={conversations.search}
                 onChange={(e) => conversations.setSearch(e.target.value)}
@@ -64,7 +66,7 @@ const Dashboard = () => {
               .map((dateKey) => (
                 <div key={dateKey} className="flex flex-col gap-3">
                   <p className="text-xs text-muted-foreground select-none font-medium">
-                    {moment(dateKey).format("ddd, MMM D")}
+                    {new Intl.DateTimeFormat(language, {weekday: 'short', month: 'short', day: 'numeric'}).format(moment(dateKey).toDate())}
                   </p>
                   <div className="grid grid-cols-1 gap-3">
                     {groupedConversations[dateKey].map((doc) => (
@@ -79,10 +81,10 @@ const Dashboard = () => {
                           </p>
                           <div className="flex items-center gap-1">
                             <Badge variant="outline" className="text-xs">
-                              {doc.messages.length} messages
+                              {t('Messages: {count}', {count: doc.messages.length})}
                             </Badge>
                             <Badge variant="outline" className="text-xs">
-                              {moment(doc.updatedAt).format("hh:mm A")}
+                              {new Intl.DateTimeFormat(language, {hour: 'numeric', minute: '2-digit'}).format(moment(doc.updatedAt).toDate())}
                             </Badge>
                           </div>
                         </div>
