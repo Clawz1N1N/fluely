@@ -51,4 +51,4 @@ export function parseStructured(text: string): StructuredAnswer {
   return parser.finish();
 }
 
-export const DEFAULT_STRUCTURED_PROMPT = `Відповідай українською. Розділи відповідь на <main>основний розв'язок</main>, <side>додаткові пояснення та зауваження</side> і <speak>дуже докладне пояснення простими словами, придатне для озвучення</speak>. Формули використовуй у main або side. У speak пояснюй символи словами. Не повторюй однакові частини.`;
+export const DEFAULT_STRUCTURED_PROMPT = `Separate the response into <main>the direct answer or solution</main>, <side>supporting explanations, caveats, and useful next steps</side>, and <speak>a natural spoken explanation in plain language</speak>. Keep the exact channel tags. Follow the requested response language and length. Put formulas and code in main or side; explain symbols in words in speak. Avoid repeating the same text in every channel.`;

@@ -1086,6 +1086,15 @@ Whisper requires a whisper.cpp GGML .bin model, not a text GGUF model|Whisper п
 Model must be a GGUF file (the selected file has an invalid header)|Модель має бути GGUF-файлом (вибраний файл має некоректний заголовок)|Модель должна быть GGUF-файлом (выбранный файл имеет некорректный заголовок)
 Choose a whisper.cpp GGML .bin model before starting|Перед запуском виберіть модель whisper.cpp GGML .bin|Перед запуском выберите модель whisper.cpp GGML .bin
 Choose a GGUF model before starting|Перед запуском виберіть модель GGUF|Перед запуском выберите модель GGUF
+Chat interaction shortcut|Комбінація для взаємодії з чатом|Комбинация для взаимодействия с чатом
+Move and type|Переміщення та введення|Перемещение и ввод
+Shortcut disabled|Комбінацію вимкнено|Комбинация отключена
+Choose a mode, then edit its English instructions to suit your workflow. Your saved templates stay available.|Виберіть режим і налаштуйте його англомовну інструкцію для своєї роботи. Збережені шаблони залишаються доступними.|Выберите режим и настройте его англоязычную инструкцию для своей работы. Сохранённые шаблоны остаются доступными.
+Normal mode uses the selected template and response structure. Sleep mode listens only to system audio and uses its separate alarm instructions.|Звичайний режим використовує вибраний шаблон і структуру відповіді. Режим сну слухає лише системний звук і використовує окремі інструкції для тривоги.|Обычный режим использует выбранный шаблон и структуру ответа. Режим сна слушает только системный звук и использует отдельные инструкции для тревоги.
+Normal mode · system instruction|Звичайний режим · системна інструкція|Обычный режим · системная инструкция
+Sleep mode · alarm instruction|Режим сну · інструкція тривоги|Режим сна · инструкция тревоги
+Keep <main>, <side>, and <speak> tags for the answer panels and speech.|Залиште теги <main>, <side> і <speak> для панелей відповіді й озвучення.|Сохраните теги <main>, <side> и <speak> для панелей ответа и озвучивания.
+The alarm marker, track, volume, and output device are configured in Sleep settings.|Маркер тривоги, трек, гучність і пристрій виведення налаштовуються в параметрах режиму сну.|Маркер тревоги, трек, громкость и устройство вывода настраиваются в параметрах режима сна.
 `.trim().split('\n');
 
 for (const row of rows) {

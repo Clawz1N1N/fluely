@@ -29,7 +29,9 @@ try:
     assert not js("[...document.querySelectorAll('#provider-models label')].some(l=>l.querySelector('span')?.textContent==='Base URL')")
     button('Cancel')
     for index in range(2):
-        button('Other')
+        button('Add provider or API key')
+        js("(()=>{const label=[...document.querySelectorAll('#provider-models label')].find(l=>l.querySelector('span')?.textContent==='Provider');const select=label.querySelector('select');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,'other');select.dispatchEvent(new Event('change',{bubbles:true}));})()")
+        settle(lambda:js("[...document.querySelectorAll('#provider-models label')].some(l=>l.querySelector('span')?.textContent==='Provider name')"))
         edit('Provider name','Owned fixture')
         edit('Provider ID','owned-provider')
         edit('Display name','Owned key '+str(index+1))

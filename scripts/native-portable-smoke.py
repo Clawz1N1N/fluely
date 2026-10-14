@@ -28,6 +28,7 @@ js("(async()=>{localStorage.setItem('fluely.interface-language','en');await wind
 settle(lambda:js("document.querySelector('main header label')?.textContent==='Settings'"))
 assert not js("document.querySelector('main').textContent.includes('Local Whisper speech recognition')")
 def click_named(name,scope='main'):
+    settle(lambda:any(n.get('role',{}).get('value')=='button' and n.get('name',{}).get('value')==name for n in cdp('Accessibility.getFullAXTree')['nodes']))
     nodes=cdp('Accessibility.getFullAXTree')['nodes']
     candidate=next(n for n in nodes if n.get('role',{}).get('value')=='button' and n.get('name',{}).get('value')==name)
     box=cdp('DOM.getBoxModel',backendNodeId=candidate['backendDOMNodeId'])['model']['content']
@@ -47,5 +48,5 @@ for module,sources in [('Reasoning',['Cloud providers','Local engines']),('Speec
 print('four_ai_modules_cloud_local_system_sources_and_piper',True)
 click_named('Speech recognition');click_named('Local engines')
 image=cdp('Page.captureScreenshot',format='png')['data']
-pathlib.Path('_research/temp/fluely-021-ai-settings.png').write_bytes(base64.b64decode(image))
+pathlib.Path('_research/temp/fluely-022-ai-settings.png').write_bytes(base64.b64decode(image))
 print('ai_settings_screenshot_saved',True)

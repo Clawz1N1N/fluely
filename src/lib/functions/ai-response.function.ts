@@ -11,8 +11,12 @@ import curl2Json from "@bany/curl-to-json";
 import { getResponseSettings, RESPONSE_LENGTHS, LANGUAGES } from "@/lib";
 import { MARKDOWN_FORMATTING_INSTRUCTIONS } from "@/config/constants";
 import { boundedChatQuestion } from '../overlay/chat-context';
+import { cachedChatPreferences } from '../overlay/chat-preferences';
+import { responseInstructions } from '../overlay/chat-preferences-core';
 
 export function buildEnhancedSystemPrompt(baseSystemPrompt?: string): string {
+  const shared=cachedChatPreferences();
+  if(shared)return [baseSystemPrompt,responseInstructions(shared),MARKDOWN_FORMATTING_INSTRUCTIONS].filter(Boolean).join('\n\n');
   const responseSettings = getResponseSettings();
   const prompts: string[] = [];
 
@@ -52,6 +56,10 @@ export async function* fetchAIResponse(params: {
   imagesBase64?: string[];
   signal?: AbortSignal;
   registryReserved?:boolean;
+  requestOverrides?:Record<string,unknown>;
+  resetReasoning?:boolean;
+  beforeSend?:(body:unknown)=>Promise<void>;
+  onUsage?:(event:unknown)=>void;
 }): AsyncIterable<string> {
   if(!params.registryReserved&&typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window){
     const {requestServiceAnswer}=await import('../overlay/service-client');
@@ -148,6 +156,32 @@ export async function* fetchAIResponse(params: {
     };
 
     bodyObj = deepVariableReplacer(bodyObj, allVariables);
+    if(params.resetReasoning){
+      delete bodyObj.reasoning_effort;
+      delete bodyObj.reasoning;
+      delete bodyObj.thinking;
+      if(bodyObj.output_config&&typeof bodyObj.output_config==='object'){
+        bodyObj.output_config={...bodyObj.output_config};delete bodyObj.output_config.effort;
+      }
+      if(bodyObj.generationConfig&&typeof bodyObj.generationConfig==='object'){
+        bodyObj.generationConfig={...bodyObj.generationConfig};delete bodyObj.generationConfig.thinkingConfig;
+      }
+      if(bodyObj.chat_template_kwargs&&typeof bodyObj.chat_template_kwargs==='object'){
+        bodyObj.chat_template_kwargs={...bodyObj.chat_template_kwargs};delete bodyObj.chat_template_kwargs.enable_thinking;
+      }
+    }
+    if(params.requestOverrides){
+      const overrides={...params.requestOverrides};
+      // Templates retain their protocol's existing output field and generation settings.
+      const ceiling=overrides.max_tokens??overrides.max_completion_tokens;
+      if(ceiling!==undefined){
+        const outputKey=['max_completion_tokens','max_tokens','max_output_tokens'].find(key=>key in bodyObj);
+        if(outputKey){delete overrides.max_tokens;delete overrides.max_completion_tokens;overrides[outputKey]=ceiling;}
+      }
+      if(overrides.generationConfig)overrides.generationConfig={...bodyObj.generationConfig,...overrides.generationConfig as object};
+      if(overrides.output_config)overrides.output_config={...bodyObj.output_config,...overrides.output_config as object};
+      bodyObj={...bodyObj,...overrides};
+    }
     let url = deepVariableReplacer(curlJson.url || "", allVariables);
 
     const headers = deepVariableReplacer(curlJson.header || {}, allVariables);
@@ -166,19 +200,22 @@ export async function* fetchAIResponse(params: {
       }
     }
 
+    await params.beforeSend?.(bodyObj);
     const response = await providerFetch(url, {
       method: curlJson.method || "POST", headers,
       body: curlJson.method === "GET" ? undefined : JSON.stringify(bodyObj), signal,
     });
     if (!response.ok) throw ProviderHttpError.fromResponse(response);
     if (!provider.streaming) {
-      const content = getByPath(await response.json(), provider.responseContentPath || "");
+      const json=await response.json();params.onUsage?.(json);
+      const content = getByPath(json, provider.responseContentPath || "");
       if (typeof content !== 'string') throw new Error('Провайдер повернув відповідь без тексту.');
       yield content;
       return;
     }
     if (!response.body) throw new Error('Провайдер не повернув потік відповіді.');
     for await (const event of readEventStream(response.body, signal)) {
+      params.onUsage?.(event);
       const delta = getStreamingContent(event, provider.responseContentPath || '');
       if (delta) yield delta;
     }

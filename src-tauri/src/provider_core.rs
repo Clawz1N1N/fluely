@@ -1,4 +1,5 @@
-//! Dependency-free request accounting. Times are Unix milliseconds.
+//! Atomic request and token accounting. Times are Unix milliseconds.
+use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
 pub const WINDOWS_MS: [u64; 4] = [1_000, 60_000, 3_600_000, 86_400_000];
@@ -11,6 +12,17 @@ pub struct Candidate {
     pub enabled: bool,
     pub supports_images: bool,
     pub limits: [u32; 4],
+    pub token_limits: [u64; 4],
+    pub output_tokens: u64,
+    pub manual_neutral: bool,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct TokenEvent {
+    pub id: u64,
+    pub at: u64,
+    pub tokens: u64,
+    pub settled: bool,
 }
 
 #[derive(Debug, Clone, Default)]
@@ -21,9 +33,12 @@ pub struct RegistryCore {
     pub global_limits: [u32; 4],
     pub manual_neutral: bool,
     pub current_provider_id: Option<String>,
+    pub tokens: HashMap<String, Vec<TokenEvent>>,
+    pub next_token_id: u64,
 }
 
 impl RegistryCore {
+    #[cfg(test)]
     pub fn pick(
         &mut self,
         candidates: &[Candidate],
@@ -32,6 +47,28 @@ impl RegistryCore {
         exclude_ids: &[String],
         now: u64,
     ) -> Option<String> {
+        self.pick_with_tokens(candidates, kind, needs_images, exclude_ids, now, 0)
+            .map(|(id, _)| id)
+    }
+
+    pub fn pick_with_tokens(
+        &mut self,
+        candidates: &[Candidate],
+        kind: &str,
+        needs_images: bool,
+        exclude_ids: &[String],
+        now: u64,
+        input_tokens: u64,
+    ) -> Option<(String, u64)> {
+        self.pick_with_token_estimates(candidates, kind, needs_images, exclude_ids, now, input_tokens, &HashMap::new())
+    }
+
+    #[allow(clippy::too_many_arguments)]
+    pub fn pick_with_token_estimates(
+        &mut self, candidates: &[Candidate], kind: &str, needs_images: bool,
+        exclude_ids: &[String], now: u64, input_tokens: u64,
+        estimates: &HashMap<String,u64>,
+    ) -> Option<(String, u64)> {
         self.prune(now);
         if self.manual_neutral {
             return None;
@@ -40,15 +77,17 @@ impl RegistryCore {
             .iter()
             .filter(|p| {
                 p.enabled
+                    && !p.manual_neutral
                     && p.kind == kind
                     && (!needs_images || p.supports_images)
                     && !exclude_ids.contains(&p.id)
             })
             .collect();
         eligible.sort_by(|a, b| a.rank.cmp(&b.rank).then(a.id.cmp(&b.id)));
-        let selected = eligible
-            .into_iter()
-            .find(|p| self.next_allowed_at(p, now).is_none())?;
+        let selected = eligible.into_iter().find(|p| {
+            self.next_allowed_with_tokens(p, now, estimates.get(&p.id).copied().unwrap_or(input_tokens).saturating_add(p.output_tokens))
+                .is_none()
+        })?;
         // Check every gate before mutating either budget. One event, regardless
         // of how many windows are limited, charges exactly one attempted request.
         self.requests
@@ -57,7 +96,18 @@ impl RegistryCore {
             .push(now);
         self.global_requests.push(now);
         self.current_provider_id = Some(selected.id.clone());
-        Some(selected.id.clone())
+        self.next_token_id = self.next_token_id.saturating_add(1);
+        let token_id = self.next_token_id;
+        self.tokens
+            .entry(selected.id.clone())
+            .or_default()
+            .push(TokenEvent {
+                id: token_id,
+                at: now,
+                tokens: estimates.get(&selected.id).copied().unwrap_or(input_tokens).saturating_add(selected.output_tokens),
+                settled: false,
+            });
+        Some((selected.id.clone(), token_id))
     }
 
     pub fn prune(&mut self, now: u64) {
@@ -67,6 +117,9 @@ impl RegistryCore {
             requests.retain(|t| now.saturating_sub(*t) < WINDOWS_MS[3]);
         }
         self.cooldowns.retain(|_, until| *until > now);
+        for events in self.tokens.values_mut() {
+            events.retain(|event| now.saturating_sub(event.at) < WINDOWS_MS[3]);
+        }
     }
 
     pub fn used(requests: &[u64], now: u64) -> [u32; 4] {
@@ -100,6 +153,106 @@ impl RegistryCore {
     }
 
     pub fn next_allowed_at(&self, provider: &Candidate, now: u64) -> Option<u64> {
+        self.next_allowed_with_tokens(provider, now, 1)
+    }
+
+    pub fn token_used(&self, id: &str, now: u64) -> [u64; 4] {
+        WINDOWS_MS.map(|window| {
+            self.tokens
+                .get(id)
+                .into_iter()
+                .flatten()
+                .filter(|event| now.saturating_sub(event.at) < window)
+                .fold(0u64, |sum, event| sum.saturating_add(event.tokens))
+        })
+    }
+
+    fn token_deadline(
+        &self,
+        provider: &Candidate,
+        now: u64,
+        required: u64,
+        exclude: Option<u64>,
+    ) -> Option<u64> {
+        let mut deadline = None;
+        for (window, limit) in WINDOWS_MS.into_iter().zip(provider.token_limits) {
+            if limit == 0 {
+                continue;
+            }
+            if required > limit {
+                return Some(u64::MAX);
+            }
+            let mut events: Vec<_> = self
+                .tokens
+                .get(&provider.id)
+                .into_iter()
+                .flatten()
+                .filter(|event| Some(event.id) != exclude && now.saturating_sub(event.at) < window)
+                .collect();
+            let mut used = events
+                .iter()
+                .fold(0u64, |sum, event| sum.saturating_add(event.tokens));
+            if used.saturating_add(required) <= limit {
+                continue;
+            }
+            events.sort_by_key(|event| event.at);
+            for event in events {
+                used = used.saturating_sub(event.tokens);
+                if used.saturating_add(required) <= limit {
+                    deadline = Some(deadline.unwrap_or(0).max(event.at.saturating_add(window)));
+                    break;
+                }
+            }
+        }
+        deadline
+    }
+
+    pub fn adjust_tokens(
+        &mut self,
+        provider: &Candidate,
+        id: u64,
+        required: u64,
+        now: u64,
+    ) -> Result<(), String> {
+        if provider.token_limits.iter().any(|limit| *limit > 0 && required > *limit) {
+            return Err(
+                "Token quota cannot fit this request; reduce input or max output tokens".into(),
+            );
+        }
+        if let Some(until) = self.token_deadline(provider, now, required, Some(id)) {
+            return Err(format!("Neutral mode: token quota available at {until}"));
+        }
+        let event = self
+            .tokens
+            .get_mut(&provider.id)
+            .into_iter()
+            .flatten()
+            .find(|event| event.id == id && !event.settled)
+            .ok_or("Token reservation is unavailable")?;
+        event.tokens = required;
+        event.at = now;
+        Ok(())
+    }
+
+    pub fn settle_tokens(&mut self, provider_id: &str, id: u64, actual: u64) {
+        if let Some(event) = self
+            .tokens
+            .get_mut(provider_id)
+            .into_iter()
+            .flatten()
+            .find(|event| event.id == id && !event.settled)
+        {
+            event.tokens = actual;
+            event.settled = true;
+        }
+    }
+
+    pub fn next_allowed_with_tokens(
+        &self,
+        provider: &Candidate,
+        now: u64,
+        required: u64,
+    ) -> Option<u64> {
         let requests = self
             .requests
             .get(&provider.id)
@@ -112,6 +265,7 @@ impl RegistryCore {
                 .get(&provider.id)
                 .copied()
                 .filter(|until| *until > now),
+            self.token_deadline(provider, now, required, None),
         ]
         .into_iter()
         .flatten()
@@ -134,6 +288,7 @@ impl RegistryCore {
             .iter()
             .filter(|p| {
                 p.enabled
+                    && !p.manual_neutral
                     && p.kind == kind
                     && (!needs_images || p.supports_images)
                     && !exclude_ids.contains(&p.id)
@@ -156,6 +311,7 @@ impl RegistryCore {
     pub fn remove(&mut self, id: &str) {
         self.requests.remove(id);
         self.cooldowns.remove(id);
+        self.tokens.remove(id);
         if self.current_provider_id.as_deref() == Some(id) {
             self.current_provider_id = None;
         }
@@ -166,6 +322,127 @@ impl RegistryCore {
 mod tests {
     use super::*;
 
+    #[test]
+    fn token_reservations_block_concurrent_spending_and_settle_the_matching_attempt() {
+        let mut core = RegistryCore::default();
+        let mut p = candidate("p", 0, [0; 4]);
+        p.token_limits = [0, 100, 0, 0];
+        p.output_tokens = 30;
+        let list = [p];
+        let (_, first) = core
+            .pick_with_tokens(&list, "brain", false, &[], 10, 20)
+            .unwrap();
+        let (_, second) = core
+            .pick_with_tokens(&list, "brain", false, &[], 11, 20)
+            .unwrap();
+        assert!(core
+            .pick_with_tokens(&list, "brain", false, &[], 12, 1)
+            .is_none());
+        assert_eq!(core.token_used("p", 12), [100, 100, 100, 100]);
+        core.settle_tokens("p", first, 10);
+        assert_eq!(core.token_used("p", 12)[1], 60);
+        core.settle_tokens("p", second, 20);
+        assert_eq!(core.token_used("p", 12)[1], 30);
+        // Duplicate reports cannot refund the same attempt twice.
+        core.settle_tokens("p", first, 0);
+        assert_eq!(core.token_used("p", 12)[1], 30);
+        assert!(core
+            .pick_with_tokens(&list, "brain", false, &[], 12, 20)
+            .is_some());
+    }
+
+    #[test]
+    fn candidate_specific_input_estimates_allow_a_smaller_context_fallback() {
+        let mut core = RegistryCore::default();
+        let mut first = candidate("first", 0, [0; 4]);
+        first.token_limits = [0, 100, 0, 0];
+        first.output_tokens = 20;
+        let mut fallback = first.clone();
+        fallback.id = "fallback".into();
+        fallback.rank = 1;
+        let estimates = HashMap::from([("first".into(), 90), ("fallback".into(), 50)]);
+        let (id, _) = core.pick_with_token_estimates(&[first, fallback], "brain", false, &[], 10, 9000, &estimates).unwrap();
+        assert_eq!(id, "fallback");
+        assert_eq!(core.token_used("fallback", 10)[1], 70);
+        assert!(!core.tokens.contains_key("first"));
+    }
+
+    #[test]
+    fn simultaneous_token_reservations_cannot_exceed_a_model_cap() {
+        use std::sync::{Arc, Mutex};
+        let core = Arc::new(Mutex::new(RegistryCore::default()));
+        let handles: Vec<_> = (0..32)
+            .map(|_| {
+                let core = core.clone();
+                std::thread::spawn(move || {
+                    let mut p = candidate("p", 0, [0; 4]);
+                    p.token_limits = [0, 100, 0, 0];
+                    p.output_tokens = 20;
+                    core.lock()
+                        .unwrap()
+                        .pick_with_tokens(&[p], "brain", false, &[], 10, 10)
+                        .is_some()
+                })
+            })
+            .collect();
+        assert_eq!(
+            handles
+                .into_iter()
+                .map(|handle| handle.join().unwrap() as usize)
+                .sum::<usize>(),
+            3
+        );
+        assert_eq!(core.lock().unwrap().token_used("p", 10)[1], 90);
+    }
+
+    #[test]
+    fn pre_send_adjustment_is_atomic_and_refreshes_the_send_window() {
+        let mut core = RegistryCore::default();
+        let mut p = candidate("p", 0, [0; 4]);
+        p.token_limits = [100, 100, 0, 0];
+        p.output_tokens = 20;
+        let (_, first) = core
+            .pick_with_tokens(&[p.clone()], "brain", false, &[], 10, 10)
+            .unwrap();
+        core.adjust_tokens(&p, first, 70, 1500).unwrap();
+        assert_eq!(core.token_used("p", 1500)[0], 70);
+        let (_, second) = core
+            .pick_with_tokens(&[p.clone()], "brain", false, &[], 1500, 10)
+            .unwrap();
+        assert!(core.adjust_tokens(&p, second, 31, 1500).is_err());
+        assert_eq!(core.token_used("p", 1500)[0], 100);
+        assert!(core
+            .pick_with_tokens(&[p], "brain", false, &[], 1500, 1)
+            .is_none());
+    }
+
+    #[test]
+    fn manual_neutral_applies_to_one_model_and_token_windows_recover_exactly() {
+        for (index, span) in WINDOWS_MS.into_iter().enumerate() {
+            let mut core = RegistryCore::default();
+            let mut p = candidate("p", 0, [0; 4]);
+            p.token_limits[index] = 50;
+            p.output_tokens = 10;
+            let mut list = [p, candidate("fallback", 1, [0; 4])];
+            list[1].manual_neutral = true;
+            assert!(core
+                .pick_with_tokens(&list, "brain", false, &[], 10, 40)
+                .is_some());
+            assert!(core
+                .pick_with_tokens(&list, "brain", false, &[], 10 + span - 1, 40)
+                .is_none());
+            assert!(core
+                .pick_with_tokens(&list, "brain", false, &[], 10 + span, 40)
+                .is_some());
+            list[0].manual_neutral = true;
+            list[1].manual_neutral = false;
+            assert_eq!(
+                core.pick(&list, "brain", false, &[], 11 + span),
+                Some("fallback".into())
+            );
+        }
+    }
+
     fn candidate(id: &str, rank: i32, limits: [u32; 4]) -> Candidate {
         Candidate {
             id: id.into(),
@@ -174,6 +451,9 @@ mod tests {
             enabled: true,
             supports_images: true,
             limits,
+            token_limits: [0; 4],
+            output_tokens: 0,
+            manual_neutral: false,
         }
     }
 

@@ -41,7 +41,7 @@ Windows x64 is the primary tested platform. The application requires the [Micros
 
 ### Install
 
-1. Open [Fluely Releases](https://github.com/Clawz1N1N/fluely/releases) and choose the Windows MSI or `.exe` installer. Version 0.2.1 installs for your Windows user without administrator rights.
+1. Open [Fluely Releases](https://github.com/Clawz1N1N/fluely/releases) and choose a beta's Windows MSI or `.exe` installer. Current packages install for your Windows user without administrator rights. Releases are marked **Prerelease** while the application is in beta.
 2. Check the release's installation notes and checksums. Close an existing Fluely instance before updating.
 3. Run the installer, then open Fluely from its installed shortcut.
 4. Click the overlay **gear** to open Settings, then open **AI settings** in the navigation. Configure reasoning and, if needed, speech or vision.
@@ -68,7 +68,7 @@ The profile contains settings, chat data, and optional downloaded engines/models
 
 Open **AI settings** and choose **Reasoning**, **Speech recognition**, **Text-to-speech**, or **Vision**. Each module separates **Cloud providers** and **Local engines**; speech modules also offer **System** where supported.
 
-For a cloud service, choose the module's **Cloud providers** tab, add an account, enter its key, and use **Fetch models**. Select suitable models and save. Use the separate **Other** fields for an OpenAI-compatible service. See the [provider guide](docs/provider-models.md) for discovery, account isolation, capabilities, and limits.
+For a cloud service, choose the module's **Cloud providers** tab, add an account, enter its key, and use **Fetch models**. Select suitable models and save. Choose **Other** in the Provider dropdown for an OpenAI-compatible service. See the [provider guide](docs/provider-models.md) for discovery, account isolation, capabilities, and limits.
 
 For local use, choose the module's **Local engines** tab, install an engine, download the recommended model or select compatible files, and press **Start**. Engines and models are separate downloads. Start audio listening explicitly from the overlay.
 
@@ -91,16 +91,22 @@ Default shortcuts:
 
 Both shortcuts are configurable. Answer movement uses the monitor's work area, excluding the taskbar. Separate opacity settings cover the answer, Settings, standard strips, individual buttons, and custom groups. Status appears in a small bottom-right window.
 
+The chat's compact toolbar provides prompt templates, reply language and length, and reasoning, speech, voice and vision model sources. Cloud lists contain your saved models and support search; the vision list requires image input. A corner reminder displays the current interaction shortcut. Each saved model has its own request and token budgets, manual pause and reasoning settings in **AI settings**.
+
+**Neutral mode** means requests to an unavailable model wait without being sent while its rolling quota recovers. A different eligible model may be used in automatic selection; an explicitly selected model remains selected. The overlay continues running. Manually pausing a model lasts until you resume it. Zero budgets mean unlimited. Token accounting reserves a conservative input/output allowance before sending and replaces it with reported usage when available; missing usage retains the estimate.
+
+Reasoning values are translated into each provider's protocol. Some models always reason: **Off** then uses the lowest supported setting or the provider default. Custom effort names are forwarded where supported; entering a name does not create that capability in the model.
+
 ## Local AI and speech
 
 The built-in downloader uses pinned official runtime packages and model revisions, checks sizes and SHA-256 hashes, and keeps source/license information beside downloads. Current recommendations favor modest CPU hardware; larger compatible models can be selected manually.
 
-| Purpose | Engine | Recommended download | Approximate model size |
-|---|---|---|---|
-| Reasoning | [llama.cpp](https://github.com/ggml-org/llama.cpp) | Qwen2.5 0.5B Instruct Q4_K_M GGUF | 491 MB |
-| Speech recognition | [whisper.cpp](https://github.com/ggml-org/whisper.cpp) | Multilingual Whisper tiny | 78 MB |
-| GGUF speech recognition | [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) | Nemotron 3.5 ASR Streaming 0.6B Q4_K_M | 496 MB |
-| Visual understanding | llama.cpp / libmtmd | SmolVLM 256M Q8_0 plus matching projector | 279 MB combined |
+| Purpose | Engine |
+|---|---|
+| Reasoning | [llama.cpp](https://github.com/ggml-org/llama.cpp) |
+| Speech recognition | [whisper.cpp](https://github.com/ggml-org/whisper.cpp) |
+| GGUF speech recognition | [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) |
+| Visual understanding | llama.cpp / libmtmd |
 
 Start with 4 threads and a 2048-token context on an 8 GB computer, then adjust to your hardware and workload. Running several models together consumes more memory than any single model. Performance and recognition accuracy depend on the model, language, audio, and machine.
 

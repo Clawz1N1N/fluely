@@ -12,6 +12,8 @@ mod vision;
 mod sleep;
 mod ui_automation;
 mod providers;
+mod chat_preferences;
+mod repository_link;
 mod structured;
 mod structured_core;
 mod tts;
@@ -117,6 +119,7 @@ pub fn run() {
         .manage(continuous::ContinuousState::default())
         .manage(vision::VisionState::default())
         .manage(providers::ProvidersState::default())
+        .manage(chat_preferences::ChatPreferencesState::default())
         .manage(tts::TtsState::default())
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_http::init())
@@ -124,6 +127,7 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init()) // Add shell plugin
         .invoke_handler(tauri::generate_handler![
             locale::get_system_locale,
+            repository_link::open_repository,
             local_engines::get_local_engine_configs,
             local_engines::transcribe_gguf_asr_audio,
             stt::list_system_stt_languages,
@@ -185,6 +189,7 @@ pub fn run() {
             shell::set_shimmer_speed,
             shell::set_answer_opacity,
             shell::set_shell_opacity,
+            shell::set_shell_appearance,
             shell::get_answer_interaction,
             shell::toggle_answer_interaction_window,
             shell::reset_shell_layout,
@@ -219,6 +224,10 @@ pub fn run() {
             providers::remove_provider,
             providers::pick_provider,
             providers::report_provider_result,
+            providers::reserve_provider_tokens,
+            chat_preferences::get_chat_preferences,
+            chat_preferences::update_chat_preferences,
+            chat_preferences::migrate_chat_preferences,
             providers::set_global_daily_limit,
             providers::set_global_limits,
             providers::get_global_limits,

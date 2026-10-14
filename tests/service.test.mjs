@@ -13,6 +13,19 @@ function fixture() {
     transcribe:async()=> 'Почуте', initialize:async()=>{}, speech:{update:()=>{},stop:()=>{},pause:()=>{},seek:()=>{},toggle:async()=>{}}};
   return{controller:new ServiceController(ports),handlers,calls,events};
 }
+test('native model changes refresh per-model quota status without waiting for hidden polling timers',async()=>{
+  const f=fixture();let status={neutral:true,nextAllowedAt:null,currentProviderId:null,providers:[]};
+  f.controller.ports.status=async()=>status;
+  await f.controller.start();
+  try{
+    status={neutral:false,nextAllowedAt:null,currentProviderId:'model',providers:[{id:'model',model:'Chosen model',used:{per_second:1,per_minute:2,per_hour:3,per_day:4},limit_per_minute:10}]};
+    f.handlers.get('providers-status')({});
+    await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(f.controller.snapshot.neutral,false);assert.equal(f.controller.snapshot.currentModel,'Chosen model');
+    assert.equal(f.controller.snapshot.requestCounts.per_minute,2);assert.equal(f.controller.snapshot.requestLimits.per_minute,10);
+    assert.ok(f.events.some(event=>event.name==='service-state'&&event.payload.currentModel==='Chosen model'));
+  }finally{await f.controller.stop();}
+});
 test('controller restarts after effect cleanup with live listeners and a fresh request signal',async()=>{
   const f=fixture();let signal;
   f.controller.ports.answer=async function*(_batch,_history,value){signal=value;yield '<main>Restarted</main>';};

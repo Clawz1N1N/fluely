@@ -1,4 +1,5 @@
 import { STORAGE_KEYS } from "@/config";
+import { cachedChatPreferences, updateChatPreferences } from '../overlay/chat-preferences';
 import {
   DEFAULT_RESPONSE_LENGTH,
   DEFAULT_LANGUAGE,
@@ -21,19 +22,20 @@ export const DEFAULT_RESPONSE_SETTINGS: ResponseSettings = {
  * Get response settings from localStorage
  */
 export const getResponseSettings = (): ResponseSettings => {
+  const shared=cachedChatPreferences();
   try {
     const stored = localStorage.getItem(STORAGE_KEYS.RESPONSE_SETTINGS);
     if (!stored) {
-      return DEFAULT_RESPONSE_SETTINGS;
+      return {...DEFAULT_RESPONSE_SETTINGS,responseLength:shared?.response_length??DEFAULT_RESPONSE_SETTINGS.responseLength,language:shared?.response_language??DEFAULT_RESPONSE_SETTINGS.language};
     }
 
     const parsedSettings = JSON.parse(stored);
 
     return {
       responseLength:
-        parsedSettings.responseLength ||
+        shared?.response_length || parsedSettings.responseLength ||
         DEFAULT_RESPONSE_SETTINGS.responseLength,
-      language: parsedSettings.language || DEFAULT_RESPONSE_SETTINGS.language,
+      language: shared?.response_language || parsedSettings.language || DEFAULT_RESPONSE_SETTINGS.language,
       autoScroll:
         parsedSettings.autoScroll !== undefined
           ? parsedSettings.autoScroll
@@ -68,6 +70,7 @@ export const updateResponseLength = (
   const currentSettings = getResponseSettings();
   const newSettings = { ...currentSettings, responseLength };
   setResponseSettings(newSettings);
+  if(typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window)void updateChatPreferences({response_length:responseLength}).catch(console.error);
   return newSettings;
 };
 
@@ -78,6 +81,7 @@ export const updateLanguage = (language: string): ResponseSettings => {
   const currentSettings = getResponseSettings();
   const newSettings = { ...currentSettings, language };
   setResponseSettings(newSettings);
+  if(typeof window!=='undefined'&&'__TAURI_INTERNALS__' in window)void updateChatPreferences({response_language:language}).catch(console.error);
   return newSettings;
 };
 

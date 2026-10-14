@@ -560,6 +560,56 @@ pub fn get_ui_mode(app: AppHandle) -> Result<String, String> {
 }
 
 /// Tauri command: toggle shimmer.
+#[derive(Debug, Clone, Deserialize)]
+pub struct ShellAppearance {
+    pub ui_mode: UiMode,
+    pub shimmer: bool,
+    pub shimmer_speed: u32,
+    pub answer_opacity: f64,
+    pub strip_opacity: f64,
+    pub button_opacities: HashMap<String, f64>,
+}
+
+fn apply_appearance(layout: &mut ShellLayout, settings: &ShellAppearance) -> Result<bool, String> {
+    if !settings.answer_opacity.is_finite() || !settings.strip_opacity.is_finite()
+        || settings.button_opacities.values().any(|value| !value.is_finite()) {
+        return Err("Opacity must be finite".into());
+    }
+    if settings.button_opacities.keys().any(|key| !matches!(key.as_str(),
+        "listen"|"screenshot"|"continuous"|"answer"|"chat"|"tts"|"mode"|"settings")) {
+        return Err("Unknown opacity element".into());
+    }
+    let rebuild = layout.ui_mode != settings.ui_mode;
+    let strip_opacity = settings.strip_opacity.clamp(0.05, 1.0);
+    // The common panel control includes custom groups. Per-group overrides
+    // remain intact when unrelated appearance settings are edited.
+    if (layout.strip_opacity - strip_opacity).abs() > f64::EPSILON {
+        for panel in &mut layout.custom_panels { panel.opacity = strip_opacity; }
+    }
+    layout.ui_mode = settings.ui_mode;
+    layout.shimmer = settings.shimmer;
+    layout.shimmer_speed = settings.shimmer_speed.clamp(1, 20);
+    layout.answer_opacity = settings.answer_opacity.clamp(0.15, 1.0);
+    layout.strip_opacity = strip_opacity;
+    layout.button_opacities = settings.button_opacities.iter()
+        .map(|(key, value)| (key.clone(), value.clamp(0.05, 1.0))).collect();
+    Ok(rebuild)
+}
+
+/// Apply one appearance snapshot atomically, without rebuilding unchanged layouts.
+#[tauri::command]
+pub async fn set_shell_appearance(app: AppHandle, settings: ShellAppearance) -> Result<(), String> {
+    let mut preview = app.state::<ShellState>().layout.lock().map_err(|e| e.to_string())?.clone();
+    apply_appearance(&mut preview, &settings)?;
+    let mut rebuild = false;
+    update_layout(&app, |layout| { rebuild = apply_appearance(layout, &settings).expect("validated appearance"); })?;
+    emit_shell_settings(&app)?;
+    if rebuild {
+        tauri::async_runtime::spawn_blocking(move || rebuild_shell(&app)).await.map_err(|e| e.to_string())??;
+    }
+    Ok(())
+}
+
 #[tauri::command]
 pub fn set_shimmer(app: AppHandle, enabled: bool) -> Result<(), String> {
     update_layout(&app, |layout| layout.shimmer = enabled)?;
@@ -568,7 +618,7 @@ pub fn set_shimmer(app: AppHandle, enabled: bool) -> Result<(), String> {
 
 #[tauri::command]
 pub fn set_shimmer_speed(app: AppHandle, speed: u32) -> Result<(), String> {
-    update_layout(&app, |layout| layout.shimmer_speed = speed.clamp(1, 10))?;
+    update_layout(&app, |layout| layout.shimmer_speed = speed.clamp(1, 20))?;
     emit_shell_settings(&app)
 }
 
@@ -1070,4 +1120,44 @@ pub async fn toggle_answer_window(app: AppHandle) -> Result<(), String> {
 #[tauri::command]
 pub fn answer_ask(app: AppHandle, question: String) -> Result<(), String> {
     crate::continuous::continuous_add_question(app, question, None, None)
+}
+
+#[cfg(test)]
+mod appearance_tests {
+    use super::*;
+    fn appearance(layout: &ShellLayout) -> ShellAppearance {
+        ShellAppearance { ui_mode:layout.ui_mode, shimmer:true, shimmer_speed:20,
+            answer_opacity:0.2, strip_opacity:layout.strip_opacity,
+            button_opacities:HashMap::from([("listen".into(),0.1)]) }
+    }
+    fn group(opacity:f64) -> crate::overlay_layout::CustomPanel {
+        serde_json::from_value(serde_json::json!({"id":"first","x":0,"y":0,"columns":1,"gap":4,"padding":4,
+            "button_size":36,"opacity":opacity,"actions":[{"action":"listen","enabled":true}]})).unwrap()
+    }
+    #[test]
+    fn common_opacity_updates_custom_groups_only_when_changed() {
+        let mut layout=ShellLayout::default_for_mode(UiMode::Custom);
+        layout.custom_panels=vec![group(0.7)];
+        let mut settings=appearance(&layout);
+        assert!(!apply_appearance(&mut layout,&settings).unwrap());
+        assert_eq!(layout.custom_panels[0].opacity,0.7);
+        settings.strip_opacity=0.15;
+        assert!(!apply_appearance(&mut layout,&settings).unwrap());
+        assert_eq!(layout.custom_panels[0].opacity,0.15);
+        assert_eq!(layout.shimmer_speed,20);
+        assert_eq!(layout.button_opacities["listen"],0.1);
+        settings.ui_mode=UiMode::Buttons;
+        assert!(apply_appearance(&mut layout,&settings).unwrap());
+    }
+    #[test]
+    fn invalid_appearance_does_not_partially_change_layout() {
+        let mut layout=ShellLayout::default_for_mode(UiMode::Custom);
+        let original=serde_json::to_value(&layout).unwrap();
+        let mut settings=appearance(&layout);settings.answer_opacity=f64::NAN;
+        assert!(apply_appearance(&mut layout,&settings).is_err());
+        assert_eq!(serde_json::to_value(&layout).unwrap(),original);
+        settings.answer_opacity=0.2;settings.button_opacities.insert("dashboard".into(),0.5);
+        assert!(apply_appearance(&mut layout,&settings).is_err());
+        assert_eq!(serde_json::to_value(&layout).unwrap(),original);
+    }
 }

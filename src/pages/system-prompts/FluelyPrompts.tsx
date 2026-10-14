@@ -1,202 +1,50 @@
-import { t, useI18n } from "@/lib/i18n";
-import { useState, useEffect, useRef } from "react";
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-  Header,
-} from "@/components";
-import { CheckCircle2, BotIcon } from "lucide-react";
-import { useApp } from "@/contexts";
-import { safeLocalStorage } from "@/lib";
-import { STORAGE_KEYS } from "@/config";
+import { t, useI18n } from '@/lib/i18n';
+import { useEffect, useState } from 'react';
+import { CheckCircle2 } from 'lucide-react';
+import { useApp } from '@/contexts';
+import { STORAGE_KEYS } from '@/config';
+import { listenChatPreferences, updateChatPreferences } from '@/lib/overlay/chat-preferences';
+import { MODE_PROMPTS, type ChatPreferences, type ModePrompt } from '@/lib/overlay/chat-preferences-core';
 
-interface FluelyPrompt {
-  title: string;
-  prompt: string;
-  modelId: string;
-  modelName: string;
-}
-
-const SELECTED_PLUELY_PROMPT_STORAGE_KEY = "selected_pluely_prompt";
-
-// Local default presets (General, Interview, Coding, Translate, Meeting) + custom
-const LOCAL_PRESETS: FluelyPrompt[] = [
-  {
-    title: "General",
-    prompt: "You are a helpful AI assistant. Be concise, accurate, and friendly in your responses.",
-    modelId: "general",
-    modelName: "Default",
-  },
-  {
-    title: "Interview",
-    prompt: "You are assisting in a job interview. Listen carefully, answer briefly and confidently, and highlight relevant experience.",
-    modelId: "interview",
-    modelName: "Default",
-  },
-  {
-    title: "Coding",
-    prompt: "You are an expert coding assistant. Provide correct, minimal, production-quality code with brief explanations.",
-    modelId: "coding",
-    modelName: "Default",
-  },
-  {
-    title: "Translate",
-    prompt: "You are a translation assistant. Translate accurately and naturally, preserving tone and context.",
-    modelId: "translate",
-    modelName: "Default",
-  },
-  {
-    title: "Meeting",
-    prompt: "You are assisting in a meeting. Summarize key points, answer questions from context, and suggest action items.",
-    modelId: "meeting",
-    modelName: "Default",
-  },
-];
-
-export const FluelyPrompts = () => {
+export const FluelyPrompts=()=>{
   useI18n();
-  const { setSystemPrompt } = useApp();
-  const [prompts,setPrompts] = useState<FluelyPrompt[]>(()=>{
-    try{const parsed=JSON.parse(localStorage.getItem('local_default_presets')??'null');if(Array.isArray(parsed)&&parsed.every(p=>typeof p.title==='string'&&typeof p.prompt==='string'&&typeof p.modelId==='string'))return parsed;}catch{}
-    return LOCAL_PRESETS;
-  });
-  const [editing,setEditing]=useState<FluelyPrompt|null>(null);
-  const [selectedFluelyPrompt, setSelectedFluelyPrompt] =
-    useState<FluelyPrompt | null>(() => {
-      const stored = safeLocalStorage.getItem(
-        SELECTED_PLUELY_PROMPT_STORAGE_KEY
-      );
-      if (stored) {
-        try {
-          return JSON.parse(stored);
-        } catch {
-          return null;
-        }
-      }
-      return null;
-    });
-  const fetchInitiated = useRef(false);
-
-  useEffect(() => {
-    if (!fetchInitiated.current) {
-      fetchInitiated.current = true;
-    }
-  }, []);
-
-  useEffect(() => {
-    const checkUserPromptSelection = () => {
-      const userSelectedPromptId = safeLocalStorage.getItem(
-        STORAGE_KEYS.SELECTED_SYSTEM_PROMPT_ID
-      );
-      if (userSelectedPromptId) {
-        setSelectedFluelyPrompt(null);
-      }
-    };
-    checkUserPromptSelection();
-    const handleStorageChange = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEYS.SELECTED_SYSTEM_PROMPT_ID) {
-        checkUserPromptSelection();
-      }
-    };
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-
-  const handleSelectFluelyPrompt = (prompt: FluelyPrompt) => {
+  const {setSystemPrompt}=useApp();
+  const [preferences,setPreferences]=useState<ChatPreferences>();
+  const [editing,setEditing]=useState<ModePrompt>();
+  const [busy,setBusy]=useState(false),[error,setError]=useState('');
+  useEffect(()=>{let disposed=false,off:(()=>void)|undefined;
+    void listenChatPreferences(value=>{if(!disposed)setPreferences(value);}).then(stop=>{if(disposed)stop();else off=stop;}).catch(error=>setError(String(error)));
+    return()=>{disposed=true;off?.();};},[]);
+  const select=async(prompt:ModePrompt)=>{
+    await updateChatPreferences({system_prompt:prompt.prompt,prompt_id:`mode:${prompt.modelId}`});
     setSystemPrompt(prompt.prompt);
-    setSelectedFluelyPrompt(prompt);
-    safeLocalStorage.removeItem(STORAGE_KEYS.SELECTED_SYSTEM_PROMPT_ID);
-    safeLocalStorage.setItem(STORAGE_KEYS.SYSTEM_PROMPT, prompt.prompt);
-    safeLocalStorage.setItem(
-      SELECTED_PLUELY_PROMPT_STORAGE_KEY,
-      JSON.stringify(prompt)
-    );
-    // Image support belongs to the selected provider/model.
+    localStorage.removeItem(STORAGE_KEYS.SELECTED_SYSTEM_PROMPT_ID);
+    localStorage.setItem('selected_pluely_prompt',JSON.stringify(prompt));
   };
-
-  const handleCardClick = (prompt: FluelyPrompt) => {
-    handleSelectFluelyPrompt(prompt);
-  };
-
-  const isPromptSelected = (prompt: FluelyPrompt) => {
-    return (
-      selectedFluelyPrompt?.title === prompt.title &&
-      selectedFluelyPrompt?.modelId === prompt.modelId
-    );
-  };
-
-  if (prompts.length === 0) {
-    return null;
-  }
-
-  return (
-    <div className="space-y-4 mt-6">
-      <div className="flex items-start justify-between gap-3 border-t border-input/50 pt-6">
-        <div className="flex items-start gap-3 w-full">
-          <div className="flex flex-col gap-1 w-full">
-            <Header
-              title={t("Default Prompts")}
-              description={t("Pre-configured presets. Selecting a prompt sets the system prompt. Configure your own AI provider in Dev Space.")}
-            />
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 pb-4">
-        {prompts.map((prompt, index) => {
-          const isSelected = isPromptSelected(prompt);
-          return (
-            <Card
-              key={`${prompt.title}-${index}`}
-              className={`relative border lg:border-2 shadow-none p-4 pb-10 gap-0 group transition-all hover:shadow-sm cursor-pointer ${
-                isSelected
-                  ? "!bg-primary/5 dark:!bg-primary/10 border-primary"
-                  : "!bg-black/5 dark:!bg-white/5 border-transparent"
-              }`}
-              onClick={() => handleCardClick(prompt)}
-            >
-              {isSelected && (
-                <CheckCircle2 className="size-5 text-green-500 flex-shrink-0 absolute top-2 right-2" />
-              )}
-              <CardHeader className="p-0 pb-0 select-none">
-                <button type="button" className="mb-2 self-end text-xs text-primary" onClick={event=>{event.stopPropagation();setEditing({...prompt});}}>{t("Редагувати")}</button>
-                <div className="flex items-start justify-between gap-2 relative">
-                  <div className="flex-1 space-y-1.5">
-                    <div className="flex items-center gap-2">
-                      <CardTitle className="text-[10px] text-base line-clamp-1 flex-1 pr-3">
-                        {LOCAL_PRESETS.some(preset => preset.modelId === prompt.modelId && preset.title === prompt.title) ? t(prompt.title) : prompt.title}
-                      </CardTitle>
-                    </div>
-                    <CardDescription className="h-14 line-clamp-3 text-xs leading-relaxed">
-                      {prompt.prompt}
-                    </CardDescription>
-                  </div>
-                </div>
-              </CardHeader>
-              <div className="absolute bottom-2 left-4 w-full flex items-center justify-between">
-                <div className="flex items-center gap-1.5 text-[10px] lg:text-xs text-muted-foreground select-none">
-                  <BotIcon className="size-3" />
-                  <span className="line-clamp-1 max-w-[180px]">
-                    {prompt.modelName === 'Default' ? t('Default') : prompt.modelName}
-                  </span>
-                </div>
-              </div>
-            </Card>
-          );
-        })}
-      </div>
-      {editing&&<form className="space-y-2 rounded border p-3" onSubmit={event=>{
-        event.preventDefault();const updated=prompts.map(prompt=>prompt.modelId===editing.modelId?editing:prompt);
-        localStorage.setItem('local_default_presets',JSON.stringify(updated));setPrompts(updated);
-        if(selectedFluelyPrompt?.modelId===editing.modelId)handleSelectFluelyPrompt(editing);setEditing(null);
-      }}>
-        <input aria-label={t("Назва шаблону")} className="w-full rounded border p-2" required value={editing.title} onChange={event=>setEditing({...editing,title:event.target.value})}/>
-        <textarea aria-label={t("Інструкція шаблону")} className="min-h-32 w-full rounded border p-2" required value={editing.prompt} onChange={event=>setEditing({...editing,prompt:event.target.value})}/>
-        <button type="submit" className="rounded bg-primary px-3 py-1 text-primary-foreground">{t("Зберегти шаблон")}</button>
-        <button type="button" className="ml-2" onClick={()=>setEditing(null)}>{t("Скасувати")}</button>
-      </form>}
-    </div>
-  );
+  const run=async(action:()=>Promise<unknown>)=>{setBusy(true);setError('');try{await action();}catch(error){setError(String(error));}finally{setBusy(false);}};
+  const prompts=preferences?.mode_prompts??MODE_PROMPTS;
+  return <section className="mt-6 space-y-4 border-t border-input/50 pt-6">
+    <div><h2 className="text-xl font-semibold">{t('Default Prompts')}</h2><p className="text-sm text-muted-foreground">{t('Choose a mode, then edit its English instructions to suit your workflow. Your saved templates stay available.')}</p></div>
+    {error&&<p role="alert" className="text-sm text-destructive">{error}</p>}
+    <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">{prompts.map(prompt=><article key={prompt.modelId} className={`relative rounded-lg border p-4 ${preferences?.prompt_id===`mode:${prompt.modelId}`?'border-primary bg-primary/5':''}`}>
+      <button type="button" disabled={busy} className="w-full text-left" onClick={()=>void run(()=>select(prompt))}>
+        <h3 className="pr-6 font-medium">{MODE_PROMPTS.some(p=>p.modelId===prompt.modelId&&p.title===prompt.title)?t(prompt.title):prompt.title}</h3>
+        <p className="mt-2 line-clamp-4 text-xs text-muted-foreground">{prompt.prompt}</p>
+      </button>
+      {preferences?.prompt_id===`mode:${prompt.modelId}`&&<CheckCircle2 className="absolute right-3 top-3 size-4 text-primary"/>}
+      <button type="button" disabled={busy} className="mt-3 text-xs text-primary" onClick={()=>setEditing({...prompt})}>{t('Edit')}</button>
+    </article>)}</div>
+    {editing&&<form className="space-y-2 rounded border p-3" onSubmit={event=>{event.preventDefault();void run(async()=>{
+      const mode_prompts=prompts.map(prompt=>prompt.modelId===editing.modelId?editing:prompt);
+      const selected=preferences?.prompt_id===`mode:${editing.modelId}`;
+      await updateChatPreferences({mode_prompts,...(selected?{system_prompt:editing.prompt}:{})});
+      if(selected){setSystemPrompt(editing.prompt);localStorage.setItem('selected_pluely_prompt',JSON.stringify(editing));}
+      setEditing(undefined);
+    });}}>
+      <input aria-label={t('Назва шаблону')} className="w-full rounded border bg-background p-2" required value={editing.title} onChange={event=>setEditing({...editing,title:event.target.value})}/>
+      <textarea aria-label={t('Інструкція шаблону')} className="min-h-48 w-full rounded border bg-background p-2" required value={editing.prompt} onChange={event=>setEditing({...editing,prompt:event.target.value})}/>
+      <button type="submit" disabled={busy} className="rounded bg-primary px-3 py-1 text-primary-foreground">{t('Save')}</button>
+      <button type="button" className="ml-2" onClick={()=>setEditing(undefined)}>{t('Cancel')}</button>
+    </form>}
+  </section>;
 };

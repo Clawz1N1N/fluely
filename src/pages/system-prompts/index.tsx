@@ -27,6 +27,7 @@ import { CreateEditDialog } from "./CreateEditDialog";
 import { FluelyPrompts } from "./FluelyPrompts";
 import { useState } from "react";
 import { PageLayout } from "@/layouts";
+import { ModelInstructions } from './ModelInstructions';
 
 const SystemPrompts = () => {
   useI18n();
@@ -114,7 +115,7 @@ const SystemPrompts = () => {
           prompt: form.prompt,
         });
         // Auto-select the newly created prompt
-        handleSelectPrompt(newPrompt.id);
+        handleSelectPrompt(newPrompt.id,newPrompt);
       }
 
       setForm({ name: "", prompt: "" });
@@ -295,6 +296,7 @@ const SystemPrompts = () => {
 
       {/* Fluely Default Prompts */}
       <FluelyPrompts />
+      <ModelInstructions />
     </PageLayout>
   );
 };

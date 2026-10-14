@@ -3,7 +3,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { emitTo, listen, type UnlistenFn } from '@tauri-apps/api/event';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import {invoke} from '@tauri-apps/api/core';
-import { INITIAL_SERVICE_STATE, type ActionRequest, type ServiceSnapshot, type ShellAction } from '@/lib/overlay/contracts';
+import { INITIAL_SERVICE_STATE, type ActionRequest, type ServiceSnapshot, type ShellAction, type ShellSettings } from '@/lib/overlay/contracts';
 import { executeAction } from '@/lib/overlay/action-client';
 
 interface SnapshotTransport {
@@ -69,6 +69,18 @@ export function useServiceSnapshot() {
   useI18n();
   const [snapshot, setSnapshot] = useState<ServiceSnapshot>(INITIAL_SERVICE_STATE);
   const [connectionError, setConnectionError] = useState<string | null>(null);
+  const [nativeShell,setNativeShell]=useState<ShellSettings|null>(null);
+  useEffect(()=>{
+    let disposed=false,changed=false,off:UnlistenFn|undefined;
+    void listen<ShellSettings>('shell-settings-changed',event=>{
+      if(!disposed){changed=true;setNativeShell(event.payload);}
+    }).then(async stop=>{
+      if(disposed){stop();return;}off=stop;
+      const settings=await invoke<ShellSettings>('get_shell_settings');
+      if(!disposed&&!changed)setNativeShell(settings);
+    }).catch(error=>{if(!disposed)console.error('Overlay appearance subscription:',error);});
+    return()=>{disposed=true;off?.();};
+  },[]);
   useEffect(() => subscribeServiceSnapshots({
     listen: receive => listen<ServiceSnapshot>('service-state', event => receive(event.payload)),
     requestSnapshot: async () => { await sendShellAction('snapshot'); },
@@ -86,5 +98,5 @@ export function useServiceSnapshot() {
       });setConnectionError(null);return true;
     }catch(error){setConnectionError(error instanceof Error?error.message:t("Не вдалося надіслати дію."));return false;}
   }, []);
-  return { snapshot, act, connectionError };
+  return { snapshot:nativeShell?{...snapshot,shell:nativeShell}:snapshot, act, connectionError };
 }

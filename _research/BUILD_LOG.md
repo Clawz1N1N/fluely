@@ -10734,3 +10734,1684 @@ ai_settings_screenshot_saved True
 ```
 
 Full log: logs/fluely-021-portable-direct.log
+
+## quota-red — 2026-10-14T07:19:59.713Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: finite context drops oldest history and never begins with an orphan assistant answer
+ok 4 - finite context drops oldest history and never begins with an orphan assistant answer
+  ---
+  duration_ms: 0.2296
+  type: 'test'
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 649.5446
+```
+
+Full log: logs/quota-red.log
+
+## quota-native-red — 2026-10-14T07:20:28.456Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --lib providers::core::tests -- --test-threads=1`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+
+error[E0609]: no field `manual_neutral` on type `providers::core::Candidate`
+   --> src\provider_core.rs:202:21
+    |
+202 |             list[0].manual_neutral = true;
+    |                     ^^^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `id`, `kind`, `rank`, `enabled`, `supports_images`, `limits`
+
+error[E0609]: no field `manual_neutral` on type `providers::core::Candidate`
+   --> src\provider_core.rs:203:21
+    |
+203 |             list[1].manual_neutral = false;
+    |                     ^^^^^^^^^^^^^^ unknown field
+    |
+    = note: available fields are: `id`, `kind`, `rank`, `enabled`, `supports_images`, `limits`
+
+Some errors have detailed explanations: E0599, E0609.
+For more information about an error, try `rustc --explain E0599`.
+error: could not compile `fluely` (lib test) due to 21 previous errors
+```
+
+Full log: logs/quota-native-red.log
+
+## diagnose-appearance — 2026-10-14T07:22:56.643Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-appearance.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+tabs [('http://tauri.localhost/shell/side-strip', 'F8365CC2924489EF6426668BD546FA19'), ('http://tauri.localhost/shell/side-strip', 'DE5EDF9A22E35C43C237787C69C4E564'), ('http://tauri.localhost/', 'F6B126439A005A889E5E8BB9B9D3FCA1'), ('http://tauri.localhost/settings', 'B05E5CA29E4BE3DF712F2628D751A0C8'), ('http://tauri.localhost/shell/status', 'B822A2255BEEDFC63F240838B3391745'), ('about:blank', '71C547B8637E36EC4973E0A46D901958'), ('http://tauri.localhost/shell/answer', 'A7D5A0C3CFA4B5078C40E837B91ECB14')]
+layoutbefore {'answer_opacity': 0.32, 'button_opacities': {}, 'custom_panels': [], 'shimmer': False, 'shimmer_speed': 3, 'strip_opacity': 0.28, 'ui_mode': 'sidestrips'}
+http://tauri.localhost/shell/side-strip {"body":"rgba(0, 0, 0, 0)","root":"rgba(23, 23, 23, 0.08)","shimmer":"position: absolute; inset: 0px; border-radius: 8px; pointer-events: none; background: linear-gradient(90deg, rgba(255, 0, 128, 0.55), rgba(0, 200, 255, 0.55), rgba(255, 220, 0, 0.55), rgba(255, 0, 128, 0.55)) 0% 0% / 300% 100%; animation: 1s linear 0s infinite normal none running shimmer-slide; padding: 1px; mask: linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px) content-box exclude, linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px); z-index: 2; opacity: 0.25;","html":"true"}
+http://tauri.localhost/shell/side-strip {"body":"rgba(0, 0, 0, 0)","root":"rgba(23, 23, 23, 0.08)","shimmer":"position: absolute; inset: 0px; border-radius: 8px; pointer-events: none; background: linear-gradient(90deg, rgba(255, 0, 128, 0.55), rgba(0, 200, 255, 0.55), rgba(255, 220, 0, 0.55), rgba(255, 0, 128, 0.55)) 0% 0% / 300% 100%; animation: 1s linear 0s infinite normal none running shimmer-slide; padding: 1px; mask: linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px) content-box exclude, linear-gradient(rgb(255, 255, 255) 0px, rgb(255, 255, 255) 0px); z-index: 2; opacity: 0.25;","html":"true"}
+http://tauri.localhost/shell/status {"body":"rgba(0, 0, 0, 0)","root":"rgba(0, 0, 0, 0)","html":"true"}
+http://tauri.localhost/shell/answer {"body":"rgba(0, 0, 0, 0)","root":"rgba(23, 23, 23, 0.19)","html":"true"}
+githubbutton None
+opener None
+```
+
+Full log: logs/diagnose-appearance.log
+
+## quota-adapters-red — 2026-10-14T07:23:16.289Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+not ok 1 - tests\\model-request.test.mjs
+  ---
+  duration_ms: 568.2975
+  type: 'test'
+  location: '<workspace>\\tests\\model-request.test.mjs:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 1
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 578.6594
+```
+
+Full log: logs/quota-adapters-red.log
+
+## diagnose-appearance-form — 2026-10-14T07:23:48.161Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-appearance-form.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+RuntimeError: JavaScript evaluation failed at line 0, column 128: Error: No appearance
+    at <anonymous>:1:135
+    at <anonymous>:1:493; expression: (()=>{const section=[...document.querySelectorAll('section')].find(s=>s.textContent.includes('Overlay appearance'));if(!section)throw Error('No appearance');...
+buttons [{"text":"Панель управления","title":""},{"text":"Чаты","title":""},{"text":"Системные инструкции","title":""},{"text":"Настройки приложения","title":""},{"text":"Ответы","title":""},{"text":"Снимок экрана","title":""},{"text":"Аудио","title":""},{"text":"Курсор и горячие клавиши","title":""},{"text":"Настройки ИИ","title":""},{"text":"","title":"Github"}]
+settings ["Язык интерфейсаВыберите язык меню и настроек. При первом запуске используется язык системы.Язык интерфейсаРусский","Горячие клавиши оверлеяСкрыть все окнаCtrl + Alt + HПеремещение и взаимодействие с чатомShift + BackslashПолное скрытие убирает также настройки и состояние. Нажмите комбинацию повторно, чтобы вернуть ранее видимые окна.","Снимки экрана и аудиоРежим снимковВручнуюЧерез интервалПосле речиИнтервал, секундЭкранОсновной экранВсе экраныПо идентификаторуМаксимум кадров в запросеДлинная сторона снимка, пикселейКачество JPEG, %Порог изменения изображения (0–1)Максимальное ожид","Вид накладываемого интерфейсаРасположение управленияБоковые полосыВерхняя и нижняя полосыОтдельные кнопкиСвой макетПериод переливания, секундПрозрачность чата: 68%В режиме перемещения чат становится непрозрачным.Прозрачность полос: 72%Прозрачность кн","Макет оверлеяВыберите компактный шаблон или расположите свободные группы. Отключённые кнопки остаются в группах, их можно восстановить здесь.Отдельные компактные кнопкиБоковые группыГруппы сверху и снизуДобавить группуЗагрузить сохранённый макет\\\\.\\D","Имя процесса и автозапускаFluely сохраняет собственное имя интерфейса. Эти имена относятся только к его исполняемому файлу и записи автозапуска.Автоматический запуск со своим именем выключен для этого процесса разработки/тестированияИмя исполняемого "]
+github <button data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring/80 focus-visible:ring-ring/60 focus-visible:ring-[4px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-xl gap-1.5 px-3 has-[&gt;svg]:px-2.5" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="size-3 lg:size-4 transition-all duration-300"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path></svg></button>
+```
+
+Full log: logs/diagnose-appearance-form.log
+
+## quota-adapters-green — 2026-10-14T07:23:58.711Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 5 - reasoning settings use provider-specific protocols and preserve custom English efforts
+  ---
+  duration_ms: 0.5738
+  type: 'test'
+  ...
+# Subtest: token reservations count UTF8 text, attachments and provider input/output usage
+ok 6 - token reservations count UTF8 text, attachments and provider input/output usage
+  ---
+  duration_ms: 0.3891
+  type: 'test'
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 6
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 667.4322
+```
+
+Full log: logs/quota-adapters-green.log
+
+## diagnose-appearance-form — 2026-10-14T07:24:03.388Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-appearance-form.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 3
+    js(\"(async()=>{localStorage.setItem('fluely.interface-language','en');await window.__TAURI_INTERNALS__.invoke('plugin:event|emit',{event:'fluely-interface-language',payload:'en'});})()\")
+        ^
+SyntaxError: unexpected character after line continuation character
+```
+
+Full log: logs/diagnose-appearance-form.log
+
+## diagnose-appearance-form — 2026-10-14T07:24:17.239Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-appearance-form.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+buttons [{"text":"Dashboard","title":""},{"text":"Chats","title":""},{"text":"System prompts","title":""},{"text":"App Settings","title":""},{"text":"Responses","title":""},{"text":"Screenshot","title":""},{"text":"Audio","title":""},{"text":"Cursor & Shortcuts","title":""},{"text":"AI settings","title":""},{"text":"","title":"Github"}]
+settings ["Interface LanguageChoose the language for menus and settings. The system language is used on first launch.Interface LanguageEnglish","Overlay shortcutsHide all windowsCtrl + Alt + HChat movement and interactionShift + BackslashHide all windows also hides settings and status. Press the shortcut again to restore the windows that were visible.","Screenshots and audioScreenshot capture modeManualAt intervalsAfter speechInterval, secondsDisplayPrimary displayAll displaysBy identifierMaximum frames per requestLonger screenshot side, pixelsJPEG quality, %Image change threshold (0–1)Maximum wait,","Overlay appearanceControl layoutSide stripsTop and bottom stripsSeparate buttonsCustom layoutShimmer period, secondsChat transparency: 68%Chat becomes opaque in interaction mode.Strip transparency: 72%Button \"Listen\" transparency: 72%Button \"Screensh","Overlay layoutChoose a compact preset or arrange free groups. Disabled controls stay assigned and can be restored here.Compact buttonsSide groupsTop/bottom groupsAdd groupReload saved layout\\\\.\\DISPLAY1@0,0 · 125%Drag groups in the preview. Arrow key","Process and startup nameFluely keeps its own interface name. These names apply only to its own executable and startup entry.Automatic alias launch is disabled for this development/test processExecutable filenameStartup display nameStart at Windows si"]
+github <button data-slot="button" class="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium transition-all cursor-pointer disabled:pointer-events-none disabled:opacity-50 [&amp;_svg]:pointer-events-none [&amp;_svg:not([class*='size-'])]:size-4 shrink-0 [&amp;_svg]:shrink-0 outline-none focus-visible:border-ring/80 focus-visible:ring-ring/60 focus-visible:ring-[4px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/30 dark:border-input dark:hover:bg-input/50 h-8 rounded-xl gap-1.5 px-3 has-[&gt;svg]:px-2.5" title="Github"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="size-3 lg:size-4 transition-all duration-300"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8"></path></svg></button>
+afterform {"alerts":[],"status":["Interface appearance saved.","Restart required"]}
+native {'answer_opacity': 0.30000000000000004, 'button_opacities': {'answer': 0.28, 'chat': 0.28, 'continuous': 0.28, 'listen': 0.28, 'mode': 0.28, 'screenshot': 0.28, 'settings': 0.28, 'tts': 0.28}, 'custom_panels': [], 'shimmer': True, 'shimmer_speed': 3, 'strip_opacity': 0.28, 'ui_mode': 'sidestrips'}
+```
+
+Full log: logs/diagnose-appearance-form.log
+
+## quota-tscheck — 2026-10-14T07:25:49.726Z
+
+Directory: <workspace>
+
+Command: `node node_modules\typescript\bin\tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+```
+
+Full log: logs/quota-tscheck.log
+
+## quota-native-green — 2026-10-14T07:25:39.077Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --lib providers:: -- --test-threads=1`
+
+Exit code: 3221225794
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path %USERPROFILE%
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 57.20s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\fluely_lib-0adf3ad9fb564df6.exe)
+error: test failed, to rerun pass `--lib`
+
+Caused by:
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\deps\fluely_lib-0adf3ad9fb564df6.exe providers:: --test-threads=1` (exit code: 0xc0000142, STATUS_DLL_INIT_FAILED)
+note: test exited abnormally; to see the full output pass --no-capture to the harness.
+```
+
+Full log: logs/quota-native-green.log
+
+## quota-native-migration-red — 2026-10-14T07:28:06.670Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --offline --lib providers:: -- --test-threads=1`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+error[E0425]: cannot find function `migrate_legacy_gates` in this scope
+   --> src\providers.rs:484:9
+    |
+484 |         migrate_legacy_gates(&mut stored);
+    |         ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `migrate_legacy_gates` in this scope
+   --> src\providers.rs:489:18
+    |
+489 |         assert!(!migrate_legacy_gates(&mut stored));
+    |                  ^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `fluely` (lib test) due to 2 previous errors
+```
+
+Full log: logs/quota-native-migration-red.log
+
+## quota-runtime-check — 2026-10-14T07:29:42.100Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs tests/vision-runtime.test.mjs tests/provider-selection.test.mjs tests/ai-transport.test.mjs tests/provider-config.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 22 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.0683
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 23 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.7674
+  type: 'test'
+  ...
+1..23
+# tests 23
+# suites 0
+# pass 23
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3370.9826
+```
+
+Full log: logs/quota-runtime-check.log
+
+## quota-native-verified — 2026-10-14T07:28:47.785Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --offline --lib providers:: -- --test-threads=1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test providers::core::tests::remove_preserves_global_accounting_and_clears_current_provider ... ok
+test providers::core::tests::retry_after_and_success_recover_without_double_charging ... ok
+test providers::core::tests::simultaneous_requests_cannot_exceed_the_global_cap ... ok
+test providers::core::tests::single_pick_consumes_one_request_across_all_windows ... ok
+test providers::core::tests::token_reservations_block_concurrent_spending_and_settle_the_matching_attempt ... ok
+test providers::metadata::tests::inline_google_credentials_are_rejected_but_templates_are_valid ... ok
+test providers::metadata::tests::metadata_round_trip_preserves_templates_without_credentials ... ok
+test providers::metadata::tests::nonsecret_token_configuration_remains_valid_metadata ... ok
+test providers::metadata::tests::old_metadata_gets_all_frontend_defaults ... ok
+test providers::metadata::tests::raw_authorization_and_embedded_url_credentials_are_rejected ... ok
+test providers::metadata::tests::raw_secret_variables_are_rejected ... ok
+test providers::metadata::tests::unexpected_credential_field_cannot_deserialize ... ok
+test providers::tests::cooldown_status_and_manual_neutral_are_distinct ... ok
+test providers::tests::failed_disk_write_never_authorizes_a_request_or_changes_live_budget ... ok
+test providers::tests::legacy_account_upgrade_keeps_ownership_without_accepting_another_account ... ok
+test providers::tests::legacy_shared_gates_become_editable_model_gates ... ok
+test providers::tests::registry_persists_metadata_limits_and_usage_through_atomic_store ... ok
+test providers::tests::status_is_neutral_for_limits_and_reports_the_exact_recovery_time ... ok
+
+test result: ok. 27 passed; 0 failed; 0 ignored; 0 measured; 90 filtered out; finished in 0.03s
+```
+
+Full log: logs/quota-native-verified.log
+
+## quota-compat-red — 2026-10-14T07:31:04.264Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-token-transport.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 2 - completed stream reports its usage against the exact native reservation
+  ---
+  duration_ms: 3.4548
+  type: 'test'
+  ...
+# Subtest: quota rejection happens before sending and releases only that token reservation
+ok 3 - quota rejection happens before sending and releases only that token reservation
+  ---
+  duration_ms: 1.0539
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 2
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1293.5977
+```
+
+Full log: logs/quota-compat-red.log
+
+## quota-compat-green — 2026-10-14T07:31:19.767Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-token-transport.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 2 - completed stream reports its usage against the exact native reservation
+  ---
+  duration_ms: 2.49
+  type: 'test'
+  ...
+# Subtest: quota rejection happens before sending and releases only that token reservation
+ok 3 - quota rejection happens before sending and releases only that token reservation
+  ---
+  duration_ms: 0.6774
+  type: 'test'
+  ...
+1..3
+# tests 3
+# suites 0
+# pass 3
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1199.7979
+```
+
+Full log: logs/quota-compat-green.log
+
+## quota-capabilities-red — 2026-10-14T07:32:34.264Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+      thinkingLevel: 'minimal'
+  operator: 'deepStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (file:///<workspace>/tests/model-request.test.mjs:36:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 5
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 700.1285
+```
+
+Full log: logs/quota-capabilities-red.log
+
+## quota-capabilities-green — 2026-10-14T07:33:13.155Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/model-request.test.mjs tests/provider-token-transport.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 9 - completed stream reports its usage against the exact native reservation
+  ---
+  duration_ms: 2.8539
+  type: 'test'
+  ...
+# Subtest: quota rejection happens before sending and releases only that token reservation
+ok 10 - quota rejection happens before sending and releases only that token reservation
+  ---
+  duration_ms: 0.6571
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1459.4518
+```
+
+Full log: logs/quota-capabilities-green.log
+
+## controls-types — 2026-10-14T07:33:07.863Z
+
+Directory: <workspace>
+
+Command: `npx tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 npx
+npm notice run tsc --noEmit
+```
+
+Full log: logs/controls-types.log
+
+## quota-native-format — 2026-10-14T07:33:58.988Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd rustfmt --edition=2021 src-tauri\src\provider_core.rs src-tauri\src\provider_metadata.rs src-tauri\src\providers.rs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+warn: could not canonicalize path %USERPROFILE%
+```
+
+Full log: logs/quota-native-format.log
+
+## quota-final-tscheck — 2026-10-14T07:34:01.854Z
+
+Directory: <workspace>
+
+Command: `node node_modules\typescript\bin\tsc --noEmit`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+```
+
+Full log: logs/quota-final-tscheck.log
+
+## controls-rust — 2026-10-14T07:36:48.104Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_tag_split_across_chunks_streaming ... ok
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 120 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.65s
+```
+
+Full log: logs/controls-rust.log
+
+## quota-candidate-red — 2026-10-14T07:37:19.705Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri\Cargo.toml --offline --lib providers::core::tests -- --test-threads=1`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+ 29 | pub struct RegistryCore {
+    | ----------------------- method `pick_with_token_estimates` not found for this struct
+...
+354 |         let (id, _) = core.pick_with_token_estimates(&[first, fallback], "brain", false, &[], 10, 9000, &estimates).unwrap();
+    |                            ^^^^^^^^^^^^^^^^^^^^^^^^^
+    |
+help: there is a method `pick_with_tokens` with a similar name, but with different arguments
+   --> src\provider_core.rs:53:5
+    |
+ 53 | /     pub fn pick_with_tokens(
+ 54 | |         &mut self,
+ 55 | |         candidates: &[Candidate],
+ 56 | |         kind: &str,
+...   |
+ 60 | |         input_tokens: u64,
+ 61 | |     ) -> Option<(String, u64)> {
+    | |______________________________^
+
+For more information about this error, try `rustc --explain E0599`.
+error: could not compile `fluely` (lib test) due to 1 previous error
+```
+
+Full log: logs/quota-candidate-red.log
+
+## quota-curl-off-red — 2026-10-14T07:38:46.900Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-token-transport.test.mjs`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  failureType: 'testCodeFailure'
+  error: 'Missing required variable: model. Please configure it in settings.'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    fetchAIResponse (file:///<workspace>/src/lib/functions/ai-response.function.ts:64:23)
+    fetchAIResponse.next (<anonymous>)
+    streamBrain (file:///<workspace>/src/lib/overlay/provider-engine.ts:92:16)
+    async TestContext.<anonymous> (file:///<workspace>/tests/provider-token-transport.test.mjs:35:23)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..4
+# tests 4
+# suites 0
+# pass 3
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1460.1682
+```
+
+Full log: logs/quota-curl-off-red.log
+
+## controls-check — 2026-10-14T07:39:39.407Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 2
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 499 text files checked; 0 failures.
+src/components/ServiceRuntime.tsx(70,183): error TS2554: Expected 1-4 arguments, but got 5.
+```
+
+Full log: logs/controls-check.log
+
+## controls-tests — 2026-10-14T11:27:47.097Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 161 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 0.9459
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 162 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.7638
+  type: 'test'
+  ...
+1..162
+# tests 162
+# suites 0
+# pass 161
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14911.182
+```
+
+Full log: logs/controls-tests.log
+
+## controls-check-2 — 2026-10-14T11:30:03.842Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 499 text files checked; 0 failures.
+```
+
+Full log: logs/controls-check-2.log
+
+## controls-node-final — 2026-10-14T11:31:06.623Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 163 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.3261
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 164 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.9595
+  type: 'test'
+  ...
+1..164
+# tests 164
+# suites 0
+# pass 162
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13871.0668
+```
+
+Full log: logs/controls-node-final.log
+
+## controls-rust-final — 2026-10-14T11:31:20.874Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_unclosed_tag_takes_rest ... ok
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 121 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.55s
+```
+
+Full log: logs/controls-rust-final.log
+
+## controls-token-tests — 2026-10-14T11:33:07.369Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-token-transport.test.mjs tests/chat-preferences.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 9 - per-model off removes reasoning settings embedded in a cURL template
+  ---
+  duration_ms: 3.6423
+  type: 'test'
+  ...
+# Subtest: a temporary pre-send token shortage waits without sending or permanently rejecting the model
+ok 10 - a temporary pre-send token shortage waits without sending or permanently rejecting the model
+  ---
+  duration_ms: 1001.6794
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2327.2259
+```
+
+Full log: logs/controls-token-tests.log
+
+## controls-clippy — 2026-10-14T11:33:09.869Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.2 (<workspace>\src-tauri)
+error: method `pick` is never used
+  --> src\provider_core.rs:41:12
+   |
+40 | impl RegistryCore {
+   | ----------------- method in this implementation
+41 |     pub fn pick(
+   |            ^^^^
+   |
+   = note: `-D dead-code` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[expect(dead_code)]` or `#[allow(dead_code)]`
+
+error: could not compile `fluely` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+```
+
+Full log: logs/controls-clippy.log
+
+## controls-check-final — 2026-10-14T11:33:51.858Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 499 text files checked; 0 failures.
+```
+
+Full log: logs/controls-check-final.log
+
+## controls-node-verified — 2026-10-14T11:33:58.666Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 163 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.4435
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 164 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.0648
+  type: 'test'
+  ...
+1..164
+# tests 164
+# suites 0
+# pass 164
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13802.7726
+```
+
+Full log: logs/controls-node-verified.log
+
+## controls-clippy-verified — 2026-10-14T11:34:28.853Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.2 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 6.12s
+```
+
+Full log: logs/controls-clippy-verified.log
+
+## controls-release-build — 2026-10-14T11:34:55.572Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-DqLKz8rs.js                         1,791.30 kB │ gzip: 539.86 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 23.64s
+   Compiling fluely v0.2.2 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 1m 51s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+```
+
+Full log: logs/controls-release-build.log
+
+## controls-native — 2026-10-14T11:38:34.645Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    exec(code, globals())
+  File "<string>", line 32, in <module>
+  File "<string>", line 7, in settle
+  File "<string>", line 32, in <lambda>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+RuntimeError: JavaScript evaluation failed at line 0, column 0: TypeError: Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.
+    at <anonymous>:1:1; expression: getComputedStyle(document.querySelector('[data-panel-id]')).backgroundColor
+```
+
+Full log: logs/controls-native.log
+
+## controls-native — 2026-10-14T11:39:19.874Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 33, in <module>
+  File "<string>", line 9, in settle
+AssertionError: Native model controls did not settle
+```
+
+Full log: logs/controls-native.log
+
+## controls-msi — 2026-10-14T11:40:08.120Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-022-msi.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+MSI install=0; administrator=False; marker=valid; 2502/2503=absent; product={7BC9E52E-1A33-4882-A355-788B99C20045}
+MSI uninstall=0; isolated test executable removed
+```
+
+Full log: logs/controls-msi.log
+
+## controls-nsis — 2026-10-14T11:40:12.050Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-022-nsis.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+processed file: <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS install=0; no shortcuts; installed marker=valid; temporary-file error absent
+processed file: <workspace>\_research\temp\nsis-022-install\uninstall.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS uninstall=0; isolated test executable removed
+```
+
+Full log: logs/controls-nsis.log
+
+## controls-native — 2026-10-14T11:40:42.291Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+browser-harness: fatal: BU_CDP_URL=http://127.0.0.1:9225 unreachable after 30s: <urlopen error [WinError 10061] Подключение не установлено, т.к. конечный компьютер отверг запрос на подключение> -- is the dedicated automation Chrome running? Launch it with --remote-debugging-port=<port> --user-data-dir=<dedicated dir>; on Windows also check that a firewall/antivirus isn't blocking localhost connections
+```
+
+Full log: logs/controls-native.log
+
+## controls-native — 2026-10-14T11:42:24.746Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 66, in <module>
+  File "<string>", line 9, in settle
+AssertionError: Native model controls did not settle
+native_appearance_custom_groups_buttons_chat_shimmer_independent_of_service True
+```
+
+Full log: logs/controls-native.log
+
+## diagnose-chat — 2026-10-14T11:44:50.760Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-chat.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    exec(code, globals())
+  File "<string>", line 11, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+    return _runtime_value(r, expression)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+    raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
+RuntimeError: JavaScript evaluation failed at line 0, column 80: TypeError: Cannot read properties of undefined (reading 'click')
+    at <anonymous>:1:81; expression: [...document.querySelectorAll('button')].find(b=>b.textContent.trim()==='Cloud').click()
+before {"text":"Fluely · Interaction · Escape to finish\nRequests paused · s 0/∞ · min 0/∞ · h 0/∞ · day 0/∞\nMAIN · MAIN\n\n…\n\nDETAILS · SIDE\n\n…\n\nSPEECH · SPEAK\n«\n»\n\n…\n\nChat history (0)\nPrompt\nLanguage\nLength\nReasoning · Local\nSTT · Auto\nTTS · Auto\nVision · Auto\nReasoning\n×\nAuto\nCloud\nLocal\nowned-controls-image\n\nReasoning effort · owned-controls-local\n\noff\nlow\nmedium\nhigh\nxhigh\nmax\nSave\nEnter a question\nSend\nshift+backslash · Interaction · Escape to finish","interactive":"true"}
+open {"text":"Fluely · Interaction · Escape to finish\nReady · s 0/∞ · min 0/∞ · h 0/∞ · day 0/∞\nMAIN · MAIN\n\n…\n\nDETAILS · SIDE\n\n…\n\nSPEECH · SPEAK\n«\n»\n\n…\n\nChat history (0)\nPrompt\nLanguage\nLength\nReasoning · Local\nSTT · Auto\nTTS · Auto\nVision · Auto\nEnter a question\nSend\nshift+backslash · Interaction · Escape to finish","interactive":"true"}
+```
+
+Full log: logs/diagnose-chat.log
+
+## controls-final-check — 2026-10-14T11:46:07.054Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 500 text files checked; 0 failures.
+```
+
+Full log: logs/controls-final-check.log
+
+## controls-final-node — 2026-10-14T11:46:16.897Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 164 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2459
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 165 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.9009
+  type: 'test'
+  ...
+1..165
+# tests 165
+# suites 0
+# pass 165
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19046.2473
+```
+
+Full log: logs/controls-final-node.log
+
+## controls-release-verified — 2026-10-14T11:46:51.482Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-97Qb8w8w.js                         1,791.41 kB │ gzip: 539.89 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 28.09s
+   Compiling fluely v0.2.2 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 24s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+```
+
+Full log: logs/controls-release-verified.log
+
+## controls-native-verified — 2026-10-14T11:53:12.890Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 66, in <module>
+  File "<string>", line 9, in settle
+AssertionError: Native model controls did not settle
+native_appearance_custom_groups_buttons_chat_shimmer_independent_of_service True
+```
+
+Full log: logs/controls-native-verified.log
+
+## controls-native-verified — 2026-10-14T11:54:31.915Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_appearance_custom_groups_buttons_chat_shimmer_independent_of_service True
+native_chat_template_model_source_reasoning_real_request_and_actual_token_usage True
+```
+
+Full log: logs/controls-native-verified.log
+
+## controls-provider-modal — 2026-10-14T11:56:34.172Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-models-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_provider_models_modal_cancel_history_capabilities_two_keys True
+native_vision_picker_only_image_capable_models True
+owned_provider_fixture_cleanup True
+```
+
+Full log: logs/controls-provider-modal.log
+
+## controls-service-final — 2026-10-14T12:00:09.213Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/service.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 19 - Screen vision upgrades an older manual profile to interval capture before starting
+  ---
+  duration_ms: 1.3989
+  type: 'test'
+  ...
+# Subtest: stopping Listen transcribes the final owned native speech segment exactly once
+ok 20 - stopping Listen transcribes the final owned native speech segment exactly once
+  ---
+  duration_ms: 2.7166
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1006.2972
+```
+
+Full log: logs/controls-service-final.log
+
+## controls-check-release — 2026-10-14T12:00:10.408Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 500 text files checked; 0 failures.
+```
+
+Full log: logs/controls-check-release.log
+
+## controls-github-link — 2026-10-14T12:02:19.991Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\test-repository.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 8, in <module>
+AssertionError: pending
+```
+
+Full log: logs/controls-github-link.log
+
+## diagnose-repository — 2026-10-14T12:05:06.014Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-repository.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+invoke_descriptor {"writable":false,"enumerable":false,"configurable":false}
+sidebar_errors []
+native_alive 0.2.2
+```
+
+Full log: logs/diagnose-repository.log
+
+## controls-build-final — 2026-10-14T12:00:28.007Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/index-BQ9cJENI.js                         1,791.54 kB │ gzip: 539.92 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 47.70s
+   Compiling fluely v0.2.2 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 3m 49s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.2_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+```
+
+Full log: logs/controls-build-final.log
+
+## controls-github-verified — 2026-10-14T12:08:28.559Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\test-repository.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_repository_url_dispatched_to_os_default_browser True
+```
+
+Full log: logs/controls-github-verified.log
+
+## controls-native-final — 2026-10-14T12:10:34.529Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-model-controls-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_appearance_custom_groups_buttons_chat_shimmer_independent_of_service True
+native_chat_template_model_source_reasoning_real_request_and_actual_token_usage True
+```
+
+Full log: logs/controls-native-final.log
+
+## controls-node-release — 2026-10-14T12:18:11.158Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 165 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2413
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 166 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.8949
+  type: 'test'
+  ...
+1..166
+# tests 166
+# suites 0
+# pass 166
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 13268.3634
+```
+
+Full log: logs/controls-node-release.log
+
+## controls-msi-final — 2026-10-14T12:18:24.925Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-022-msi.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+MSI install=0; administrator=False; marker=valid; 2502/2503=absent; product={730A9B7C-CAE5-4FA4-BD52-29C70E3EB1C5}
+MSI uninstall=0; isolated test executable removed
+```
+
+Full log: logs/controls-msi-final.log
+
+## controls-nsis-final — 2026-10-14T12:18:28.307Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-022-nsis.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+processed file: <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.2_x64-setup.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS install=0; no shortcuts; installed marker=valid; temporary-file error absent
+processed file: <workspace>\_research\temp\nsis-022-install\uninstall.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS uninstall=0; isolated test executable removed
+```
+
+Full log: logs/controls-nsis-final.log
+
+## controls-portable-final — 2026-10-14T12:20:33.189Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-portable-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+single_exe_direct_launch_adjacent_profile_and_default_alias True
+  File "<string>", line 38, in <module>
+  File "<string>", line 32, in click_named
+StopIteration
+```
+
+Full log: logs/controls-portable-final.log
+
+## diagnose-portable-ui — 2026-10-14T12:22:11.863Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\diagnose-portable-ui.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+navigation ["Dashboard","Chats","System prompts","App Settings","Responses","Screenshot","Audio","Cursor & Shortcuts","AI settings"]
+ax_buttons ['GitHub', 'Dashboard', 'Chats', 'System prompts', 'App Settings', 'Responses', 'Screenshot', 'Audio', 'Cursor & Shortcuts', 'AI settings', 'Reasoning', 'Speech recognition', 'Text-to-speech', 'Vision', 'Refresh providers', 'Cloud providers', 'Local engines', 'Add provider or API key']
+```
+
+Full log: logs/diagnose-portable-ui.log
+
+## controls-portable-verified — 2026-10-14T12:23:11.046Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-portable-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+single_exe_direct_launch_adjacent_profile_and_default_alias True
+four_ai_modules_cloud_local_system_sources_and_piper True
+ai_settings_screenshot_saved True
+```
+
+Full log: logs/controls-portable-verified.log
+
+## controls-package — 2026-10-14T12:29:04.972Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows.ps1 -OutputDirectory <delivery>`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+<workspace>\scripts\package-windows.ps1 : The term 'Get-FileHash' is not
+recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if
+a path was included, verify that the path is correct and try again.
+    + CategoryInfo          : ObjectNotFound: (Get-FileHash:String) [package-windows.ps1], CommandNotFoundException
+    + FullyQualifiedErrorId : CommandNotFoundException,package-windows.ps1
+```
+
+Full log: logs/controls-package.log
+
+## controls-package-verified — 2026-10-14T12:32:29.631Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.cache\codex-runtimes\codex-primary-runtime\dependencies\native\powershell\pwsh.exe -NoProfile -ExecutionPolicy Bypass -File scripts/package-windows.ps1 -OutputDirectory <delivery>`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Packaged Fluely 0.2.2 in <delivery>; preserved the existing profile directory.
+2528eebd3c7c30044799d8e1514ccdc8c222fdbc9ea0fedb3dccfd39bc321651  Fluely_0.2.2_windows-x64-portable.zip
+c2f62ebf664b454d04c2542402f684bc9c72ba2a0981a319839299cb8979aa8d  Fluely_0.2.2_x64_en-US.msi
+42f1336d0a51d71c3e3f4039d91435d33126b7659ec0ef6c2e7c30138408f634  Fluely_0.2.2_x64-setup.exe
+b5572d2cd0288a54bf0cf9f2b4660f4a224dece4b9e6e870c4bb5522c59c6237  fluely.exe
+```
+
+Full log: logs/controls-package-verified.log

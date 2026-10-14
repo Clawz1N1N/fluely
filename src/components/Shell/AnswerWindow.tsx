@@ -7,6 +7,8 @@ import { Markdown } from '@/components/Markdown';
 import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
 import { useShellDrag } from './useShellDrag';
 import { requestCounts } from './ShellControls';
+import { ChatQuickControls } from './ChatQuickControls';
+import { Shimmer } from './Shimmer';
 
 /** The answer window is a view of the persistent hidden-main service. */
 export const AnswerWindow: React.FC = () => {
@@ -49,9 +51,12 @@ export const AnswerWindow: React.FC = () => {
   }, [setEditing]);
   useEffect(() => {
     let disposed=false,off:UnlistenFn|undefined;
-    void invoke<Record<string,string>>('get_registered_shortcuts').then(bindings=>{
-      if(!disposed&&bindings.answer_interaction)setInteractionShortcut(bindings.answer_interaction);
+    const refreshShortcut=()=>invoke<Record<string,string>>('get_registered_shortcuts').then(bindings=>{
+      if(!disposed)setInteractionShortcut(bindings.answer_interaction??t('Shortcut disabled'));
     }).catch(console.error);
+    void refreshShortcut();
+    let stopShortcuts:UnlistenFn|undefined;
+    void listen('shortcuts-updated',()=>void refreshShortcut()).then(stop=>{if(disposed)stop();else stopShortcuts=stop;}).catch(console.error);
     void listen<boolean>('answer-interaction-changed',event=>{
       if(disposed)return;
       editing.current=event.payload;setInteractive(event.payload);
@@ -61,7 +66,7 @@ export const AnswerWindow: React.FC = () => {
       const value=await invoke<boolean>('get_answer_interaction');
       if(!disposed){editing.current=value;setInteractive(value);}
     }).catch(console.error);
-    return()=>{disposed=true;off?.();};
+    return()=>{disposed=true;off?.();stopShortcuts?.();};
   },[]);
   useEffect(() => {
     mounted.current = true;
@@ -106,6 +111,7 @@ export const AnswerWindow: React.FC = () => {
     data-mode={snapshot.shell.ui_mode}
     onKeyDown={event => { if (event.key === 'Escape') { inputRef.current?.blur(); endEditing(); } }}
   >
+    <Shimmer enabled={snapshot.shell.shimmer} speed={snapshot.shell.shimmer_speed}/>
     <div className="flex cursor-move items-center justify-between border-b border-white/20 px-3 py-2" {...(interactive?drag.handlers:{})}>
       <span className="text-xs font-medium">Fluely {interactive?`· ${t('Interaction · Escape to finish')}`:''}</span>
       <div className="flex items-center gap-2">
@@ -140,6 +146,7 @@ export const AnswerWindow: React.FC = () => {
       <summary className="cursor-pointer py-1">{t('Chat history ({count})',{count:snapshot.history.length})}</summary>
       {snapshot.history.map((message, index) => <div key={index} className="border-t border-white/10 py-1"><span className="text-white/50">{message.role === 'user' ? t("Ви") : 'Fluely'}: </span><Markdown>{message.content}</Markdown></div>)}
     </details>
+    <ChatQuickControls interactive={interactive}/>
     <form className="flex gap-2 border-t border-neutral-700 p-2" onSubmit={event => { event.preventDefault(); void sendQuestion(); }}>
       <button type="button" className="rounded bg-neutral-700 px-2 text-xs" onClick={() => void beginEditing()}>{t("Ввести запит")}</button>
       <input
@@ -150,5 +157,6 @@ export const AnswerWindow: React.FC = () => {
       />
       <button type="submit" disabled={!input.trim() || !snapshot.ready} className="rounded bg-blue-600 px-3 py-1 text-sm disabled:opacity-40">{t("Надіслати")}</button>
     </form>
+    <div className="shrink-0 px-2 pb-1 text-right text-[10px] text-white/60" aria-label={t('Chat interaction shortcut')}>{interactionShortcut} · {interactive?t('Interaction · Escape to finish'):t('Move and type')}</div>
   </div>;
 };

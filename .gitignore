@@ -8,6 +8,9 @@ pnpm-debug.log*
 lerna-debug.log*
 
 node_modules
+_research/temp/
+_research/npm-cache/
+profile/
 dist
 dist-ssr
 public/vad/

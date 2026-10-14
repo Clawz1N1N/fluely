@@ -6,7 +6,7 @@ mod core;
 mod metadata;
 pub use metadata::{ProviderEntry, RequestLimits};
 
-use core::{Candidate, RegistryCore};
+use core::{Candidate, RegistryCore, TokenEvent};
 use serde::{Deserialize, Serialize};
 use std::collections::{HashMap, HashSet};
 use std::path::PathBuf;
@@ -37,6 +37,32 @@ struct PersistedRegistry {
     requests: HashMap<String, Vec<u64>>,
     global_requests: Vec<u64>,
     cooldowns: HashMap<String, u64>,
+    tokens: HashMap<String, Vec<TokenEvent>>,
+    next_token_id: u64,
+}
+
+/// Shared controls were removed from the UI; keep their effective restrictions
+/// editable on each existing model rather than leaving an inaccessible gate.
+fn migrate_legacy_gates(stored: &mut PersistedRegistry) -> bool {
+    let global = stored.global_limits.array();
+    if global == [0; 4] && !stored.manual_neutral {
+        return false;
+    }
+    for provider in &mut stored.providers {
+        let local = provider.limits();
+        let limits = std::array::from_fn::<_, 4, _>(|index| match (local[index], global[index]) {
+            (0, limit) | (limit, 0) => limit,
+            (local, shared) => local.min(shared),
+        });
+        provider.limit_per_second = limits[0];
+        provider.limit_per_minute = limits[1];
+        provider.limit_per_hour = limits[2];
+        provider.limit_per_day = limits[3];
+        provider.manual_neutral |= stored.manual_neutral;
+    }
+    stored.global_limits = RequestLimits::default();
+    stored.manual_neutral = false;
+    true
 }
 
 fn now_ms() -> u64 {
@@ -70,6 +96,20 @@ impl Registry {
                 enabled: p.enabled,
                 supports_images: p.supports_images,
                 limits: p.limits(),
+                token_limits: p.token_limits(),
+                output_tokens: if ["brain", "vision"].contains(&p.kind.as_str()) {
+                    u64::from(
+                        p.max_output_tokens.unwrap_or(
+                            p.context_window
+                                .unwrap_or(16384)
+                                .saturating_div(4)
+                                .clamp(1, 4096),
+                        ),
+                    )
+                } else {
+                    0
+                },
+                manual_neutral: p.manual_neutral,
             })
             .collect()
     }
@@ -83,6 +123,8 @@ impl Registry {
             requests: self.core.requests.clone(),
             global_requests: self.core.global_requests.clone(),
             cooldowns: self.core.cooldowns.clone(),
+            tokens: self.core.tokens.clone(),
+            next_token_id: self.core.next_token_id,
         };
         let bytes = serde_json::to_vec_pretty(&stored)
             .map_err(|_| "Could not serialize provider metadata".to_string())?;
@@ -117,6 +159,8 @@ impl Registry {
                     .unwrap_or(&[]);
                 status["used"] =
                     serde_json::json!(RequestLimits::from_array(RegistryCore::used(requests, now)));
+                let used = self.core.token_used(&provider.id, now);
+                status["tokenUsed"] = serde_json::json!({"per_second":used[0],"per_minute":used[1],"per_hour":used[2],"per_day":used[3]});
                 status["nextAllowedAt"] =
                     serde_json::json!(self.core.next_allowed_at(candidate, now));
                 status["inCooldown"] = serde_json::json!(self
@@ -162,11 +206,12 @@ pub fn initialize(app: &AppHandle) -> Result<(), String> {
     };
     match std::fs::read(&path) {
         Ok(bytes) => {
-            let stored: PersistedRegistry = serde_json::from_slice(&bytes)
+            let mut stored: PersistedRegistry = serde_json::from_slice(&bytes)
                 .map_err(|_| "Stored provider registry is invalid")?;
             if stored.version != 1 {
                 return Err("Stored provider registry version is unsupported".into());
             }
+            let migrated = migrate_legacy_gates(&mut stored);
             let mut ids = HashSet::new();
             for provider in &stored.providers {
                 provider.validate()?;
@@ -182,10 +227,16 @@ pub fn initialize(app: &AppHandle) -> Result<(), String> {
                 global_limits: stored.global_limits.array(),
                 manual_neutral: stored.manual_neutral,
                 current_provider_id: None,
+                tokens: stored.tokens,
+                next_token_id: stored.next_token_id,
             };
             loaded.core.requests.retain(|id, _| ids.contains(id));
             loaded.core.cooldowns.retain(|id, _| ids.contains(id));
+            loaded.core.tokens.retain(|id, _| ids.contains(id));
             loaded.core.prune(now_ms());
+            if migrated {
+                loaded.persist()?;
+            }
         }
         Err(error) if error.kind() == std::io::ErrorKind::NotFound => {}
         Err(_) => return Err("Could not read stored provider registry".into()),
@@ -228,7 +279,8 @@ fn validate_kind(kind: &str) -> Result<(), String> {
 }
 
 fn belongs_to_account(provider: &ProviderEntry, credential: &str) -> bool {
-    provider.credential_id == credential || (provider.credential_id.is_empty() && provider.id == credential)
+    provider.credential_id == credential
+        || (provider.credential_id.is_empty() && provider.id == credential)
 }
 
 #[tauri::command]
@@ -261,7 +313,12 @@ pub fn upsert_provider(app: AppHandle, provider: ProviderEntry) -> Result<(), St
 
 /// Publish one credential's selected models atomically, after its keychain write.
 #[tauri::command]
-pub fn save_provider_models(app: AppHandle, credential_id: String, kind: String, providers: Vec<ProviderEntry>) -> Result<(), String> {
+pub fn save_provider_models(
+    app: AppHandle,
+    credential_id: String,
+    kind: String,
+    providers: Vec<ProviderEntry>,
+) -> Result<(), String> {
     validate_kind(&kind)?;
     if credential_id.is_empty() || credential_id.len() > 256 || providers.len() > 10_000 {
         return Err("Invalid provider account".into());
@@ -269,20 +326,40 @@ pub fn save_provider_models(app: AppHandle, credential_id: String, kind: String,
     let mut ids = HashSet::new();
     for provider in &providers {
         provider.validate()?;
-        if provider.credential_id != credential_id || provider.kind != kind || !ids.insert(provider.id.clone()) {
+        if provider.credential_id != credential_id
+            || provider.kind != kind
+            || !ids.insert(provider.id.clone())
+        {
             return Err("Selected models must belong to the same credential and kind".into());
         }
     }
     update(&app, |registry, _| {
-        if providers.iter().any(|incoming| registry.providers.iter().any(|stored| stored.id == incoming.id &&
-            (!belongs_to_account(stored, &credential_id) || stored.kind != kind))) {
+        if providers.iter().any(|incoming| {
+            registry.providers.iter().any(|stored| {
+                stored.id == incoming.id
+                    && (!belongs_to_account(stored, &credential_id) || stored.kind != kind)
+            })
+        }) {
             return Err("Model ID belongs to a different account".into());
         }
-        let removed: Vec<_> = registry.providers.iter().filter(|p| belongs_to_account(p, &credential_id) && p.kind == kind && !ids.contains(&p.id)).map(|p| p.id.clone()).collect();
-        for id in removed { registry.providers.retain(|p| p.id != id); registry.core.remove(&id); }
+        let removed: Vec<_> = registry
+            .providers
+            .iter()
+            .filter(|p| {
+                belongs_to_account(p, &credential_id) && p.kind == kind && !ids.contains(&p.id)
+            })
+            .map(|p| p.id.clone())
+            .collect();
+        for id in removed {
+            registry.providers.retain(|p| p.id != id);
+            registry.core.remove(&id);
+        }
         for provider in providers {
-            if let Some(index) = registry.providers.iter().position(|p| p.id == provider.id) { registry.providers[index] = provider; }
-            else { registry.providers.push(provider); }
+            if let Some(index) = registry.providers.iter().position(|p| p.id == provider.id) {
+                registry.providers[index] = provider;
+            } else {
+                registry.providers.push(provider);
+            }
         }
         Ok(())
     })?;
@@ -310,33 +387,85 @@ pub fn pick_provider(
     needs_images: bool,
     exclude_ids: Option<Vec<String>>,
     preferred_provider_id: Option<String>,
-) -> Result<ProviderEntry, String> {
+    input_tokens: Option<u64>,
+    input_tokens_by_provider: Option<HashMap<String, u64>>,
+) -> Result<serde_json::Value, String> {
     validate_kind(&kind)?;
     let exclude_ids = exclude_ids.unwrap_or_default();
     let result = update(&app, |registry, now| {
         let mut candidates = registry.candidates();
         if kind == "vision" {
             for candidate in &mut candidates {
-                if ["brain", "vision"].contains(&candidate.kind.as_str()) && candidate.supports_images {
+                if ["brain", "vision"].contains(&candidate.kind.as_str())
+                    && candidate.supports_images
+                {
                     candidate.kind = "vision".into();
-                } else { candidate.enabled = false; }
+                } else {
+                    candidate.enabled = false;
+                }
             }
         }
-        if let Some(preferred) = &preferred_provider_id { candidates.retain(|p| p.id == *preferred); }
-        let id = registry
+        if let Some(preferred) = &preferred_provider_id {
+            candidates.retain(|p| p.id == *preferred);
+        }
+        // Reserve the fitted payload for each candidate, not one rough payload
+        // shared by models with different contexts and image capabilities.
+        for candidate in &mut candidates {
+            let input = input_tokens_by_provider.as_ref()
+                .and_then(|estimates| estimates.get(&candidate.id)).copied()
+                .unwrap_or(input_tokens.unwrap_or(0));
+            candidate.output_tokens = candidate.output_tokens.saturating_add(input);
+        }
+        let matching: Vec<_> = candidates
+            .iter()
+            .filter(|candidate| {
+                candidate.enabled
+                    && !candidate.manual_neutral
+                    && candidate.kind == kind
+                    && (!needs_images || candidate.supports_images)
+                    && !exclude_ids.contains(&candidate.id)
+            })
+            .collect();
+        if !matching.is_empty()
+            && matching.iter().all(|candidate| {
+                candidate.token_limits.iter().any(|limit| {
+                    *limit > 0
+                        && candidate.output_tokens > *limit
+                })
+            })
+        {
+            return Err(
+                "Token quota cannot fit this request; reduce input or max output tokens".into(),
+            );
+        }
+        let (id, reservation_id) = registry
             .core
-            .pick(&candidates, &kind, needs_images, &exclude_ids, now)
+            .pick_with_tokens(
+                &candidates,
+                &kind,
+                needs_images,
+                &exclude_ids,
+                now,
+                0,
+            )
             .ok_or_else(|| {
                 if registry.core.manual_neutral {
                     "Neutral mode is enabled".into()
                 } else {
-                    match registry.core.next_available_at(
-                        &candidates,
-                        &kind,
-                        needs_images,
-                        &exclude_ids,
-                        now,
-                    ) {
+                    match matching
+                        .iter()
+                        .map(|candidate| {
+                            registry
+                                .core
+                                .next_allowed_with_tokens(
+                                    candidate,
+                                    now,
+                                    candidate.output_tokens,
+                                )
+                                .unwrap_or(now)
+                        })
+                        .min()
+                    {
                         Some(until) => format!(
                             "Neutral mode: next provider available in {}s",
                             until.saturating_sub(now).div_ceil(1_000)
@@ -345,12 +474,16 @@ pub fn pick_provider(
                     }
                 }
             })?;
-        registry
+        let provider = registry
             .providers
             .iter()
             .find(|p| p.id == id)
             .cloned()
-            .ok_or_else(|| "Selected provider no longer exists".into())
+            .ok_or_else(|| "Selected provider no longer exists".to_string())?;
+        let mut value =
+            serde_json::to_value(provider).map_err(|_| "Provider serialization failed")?;
+        value["tokenReservationId"] = reservation_id.into();
+        Ok(value)
     });
     broadcast_status(&app, &kind);
     result
@@ -362,6 +495,8 @@ pub fn report_provider_result(
     provider_id: String,
     ok: bool,
     retry_after_secs: Option<u64>,
+    token_reservation_id: Option<u64>,
+    tokens_used: Option<u64>,
 ) -> Result<(), String> {
     update(&app, |registry, now| {
         if !registry.providers.iter().any(|p| p.id == provider_id) {
@@ -370,7 +505,35 @@ pub fn report_provider_result(
         registry
             .core
             .record_result(&provider_id, ok, retry_after_secs, now);
+        if let (Some(id), Some(actual)) = (token_reservation_id, tokens_used) {
+            registry.core.settle_tokens(&provider_id, id, actual);
+        }
         Ok(())
+    })?;
+    broadcast_status(&app, "brain");
+    Ok(())
+}
+
+/// Resize only the matching attempt under the same durable lock before sending.
+#[tauri::command]
+pub fn reserve_provider_tokens(
+    app: AppHandle,
+    provider_id: String,
+    token_reservation_id: u64,
+    tokens: u64,
+) -> Result<(), String> {
+    update(&app, |registry, now| {
+        let candidate = registry
+            .candidates()
+            .into_iter()
+            .find(|candidate| candidate.id == provider_id)
+            .ok_or("Provider does not exist")?;
+        if tokens > 0 && (candidate.manual_neutral || !candidate.enabled || registry.core.manual_neutral) {
+            return Err("Neutral mode is enabled for this model".into());
+        }
+        registry
+            .core
+            .adjust_tokens(&candidate, token_reservation_id, tokens, now)
     })?;
     broadcast_status(&app, "brain");
     Ok(())
@@ -445,13 +608,28 @@ pub fn get_providers_status(
 mod tests {
     use super::*;
     #[test]
+    fn legacy_shared_gates_become_editable_model_gates() {
+        let mut stored = PersistedRegistry {
+            providers: vec![provider()],
+            global_limits: RequestLimits::from_array([2, 5, 0, 0]),
+            manual_neutral: true,
+            ..PersistedRegistry::default()
+        };
+        migrate_legacy_gates(&mut stored);
+        assert_eq!(stored.providers[0].limits(), [2, 1, 0, 0]);
+        assert!(stored.providers[0].manual_neutral);
+        assert_eq!(stored.global_limits.array(), [0; 4]);
+        assert!(!stored.manual_neutral);
+        assert!(!migrate_legacy_gates(&mut stored));
+    }
+    #[test]
     fn legacy_account_upgrade_keeps_ownership_without_accepting_another_account() {
         let mut entry: ProviderEntry = serde_json::from_str(r#"{"id":"legacy","kind":"brain","preset":"custom","base_url":"https://example.invalid","model":"test"}"#).unwrap();
-        assert!(belongs_to_account(&entry,"legacy"));
-        assert!(!belongs_to_account(&entry,"other"));
-        entry.credential_id="account".into();
-        assert!(belongs_to_account(&entry,"account"));
-        assert!(!belongs_to_account(&entry,"legacy"));
+        assert!(belongs_to_account(&entry, "legacy"));
+        assert!(!belongs_to_account(&entry, "other"));
+        entry.credential_id = "account".into();
+        assert!(belongs_to_account(&entry, "account"));
+        assert!(!belongs_to_account(&entry, "legacy"));
     }
 
     fn provider() -> ProviderEntry {
@@ -512,6 +690,16 @@ mod tests {
         registry.core.requests.insert("p".into(), vec![100]);
         registry.core.global_requests = vec![100];
         registry.core.cooldowns.insert("p".into(), 5_100);
+        registry.core.tokens.insert(
+            "p".into(),
+            vec![TokenEvent {
+                id: 2,
+                at: 100,
+                tokens: 543,
+                settled: false,
+            }],
+        );
+        registry.core.next_token_id = 2;
         registry.persist().unwrap();
         let stored: PersistedRegistry =
             serde_json::from_slice(&std::fs::read(&path).unwrap()).unwrap();
@@ -521,6 +709,8 @@ mod tests {
         assert_eq!(stored.requests["p"], [100]);
         assert_eq!(stored.global_requests, [100]);
         assert_eq!(stored.cooldowns["p"], 5_100);
+        assert_eq!(stored.tokens["p"][0].tokens, 543);
+        assert_eq!(stored.next_token_id, 2);
         assert!(stored.manual_neutral);
         registry.providers[0].model = "replacement".into();
         registry.persist().unwrap();

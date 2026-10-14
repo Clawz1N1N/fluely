@@ -8,6 +8,11 @@ if (!label || !command || !/^[a-zA-Z0-9_-]+$/.test(label)) {
   throw new Error('Usage: run-check.mjs label "command" [working-directory]');
 }
 const root = path.resolve(import.meta.dirname, '..');
+const buildLog=path.join(root,'_research','BUILD_LOG.md');
+try {
+  const previous=readFileSync(buildLog,'utf8');
+  if(previous.includes('\r\n'))writeFileSync(buildLog,previous.replace(/\r\n/g,'\n'),'utf8');
+}catch(error){if(error.code!=='ENOENT')throw error;}
 const logs = path.join(root, '_research', 'logs');
 mkdirSync(logs, { recursive: true });
 const temporary = path.join(root, '_research', 'temp');
@@ -32,7 +37,9 @@ child.on('close', code => stream.end(() => {
   catch { output = new TextDecoder('ibm866').decode(bytes); }
   const tail = output.replace(/\x1b\[[0-9;]*m/g, '').replace(/\uFFFD/g,'[U+FFFD in native diagnostic]').trimEnd().split(/\r?\n/).slice(-20).map(line => line.trimEnd()).join('\n');
   const entry = `\n## ${label} — ${started}\n\nDirectory: ${path.resolve(root, directory)}\n\nCommand: \`${command}\`\n\nExit code: ${code ?? 'spawn failed'}\n\nLast 20 output lines:\n\n\`\`\`text\n${tail}\n\`\`\`\n\nFull log: logs/${label}.log\n`;
-  appendFileSync(path.join(root, '_research', 'BUILD_LOG.md'), entry, 'utf8');
+  const published=entry.replaceAll(path.join(path.dirname(root),'RELEASE'),'<delivery>')
+    .replaceAll(root,'<workspace>').replaceAll(process.env.USERPROFILE??'__NO_PROFILE__','%USERPROFILE%');
+  appendFileSync(buildLog, published, 'utf8');
   console.log(entry);
   process.exitCode = code ?? 1;
 }));

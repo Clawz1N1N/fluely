@@ -1,0 +1,7 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "answer-prompts",
+  "description": "The answer window reads saved user prompt templates for its quick picker.",
+  "windows": ["answer"],
+  "permissions": ["sql:allow-load", "sql:allow-select"]
+}

@@ -40,6 +40,14 @@ fn enabled() -> bool {
 fn response_path() -> String {
     "choices.0.message.content".into()
 }
+fn reasoning_off() -> String {
+    "off".into()
+}
+fn default_reasoning_efforts() -> Vec<String> {
+    ["off", "low", "medium", "high", "xhigh", "max"]
+        .map(String::from)
+        .to_vec()
+}
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
@@ -80,6 +88,20 @@ pub struct ProviderEntry {
     #[serde(default)]
     pub limit_per_day: u32,
     #[serde(default)]
+    pub token_limit_per_second: u64,
+    #[serde(default)]
+    pub token_limit_per_minute: u64,
+    #[serde(default)]
+    pub token_limit_per_hour: u64,
+    #[serde(default)]
+    pub token_limit_per_day: u64,
+    #[serde(default)]
+    pub manual_neutral: bool,
+    #[serde(default = "reasoning_off")]
+    pub reasoning_effort: String,
+    #[serde(default = "default_reasoning_efforts")]
+    pub reasoning_efforts: Vec<String>,
+    #[serde(default)]
     pub curl: Option<String>,
     #[serde(default = "enabled")]
     pub streaming: bool,
@@ -92,6 +114,14 @@ pub struct ProviderEntry {
 }
 
 impl ProviderEntry {
+    pub fn token_limits(&self) -> [u64; 4] {
+        [
+            self.token_limit_per_second,
+            self.token_limit_per_minute,
+            self.token_limit_per_hour,
+            self.token_limit_per_day,
+        ]
+    }
     pub fn limits(&self) -> [u32; 4] {
         [
             self.limit_per_second,
@@ -102,6 +132,29 @@ impl ProviderEntry {
     }
 
     pub fn validate(&self) -> Result<(), String> {
+        if self
+            .token_limits()
+            .into_iter()
+            .any(|limit| limit > 9_007_199_254_740_991)
+        {
+            return Err("Token quotas must be whole numbers up to 9007199254740991".into());
+        }
+        let valid_effort = |value: &str| {
+            !value.is_empty()
+                && value.len() <= 64
+                && value
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || "_- ".contains(c))
+        };
+        if !valid_effort(&self.reasoning_effort)
+            || self.reasoning_efforts.len() > 64
+            || self
+                .reasoning_efforts
+                .iter()
+                .any(|effort| !valid_effort(effort))
+        {
+            return Err("Reasoning efforts must use 1-64 English letters, numbers, spaces, underscores or hyphens".into());
+        }
         if self.id.trim().is_empty() || self.id.len() > 256 {
             return Err("Provider ID must contain 1-256 characters".into());
         }
@@ -114,7 +167,8 @@ impl ProviderEntry {
         if self.credential_id.len() > 256 || self.provider_id.len() > 256 {
             return Err("Provider and credential IDs must contain at most 256 characters".into());
         }
-        if self.context_window == Some(0) || self.max_output_tokens == Some(0)
+        if self.context_window == Some(0)
+            || self.max_output_tokens == Some(0)
             || matches!((self.context_window, self.max_output_tokens), (Some(context), Some(output)) if output > context)
         {
             return Err("Model token limits must be positive; output cannot exceed context".into());
@@ -225,6 +279,13 @@ mod tests {
         let json = serde_json::to_value(&p).unwrap();
         assert_eq!(json["enabled"], true);
         assert_eq!(json["limit_per_second"], 0);
+        assert_eq!(json["token_limit_per_second"], 0);
+        assert_eq!(json["manual_neutral"], false);
+        assert_eq!(json["reasoning_effort"], "off");
+        assert_eq!(
+            json["reasoning_efforts"],
+            serde_json::json!(["off", "low", "medium", "high", "xhigh", "max"])
+        );
         assert_eq!(json["curl"], serde_json::Value::Null);
         assert_eq!(json["variables"], serde_json::json!({}));
         assert_eq!(json["secret_keys"], serde_json::json!([]));

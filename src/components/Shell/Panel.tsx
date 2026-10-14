@@ -23,7 +23,7 @@ export function ShellPanel(){
       title={t(ACTION_LABELS[action])} aria-label={t(ACTION_LABELS[action])} aria-pressed={actionIsActive(action,snapshot)} disabled={actionIsDisabled(action,snapshot)}
       onClick={()=>{if(!drag.consumeClick())void act(action);}}
       className={`flex items-center justify-center rounded-md border bg-transparent hover:border-white/80 disabled:opacity-40 ${actionIsActive(action,snapshot)?'border-sky-300 text-sky-200':'border-white/25 text-white'}`}
-      style={{width:panel.button_size,height:panel.button_size,backgroundColor:`rgba(23,23,23,${snapshot.shell.button_opacities[action]??0})`}}><ActionIcon action={action}/></button>)}
+      style={{width:panel.button_size,height:panel.button_size,backgroundColor:`rgba(${actionIsActive(action,snapshot)?'29,78,216':'23,23,23'},${snapshot.shell.button_opacities[action]??0.28})`}}><ActionIcon action={action}/></button>)}
   </div>;
 }
 export default ShellPanel;

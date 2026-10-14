@@ -305,6 +305,9 @@ pub fn update_shortcuts<R: Runtime>(
         registered.extend(successfully_registered);
     }
 
+    // Views display the actual registered binding, including partial failures.
+    app.emit("shortcuts-updated", get_registered_shortcuts(app.clone())?)
+        .map_err(|error| error.to_string())?;
     if !registration_failures.is_empty() {
         if let Some(window) = app.get_webview_window("main") {
             if let Err(e) = window.emit("shortcut-registration-error", &registration_failures) {

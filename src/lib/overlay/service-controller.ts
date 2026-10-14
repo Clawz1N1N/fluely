@@ -124,6 +124,11 @@ export class ServiceController {
         this.bind('continuous-error',value=>this.setError(new Error(String(value)))),
         this.bind('audio-encoding-error',value=>this.setError(new Error(String(value)))),
         this.bind('shell-settings-changed',()=>{void (this.snapshot.ready?this.refreshStatus():this.start()).catch(error=>this.setError(error));}),
+        this.bind('providers-status',()=>{
+          // Registry changes must reach visible windows without waiting for a
+          // background WebView's throttled polling/publication timers.
+          if(this.snapshot.ready)void this.refreshStatus().then(()=>this.publish(true)).catch(error=>this.setError(error));
+        }),
         this.bind<SleepSettings>('sleep-settings-changed',settings=>{this.sleepSettings=settings;}),
         this.bind<string>('sleep-alarm-error',error=>this.setError(new Error(error))),
         this.bind<boolean>('answer-visibility-changed',visible=>{this.snapshot.answerVisible=visible;void this.publish();}),
@@ -162,9 +167,12 @@ export class ServiceController {
   async refreshStatus(): Promise<void> {
     const status=await this.ports.status();if(!this.alive)return;
     this.snapshot.neutral=status.neutral;this.snapshot.nextAllowedAt=status.nextAllowedAt;
-    this.snapshot.currentModel=status.providers.find(p=>p.id===status.currentProviderId)?.model??null;
-    if(status.globalUsed)this.snapshot.requestCounts=status.globalUsed;
-    if(status.globalLimits)this.snapshot.requestLimits=status.globalLimits;
+    const current=status.providers.find(p=>p.id===status.currentProviderId);
+    this.snapshot.currentModel=current?.model??null;
+    if(current?.used)this.snapshot.requestCounts=current.used;
+    else if(status.globalUsed)this.snapshot.requestCounts=status.globalUsed;
+    if(current)this.snapshot.requestLimits={per_second:current.limit_per_second??0,per_minute:current.limit_per_minute??0,per_hour:current.limit_per_hour??0,per_day:current.limit_per_day??0};
+    else if(status.globalLimits)this.snapshot.requestLimits=status.globalLimits;
     this.snapshot.shell=await this.ports.invoke<ShellSettings>('get_shell_settings');
     this.capture=await this.ports.invoke<CaptureOptions>('get_capture_settings');
     await this.reconcileCapture();

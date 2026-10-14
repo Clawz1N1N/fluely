@@ -1,7 +1,7 @@
 {
   "name": "fluely",
   "private": false,
-  "version": "0.2.1",
+  "version": "0.2.2",
   "description": "Fluely: configurable desktop AI overlay with local and cloud models, speech and screen vision",
   "author": {
     "name": "Clawz1N1N",

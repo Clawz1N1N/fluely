@@ -11,7 +11,30 @@ import {selectRankedProvider,abortableDelay} from './provider-selection';
 import curl2Json from '@bany/curl-to-json';
 import {deepVariableReplacer,getByPath} from '../functions/common.function';
 import {discoverModels,type ModelInfo} from './model-catalog';
-import {fitModelHistory,outputParameters,imageMime} from './model-request';
+import {fitModelHistory,outputParameters,outputTokenCeiling,imageMime,estimateBrainTokens,reasoningParameters,tokenUsage,type TokenUsage} from './model-request';
+
+const usageByAttempt=new WeakMap<ProviderEntry,TokenUsage>();
+export class ProviderQuotaError extends Error {}
+function observeUsage(entry:ProviderEntry,event:unknown):void {
+  const next=tokenUsage(event),current=usageByAttempt.get(entry)??{};
+  for(const key of ['input','output','total'] as const)if(next[key]!==undefined)current[key]=next[key];
+  usageByAttempt.set(entry,current);
+}
+async function reserveTokens(entry:ProviderEntry,tokens:number,signal?:AbortSignal):Promise<void> {
+  if(entry.tokenReservationId===undefined)return;
+  const args={providerId:entry.id,tokenReservationId:entry.tokenReservationId};
+  while(!signal?.aborted){
+    try {await invoke('reserve_provider_tokens',{...args,tokens:Math.ceil(tokens)});return;}
+    catch(error){
+      if(!String(error).startsWith('Neutral mode'))throw new ProviderQuotaError(String(error));
+      // Release the provisional allowance while waiting so two growing
+      // concurrent requests cannot hold each other's required token budget.
+      await invoke('reserve_provider_tokens',{...args,tokens:0});
+    }
+    await abortableDelay(1000,signal??new AbortController().signal);
+  }
+  throw new DOMException('Aborted','AbortError');
+}
 
 export async function providerVariables(entry: ProviderEntry): Promise<Record<string, string>> {
   const variables = { ...entry.variables };
@@ -21,8 +44,8 @@ export async function providerVariables(entry: ProviderEntry): Promise<Record<st
   }
   return variables;
 }
-export async function pickProvider(kind: ProviderKind, excludeIds: string[] = [], preferredProviderId?:string): Promise<ProviderEntry | null> {
-  try { return await invoke('pick_provider', { kind, needsImages: kind==='vision', excludeIds,preferredProviderId:preferredProviderId??null }); }
+export async function pickProvider(kind: ProviderKind, excludeIds: string[] = [], preferredProviderId?:string,inputTokens?:number,inputTokensByProvider?:Record<string,number>): Promise<ProviderEntry | null> {
+  try { return await invoke('pick_provider', { kind, needsImages: kind==='vision', excludeIds,preferredProviderId:preferredProviderId??null,inputTokens:inputTokens??null,inputTokensByProvider:inputTokensByProvider??null }); }
   catch(error) { if(String(error).startsWith('Neutral mode'))return null;throw error; }
 }
 export async function providerStatus(kind: ProviderKind = 'brain'): Promise<ProviderStatus> {
@@ -34,8 +57,13 @@ export async function fetchProviderModels(entry:ProviderEntry,enteredKey?:string
   return discoverModels(entry,key,providerFetch,signal);
 }
 export async function reportProvider(entry: ProviderEntry, error?: unknown): Promise<void> {
-  await invoke('report_provider_result', { providerId: entry.id, ok: error === undefined,
-    retryAfterSecs: error instanceof ProviderHttpError ? error.retryAfterSecs ?? null : null });
+  const usage=usageByAttempt.get(entry);
+  // Missing/partial usage and failed requests retain the conservative reservation.
+  const tokensUsed=error instanceof ProviderQuotaError?0:error===undefined?(usage?.total??(usage?.input!==undefined&&usage?.output!==undefined?usage.input+usage.output:undefined)):undefined;
+  await invoke('report_provider_result', { providerId: entry.id, ok: error === undefined||error instanceof ProviderQuotaError,
+    retryAfterSecs: error instanceof ProviderHttpError ? error.retryAfterSecs ?? null : null,
+    tokenReservationId:entry.tokenReservationId??null,tokensUsed:tokensUsed??null });
+  usageByAttempt.delete(entry);
 }
 
 export async function transcribeRanked(audio:Blob,signal:AbortSignal=new AbortController().signal):Promise<string> {
@@ -43,7 +71,7 @@ export async function transcribeRanked(audio:Blob,signal:AbortSignal=new AbortCo
   while(!signal.aborted){
     const entry=await selectRankedProvider('stt',excluded,signal,{pick:pickProvider,status:providerStatus,wait:abortableDelay});
     try{const text=await transcribeWithProvider(entry,audio,signal);await reportProvider(entry);return text;}
-    catch(error){if(signal.aborted)throw error;await reportProvider(entry,error);if(!(error instanceof ProviderHttpError&&error.status===429))excluded.push(entry.id);}
+    catch(error){if(signal.aborted)throw error;await reportProvider(entry,error);if(error instanceof ProviderQuotaError)throw error;if(!(error instanceof ProviderHttpError&&error.status===429))excluded.push(entry.id);}
   }
   throw new DOMException('Aborted','AbortError');
 }
@@ -53,7 +81,10 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
   if (entry.curl) {
     const selectedVariables = Object.fromEntries(Object.entries(variables).flatMap(([key,value]) => [[key,value],[key.toLowerCase(),value]]));
     yield* fetchAIResponse({ provider: { id: entry.id, curl: entry.curl, streaming: entry.streaming, responseContentPath: entry.response_content_path },
-      selectedProvider: {provider:entry.id,variables:selectedVariables},systemPrompt:prompt,history,userMessage:text,imagesBase64:images,signal,registryReserved:true });
+      selectedProvider: {provider:entry.id,variables:{...selectedVariables,MODEL:entry.model,model:entry.model,MAX_TOKENS:String(outputTokenCeiling(entry)),max_tokens:String(outputTokenCeiling(entry)),REASONING_EFFORT:entry.reasoning_effort??'off',reasoning_effort:entry.reasoning_effort??'off'}},systemPrompt:prompt,history:fitModelHistory(entry,buildEnhancedSystemPrompt(prompt),text,history),userMessage:text,imagesBase64:images,signal,registryReserved:true,
+      resetReasoning:true,requestOverrides:entry.preset==='google'?{generationConfig:{...outputParameters(entry),...reasoningParameters(entry)}}:{...outputParameters(entry),...reasoningParameters(entry)},
+      beforeSend:async body=>reserveTokens(entry,new TextEncoder().encode(JSON.stringify(body)).length+images.reduce((sum,image)=>sum+Math.max(0,16384-image.length),0)+outputTokenCeiling(entry)+256,signal),
+      onUsage:event=>observeUsage(entry,event) });
     return;
   }
   prompt=buildEnhancedSystemPrompt(prompt);
@@ -67,29 +98,34 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
     const parts: unknown[] = [{text}];
     for (const data of images) parts.push({inline_data:{mime_type:imageMime(data),data}});
     url = `${entry.base_url.replace(/\/$/,'')}/models/${encodeURIComponent(entry.model)}:streamGenerateContent?alt=sse`;
-    body = {system_instruction:{parts:[{text:prompt}]},contents:[...history.map(m=>content(m.role,m.content)),{role:'user',parts}],generationConfig:outputParameters(entry)};
+    body = {system_instruction:{parts:[{text:prompt}]},contents:[...history.map(m=>content(m.role,m.content)),{role:'user',parts}],generationConfig:{...outputParameters(entry),...reasoningParameters(entry)}};
   } else if(entry.preset==='anthropic') {
     if(apiKey)headers['x-api-key']=apiKey;
     headers['anthropic-version']='2023-06-01';
     url=`${entry.base_url.replace(/\/$/,'')}/messages`;
     const content=images.length?[...images.map(data=>({type:'image',source:{type:'base64',media_type:imageMime(data),data}})),{type:'text',text}]:text;
-    body={model:entry.model,max_tokens:entry.max_output_tokens??4096,stream:true,system:prompt,messages:[...history.filter(m=>m.role==='user'||m.role==='assistant').map(m=>({role:m.role,content:typeof m.content==='string'?m.content:JSON.stringify(m.content)})),{role:'user',content}]};
+    body={model:entry.model,max_tokens:outputTokenCeiling(entry),stream:true,...reasoningParameters(entry),system:prompt,messages:[...history.filter(m=>m.role==='user'||m.role==='assistant').map(m=>({role:m.role,content:typeof m.content==='string'?m.content:JSON.stringify(m.content)})),{role:'user',content}]};
   } else {
     if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
     const content = images.length ? [...images.map(data=>({type:'image_url',image_url:{url:`data:${imageMime(data)};base64,${data}`}})),{type:'text',text}] : text;
     url = `${entry.base_url.replace(/\/$/,'')}/chat/completions`;
-    body = {model:entry.model,stream:true,...outputParameters(entry),messages:[{role:'system',content:prompt},...history,{role:'user',content}]};
+    const supportsUsage=entry.preset==='openai'||entry.preset==='openrouter'||entry.provider_id?.startsWith('local-')||entry.id.startsWith('fluely-local-')||/^https:\/\/(?:api\.openai\.com|openrouter\.ai)(?:\/|$)/i.test(entry.base_url);
+    body = {model:entry.model,stream:true,...(supportsUsage?{stream_options:{include_usage:true}}:{}),...outputParameters(entry),...reasoningParameters(entry),messages:[{role:'system',content:prompt},...history,{role:'user',content}]};
   }
+  await reserveTokens(entry,estimateBrainTokens(prompt,history,text,images)+outputTokenCeiling(entry),signal);
   const response = await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
   if (!response.ok) throw ProviderHttpError.fromResponse(response);
   if (!response.body) throw new Error('Порожній потік відповіді провайдера.');
   for await (const event of readEventStream(response.body,signal)) {
+    observeUsage(entry,event);
     const delta=getStreamingContent(event,'choices[0].message.content');
     if(delta)yield delta;
   }
 }
 
 export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, signal?: AbortSignal): Promise<string> {
+  // Audio APIs rarely return token usage; retain a conservative byte reservation.
+  await reserveTokens(entry,audio.size+(entry.max_output_tokens??16384),signal);
   if(entry.preset==='local-gguf-asr'){
     if(signal?.aborted)throw new DOMException('Aborted','AbortError');
     const bytes=new Uint8Array(await audio.arrayBuffer());let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);
@@ -108,10 +144,10 @@ export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, 
     const bytes=new Uint8Array(await audio.arrayBuffer());let binary='';for(const byte of bytes)binary+=String.fromCharCode(byte);
     const response=await providerFetch(`${entry.base_url.replace(/\/$/,'')}/models/${encodeURIComponent(entry.model)}:generateContent`,{
       method:'POST',headers:{'Content-Type':'application/json',...(key?{'x-goog-api-key':key}:{})},
-      body:JSON.stringify({contents:[{parts:[{text:'Transcribe the audio accurately. Return only the transcript, without commentary.'},{inline_data:{mime_type:audio.type||'audio/wav',data:btoa(binary)}}]}]}),signal,
+      body:JSON.stringify({contents:[{parts:[{text:'Transcribe the audio accurately. Return only the transcript, without commentary.'},{inline_data:{mime_type:audio.type||'audio/wav',data:btoa(binary)}}]}],generationConfig:outputParameters(entry)}),signal,
     });
     if(!response.ok)throw ProviderHttpError.fromResponse(response);
-    const json=await response.json();const text=json.candidates?.[0]?.content?.parts?.map((part:{text?:string})=>part.text??'').join('');
+    const json=await response.json();observeUsage(entry,json);const text=json.candidates?.[0]?.content?.parts?.map((part:{text?:string})=>part.text??'').join('');
     if(typeof text!=='string')throw new Error('Google STT не повернув транскрипт.');return text;
   }
   const headers: Record<string,string>={};
@@ -119,12 +155,13 @@ export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, 
   const body=new FormData();body.append('file',audio,'audio.wav');body.append('model',entry.model);
   const response=await providerFetch(`${entry.base_url.replace(/\/$/,'')}/audio/transcriptions`,{method:'POST',headers,body,signal});
   if(!response.ok)throw ProviderHttpError.fromResponse(response);
-  const json=await response.json();if(typeof json.text!=='string')throw new Error('STT повернув відповідь без транскрипту.');
+  const json=await response.json();observeUsage(entry,json);if(typeof json.text!=='string')throw new Error('STT повернув відповідь без транскрипту.');
   return json.text;
 }
 
 /** Independent TTS providers share ranking and quotas, but return binary audio. */
 export async function synthesizeWithProvider(entry:ProviderEntry,text:string,settings:{voice:string;rate:number;language:string},signal:AbortSignal):Promise<Blob> {
+  await reserveTokens(entry,new TextEncoder().encode(text).length+256+(entry.preset==='google'?outputTokenCeiling(entry):0),signal);
   const variables=await providerVariables(entry);
   if(entry.curl){
     const values={...Object.fromEntries(Object.entries(variables).map(([key,value])=>[key.toUpperCase(),value])),
@@ -145,12 +182,12 @@ export async function synthesizeWithProvider(entry:ProviderEntry,text:string,set
   if(entry.preset==='google'){
     if(key)headers['x-goog-api-key']=key;
     url=`${entry.base_url.replace(/\/$/,'')}/models/${encodeURIComponent(entry.model)}:generateContent`;
-    body={contents:[{parts:[{text:`Speak in ${settings.language}: ${text}`}]}],generationConfig:{responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:settings.voice||'Kore'}}}}};
+    body={contents:[{parts:[{text:`Speak in ${settings.language}: ${text}`}]}],generationConfig:{...outputParameters(entry),responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:settings.voice||'Kore'}}}}};
   }else if(key)headers.Authorization=`Bearer ${key}`;
   const response=await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
   if(!response.ok)throw ProviderHttpError.fromResponse(response);
   if(entry.preset!=='google')return response.blob();
-  const json=await response.json();const audio=json.candidates?.[0]?.content?.parts?.find((part:{inlineData?:unknown})=>part.inlineData)?.inlineData;
+  const json=await response.json();observeUsage(entry,json);const audio=json.candidates?.[0]?.content?.parts?.find((part:{inlineData?:unknown})=>part.inlineData)?.inlineData;
   if(!audio?.data)throw new Error('Google TTS не повернув аудіо.');
   const bytes=Uint8Array.from(atob(audio.data),char=>char.charCodeAt(0));
   if(!/pcm|L16/i.test(audio.mimeType??''))return new Blob([bytes],{type:audio.mimeType??'audio/wav'});

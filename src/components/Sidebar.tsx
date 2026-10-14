@@ -1,5 +1,7 @@
 import { t, useI18n } from "@/lib/i18n";
 import { SparklesIcon } from "lucide-react";
+import { useState } from 'react';
+import { invoke } from '@tauri-apps/api/core';
 import { Button } from "@/components";
 import { cn } from "@/lib/utils";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -7,7 +9,15 @@ import { openUrl } from "@tauri-apps/plugin-opener";
 import { useMenuItems, useVersion } from "@/hooks";
 
 export const Sidebar = () => {
-  useI18n();
+  const {language}=useI18n();
+  const [linkError,setLinkError]=useState('');
+  const openRepository=async()=>{
+    setLinkError('');
+    try{await invoke('open_repository');}catch(error){
+      console.error('Open repository:',error);
+      setLinkError(language==='uk'?'Не вдалося відкрити браузер. Посилання: https://github.com/Clawz1N1N/fluely':language==='ru'?'Не удалось открыть браузер. Ссылка: https://github.com/Clawz1N1N/fluely':'Could not open your browser. Link: https://github.com/Clawz1N1N/fluely');
+    }
+  };
   const { version, isLoading } = useVersion();
   const { menu, footerLinks, footerItems } = useMenuItems();
 
@@ -67,17 +77,23 @@ export const Sidebar = () => {
               title={item.title}
               size="sm"
               variant="outline"
-              onClick={() => openUrl(item.link)}
+              type="button"
+              aria-label="GitHub"
+              onClick={() => void openRepository()}
             >
               <item.icon className="size-3 lg:size-4 transition-all duration-300" />
             </Button>
           ))}
         </div>
+        {linkError&&<p role="alert" className="break-words text-xs text-destructive">{linkError}</p>}
 
         {footerItems.map((item, index) => (
           <a
             href={item.href}
-            onClick={item.action}
+            onClick={event=>{
+              if(item.href){event.preventDefault();void openUrl(item.href).catch(error=>{console.error(error);setLinkError(String(error));});}
+              else void item.action?.();
+            }}
             target="_blank"
             rel="noopener noreferrer"
             key={`${item.label}-${index}`}

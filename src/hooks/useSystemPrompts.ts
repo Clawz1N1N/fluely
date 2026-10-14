@@ -14,6 +14,7 @@ import type {
 import { DEFAULT_SYSTEM_PROMPT, STORAGE_KEYS } from "@/config";
 import { safeLocalStorage } from "@/lib";
 import { useApp } from "@/contexts";
+import { listenChatPreferences, updateChatPreferences } from '@/lib/overlay/chat-preferences';
 
 export const useSystemPrompts = () => {
   useI18n();
@@ -81,6 +82,7 @@ export const useSystemPrompts = () => {
       try {
         setError(null);
         const result = await updateSystemPrompt(id, input);
+        if(selectedPromptId===id)await updateChatPreferences({prompt_id:`user:${id}`,system_prompt:result.prompt});
         await fetchPrompts(); // Refresh list
         return result;
       } catch (err) {
@@ -91,7 +93,7 @@ export const useSystemPrompts = () => {
         throw err;
       }
     },
-    [fetchPrompts]
+    [fetchPrompts, selectedPromptId]
   );
 
   /**
@@ -102,6 +104,7 @@ export const useSystemPrompts = () => {
       try {
         setError(null);
         await deleteSystemPrompt(id);
+        if(selectedPromptId===id)await updateChatPreferences({prompt_id:null});
         await fetchPrompts(); // Refresh list
       } catch (err) {
         const errorMessage =
@@ -111,7 +114,7 @@ export const useSystemPrompts = () => {
         throw err;
       }
     },
-    [fetchPrompts]
+    [fetchPrompts,selectedPromptId]
   );
 
   /**
@@ -132,6 +135,11 @@ export const useSystemPrompts = () => {
   useEffect(() => {
     fetchPrompts();
   }, [fetchPrompts]);
+  useEffect(()=>{let disposed=false,off:(()=>void)|undefined;
+    void listenChatPreferences(value=>{if(disposed)return;setSelectedPromptId(value.prompt_id?.startsWith('user:')?Number(value.prompt_id.slice(5)):null);setSystemPrompt(value.system_prompt);})
+      .then(stop=>{if(disposed)stop();else off=stop;}).catch(err=>setError(String(err)));
+    return()=>{disposed=true;off?.();};
+  },[setSystemPrompt]);
 
   /**
    * Load selected prompt on mount and when prompts change
@@ -163,8 +171,8 @@ export const useSystemPrompts = () => {
    * Handle selecting a prompt
    */
   const handleSelectPrompt = useCallback(
-    (promptId: number) => {
-      const selectedPrompt = prompts.find((p) => p.id === promptId);
+    (promptId: number, suppliedPrompt?:SystemPrompt) => {
+      const selectedPrompt = suppliedPrompt??prompts.find((p) => p.id === promptId);
       if (selectedPrompt) {
         setSystemPrompt(selectedPrompt.prompt);
         setSelectedPromptId(promptId);
@@ -178,6 +186,7 @@ export const useSystemPrompts = () => {
         );
         // Clear any selected Fluely prompt when user selects their own prompt
         safeLocalStorage.removeItem("selected_pluely_prompt");
+        void updateChatPreferences({prompt_id:`user:${promptId}`,system_prompt:selectedPrompt.prompt}).catch(err=>setError(String(err)));
       }
     },
     [prompts, setSystemPrompt]

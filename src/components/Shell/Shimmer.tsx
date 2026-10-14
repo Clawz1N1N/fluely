@@ -35,14 +35,14 @@ export const Shimmer: React.FC<{ enabled: boolean; speed: number }> = ({
         borderRadius: 8,
         pointerEvents: "none",
         background:
-          "linear-gradient(90deg, rgba(255,0,128,0.55), rgba(0,200,255,0.55), rgba(255,220,0,0.55), rgba(255,0,128,0.55))",
+          "linear-gradient(90deg, rgba(255,80,170,0.95), rgba(60,220,255,0.95), rgba(255,220,80,0.95), rgba(255,80,170,0.95))",
         backgroundSize: "300% 100%",
         animation: `shimmer-slide ${duration}s linear infinite`,
-        padding: 1,
+        padding: 2,
         mask:'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
         maskComposite:'exclude',
         zIndex: 2,
-        opacity: flash?1:0.25,
+        opacity: flash?1:0.85,
       }}
     />
   );

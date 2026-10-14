@@ -479,6 +479,13 @@ fn retain_managed_preferences(mut runtime: ProviderEntry, previous: ProviderEntr
     runtime.limit_per_minute = previous.limit_per_minute;
     runtime.limit_per_hour = previous.limit_per_hour;
     runtime.limit_per_day = previous.limit_per_day;
+    runtime.token_limit_per_second = previous.token_limit_per_second;
+    runtime.token_limit_per_minute = previous.token_limit_per_minute;
+    runtime.token_limit_per_hour = previous.token_limit_per_hour;
+    runtime.token_limit_per_day = previous.token_limit_per_day;
+    runtime.manual_neutral = previous.manual_neutral;
+    runtime.reasoning_effort = previous.reasoning_effort;
+    runtime.reasoning_efforts = previous.reasoning_efforts;
     runtime.credential_id = previous.credential_id;
     runtime.secret_keys = previous.secret_keys;
     if !previous.display_name.is_empty() { runtime.display_name = previous.display_name; }
