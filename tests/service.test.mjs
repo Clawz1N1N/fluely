@@ -13,6 +13,74 @@ function fixture() {
     transcribe:async()=> 'Почуте', initialize:async()=>{}, speech:{update:()=>{},stop:()=>{},pause:()=>{},seek:()=>{},toggle:async()=>{}}};
   return{controller:new ServiceController(ports),handlers,calls,events};
 }
+test('controller restarts after effect cleanup with live listeners and a fresh request signal',async()=>{
+  const f=fixture();let signal;
+  f.controller.ports.answer=async function*(_batch,_history,value){signal=value;yield '<main>Restarted</main>';};
+  await f.controller.start();await f.controller.stop();await f.controller.start();
+  try{
+    assert.ok(f.handlers.has('shell-action'));
+    await f.controller.action({id:'restarted-gear',action:'settings',source:'test'});
+    assert.equal(f.calls.filter(c=>c.name==='open_dashboard').length,1);
+    await f.controller.batch({request_id:444,frames:[],transcript:[],questions:['Q']});
+    assert.equal(signal?.aborted,false);assert.equal(f.controller.snapshot.main,'Restarted');
+  }finally{await f.controller.stop();}
+});
+test('a failed settings initialization can be retried after the settings are repaired',async()=>{
+  const f=fixture();const invoke=f.controller.ports.invoke;let fail=true;
+  f.controller.ports.invoke=async(name,args)=>{if(name==='get_capture_settings'&&fail)throw Error('Temporary settings failure');return invoke(name,args);};
+  await f.controller.start();assert.equal(f.controller.snapshot.ready,false);fail=false;
+  await f.controller.start();
+  try{assert.equal(f.controller.snapshot.ready,true);await f.controller.action({id:'repaired-listen',action:'listen',source:'test'});assert.equal(f.controller.snapshot.listening,true);}
+  finally{await f.controller.stop();}
+});
+test('a replacement service adopts the native audio epoch before accepting transcripts',async()=>{
+  const f=fixture();const invoke=f.controller.ports.invoke;
+  f.controller.ports.invoke=async(name,args)=>name==='set_sleep_mode'?'native-replacement-epoch':invoke(name,args);
+  await f.controller.start();
+  try{
+    await f.controller.action({id:'new-listen',action:'listen',source:'test'});
+    await f.controller.audio(new Blob(['wav']),'[system]');
+    assert.equal(f.calls.find(c=>c.name==='continuous_add_transcript').args.expectedEpoch,'native-replacement-epoch');
+  }finally{await f.controller.stop();}
+});
+test('failed initialization recovers automatically after settings become available',async context=>{
+  context.mock.timers.enable({apis:['setTimeout']});
+  const f=fixture();const invoke=f.controller.ports.invoke;let fail=true;
+  f.controller.ports.invoke=async(name,args)=>{if(name==='get_capture_settings'&&fail)throw Error('Settings temporarily unavailable');return invoke(name,args);};
+  try{
+    await f.controller.start();assert.equal(f.controller.snapshot.ready,false);fail=false;
+    context.mock.timers.tick(3000);await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(f.controller.snapshot.ready,true);assert.equal(f.controller.snapshot.error,null);
+  }finally{await f.controller.stop();context.mock.timers.reset();}
+});
+test('effect cleanup during listener registration cannot stop the replacement lifecycle',async()=>{
+  const f=fixture();const listen=f.controller.ports.listen;let release,first=true,initialized=0;
+  f.controller.ports.initialize=async()=>{initialized++;};
+  f.controller.ports.listen=async(name,handler)=>{
+    if(name==='shell-action'&&first){first=false;await new Promise(resolve=>release=resolve);}
+    return listen(name,handler);
+  };
+  const starting=f.controller.start();await new Promise(resolve=>setImmediate(resolve));
+  const stopping=f.controller.stop();const replacement=f.controller.start();release();
+  await Promise.all([starting,stopping,replacement]);
+  try{
+    assert.equal(initialized,1);assert.ok(f.handlers.has('shell-action'));assert.equal(f.controller.snapshot.ready,true);
+    await f.controller.action({id:'after-registration-race',action:'settings',source:'test'});
+    assert.equal(f.calls.filter(c=>c.name==='open_dashboard').length,1);
+  }finally{await f.controller.stop();}
+});
+test('Settings bypasses an unfinished capture action so the user can recover',async()=>{
+  const f=fixture();const invoke=f.controller.ports.invoke;let release,startCapture;
+  const started=new Promise(resolve=>startCapture=resolve);
+  f.controller.ports.invoke=async(name,args)=>{if(name==='start_system_audio_capture'){startCapture();await new Promise(resolve=>release=resolve);}return invoke(name,args);};
+  await f.controller.start();const listening=f.controller.action({id:'slow-listen',action:'listen',source:'test'});await started;
+  try{
+    const gear=f.controller.action({id:'recovery-gear',action:'settings',source:'test'});
+    await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(f.calls.filter(c=>c.name==='open_dashboard').length,1);
+    release();await Promise.all([listening,gear]);
+  }finally{release?.();await listening;await f.controller.stop();}
+});
 test('sole executor deduplicates action and batch IDs and parses panels without chunk IPC',async()=>{
   const f=fixture();await f.controller.start();
   const action={id:'same',action:'ask',source:'answer',question:'Питання'};

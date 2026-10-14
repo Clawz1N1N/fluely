@@ -9,15 +9,16 @@ def report():
     return json.loads(subprocess.check_output(['powershell.exe','-NoProfile','-ExecutionPolicy','Bypass','-File','scripts/inspect-windows.ps1','-ProcessId',str(owned['pid']),'-Json'],encoding='utf-8'))
 def invoke(command,args=None):
     return js('window.__TAURI_INTERNALS__.invoke('+json.dumps(command)+((','+json.dumps(args)) if args is not None else '')+')')
-def settled(predicate):
-    deadline=time.monotonic()+10
+def settled(predicate,timeout=10):
+    deadline=time.monotonic()+timeout
     while time.monotonic()<deadline:
         if predicate():return
         time.sleep(.1)
     raise AssertionError('Native/frontend state did not settle')
 
 switch_tab(main['targetId'])
-assert invoke('get_app_version')=='0.2.0'
+expected_version=json.loads(pathlib.Path('package.json').read_text(encoding='utf-8'))['version']
+assert invoke('get_app_version')==expected_version
 bindings=invoke('get_registered_shortcuts')
 assert bindings['hide_all']=='ctrl+alt+h' and bindings['answer_interaction']=='shift+backslash',bindings
 invoke('open_dashboard')
@@ -77,7 +78,12 @@ for title in ['strip-top','strip-bottom','answer','Fluely - Dashboard']:
 restored=next(window for window in native if window['Title']=='Fluely - Dashboard')
 assert 'TOOLWINDOW' in restored['DecodedStyles'] and restored['DisplayAffinity']==17,restored
 print('hide_all_and_hidden_rebuild_restore',True)
-invoke('set_custom_layout',{'panels':panels});invoke('find_shell_buttons')
+invoke('set_custom_layout',{'panels':panels})
+# Eight independent WebViews can take longer than the CDP helper's synchronous
+# promise timeout on a busy CPU. Still require the actual command to finish.
+js("window.__layoutResetDone=false;window.__layoutResetError=null;window.__TAURI_INTERNALS__.invoke('find_shell_buttons').then(()=>window.__layoutResetDone=true,error=>window.__layoutResetError=String(error));true")
+settled(lambda:js('window.__layoutResetDone || !!window.__layoutResetError'),timeout=60)
+assert js('window.__layoutResetError') is None
 assert invoke('get_shell_settings')['ui_mode']=='buttons'
 invoke('set_ui_mode',{'mode':'sidestrips'})
 native=report()['Windows']

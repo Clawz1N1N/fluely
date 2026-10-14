@@ -1,6 +1,5 @@
 import {Theme} from "./components";
 import {InterfaceLanguage} from './components/InterfaceLanguage';
-import {LocalEngineSettings} from './components/LocalEngineSettings';
 import {IdentitySettings} from './components/IdentitySettings';
 import {LayoutEditor} from './components/LayoutEditor';
 import {OverlayHotkeys} from './components/OverlayHotkeys';
@@ -18,7 +17,6 @@ const Settings = () => {
       <OverlayHotkeys />
       <OverlaySettings />
       <LayoutEditor />
-      <LocalEngineSettings />
 
       {/* Autostart Toggle */}
       <IdentitySettings />

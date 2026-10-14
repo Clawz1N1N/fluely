@@ -1,6 +1,7 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 mod capture;
 mod app_paths;
+mod startup;
 mod db;
 mod shortcuts;
 mod shell;
@@ -93,7 +94,7 @@ fn shortcut_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    if let Err(error)=app_paths::configure_process_profile(){eprintln!("Fluely profile: {error}");return;}
+    if let Err(error)=app_paths::configure_process_profile(){startup::report(&error);return;}
     let builder = tauri::Builder::default()
         .plugin(shortcut_plugin())
         .plugin(
@@ -265,7 +266,7 @@ pub fn run() {
 
             // Build the custom overlay shell windows.
             if let Err(e) = shell::init_shell(app.handle()) {
-                eprintln!("Failed to initialize shell windows: {}", e);
+                return Err(format!("Failed to initialize shell windows: {e}").into());
             }
             if let Err(e) = shortcuts::setup_global_shortcuts(app.handle()) {
                 eprintln!("Failed to setup global shortcuts: {}", e);
@@ -283,10 +284,12 @@ pub fn run() {
         Ok(false)=>{},
         Err(error)=>eprintln!("Fluely executable alias: {error}"),
     }
-    if app_paths::webview_dir().expect("Invalid explicit profile directory").is_some() {
+    let webview_directory=match app_paths::webview_dir(){Ok(directory)=>directory,Err(error)=>{startup::report(&error);return;}};
+    if webview_directory.is_some() {
         for window in &mut context.config_mut().app.windows { if window.label == "main" { window.create = false; } }
     }
-    builder.build(context).expect("error while building Fluely application").run(|app,event|{
+    let application=match builder.build(context){Ok(app)=>app,Err(error)=>{startup::report(&error.to_string());return;}};
+    application.run(|app,event|{
         if matches!(event,tauri::RunEvent::Exit){
             app.state::<sleep::SleepState>().shutdown();
             app.state::<microphone::MicrophoneState>().shutdown();

@@ -1,7 +1,7 @@
 {
   "name": "fluely",
   "private": false,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Fluely: configurable desktop AI overlay with local and cloud models, speech and screen vision",
   "author": {
     "name": "Clawz1N1N",
@@ -37,7 +37,7 @@
     "dev": "node scripts/frontend.mjs dev",
     "build": "tsc && node scripts/frontend.mjs build",
     "preview": "vite preview",
-    "tauri": "tauri",
+    "tauri": "node scripts/tauri.mjs",
     "check": "node scripts/check-encoding.mjs && tsc --noEmit",
     "check:encoding": "node scripts/check-encoding.mjs",
     "test": "node --loader ./scripts/ts-loader.mjs --test tests/*.test.mjs"

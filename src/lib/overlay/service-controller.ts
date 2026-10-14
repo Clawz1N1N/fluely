@@ -28,7 +28,7 @@ export interface ServicePorts {
   speech: { configure?(settings:SpeechSettings):void; begin?():void; update(text: string, final: boolean): void; stop(): void; pause(): void; seek(delta:number): void; toggle(): Promise<void> };
 }
 export class ServiceController {
-  snapshot: ServiceSnapshot = structuredClone(INITIAL_SERVICE_STATE);
+  snapshot: ServiceSnapshot&{service_id:string} = {...structuredClone(INITIAL_SERVICE_STATE),service_id:crypto.randomUUID()};
   capture: CaptureOptions = {system_audio:true,microphone:true};
   private alive = false;
   private unlisten: Array<() => void> = [];
@@ -40,6 +40,11 @@ export class ServiceController {
   private ticker?: ReturnType<typeof setInterval>;
   private broadcastTimer?: ReturnType<typeof setTimeout>;
   private startup?: Promise<void>;
+  private stopping?:Promise<void>;
+  private lifecycle=0;
+  private booting=false;
+  private bootFailed=false;
+  private retry?:ReturnType<typeof setTimeout>;
   private systemCapturing = false;
   private microphoneCapturing = false;
   private captureOperations: Promise<void> = Promise.resolve();
@@ -72,15 +77,26 @@ export class ServiceController {
     void this.publish();
   }
   start(): Promise<void> {
-    if(this.startup)return this.startup;
+    if(this.alive&&this.startup&&(this.booting||!this.bootFailed))return this.startup;
+    if(this.retry){clearTimeout(this.retry);this.retry=undefined;}
+    if(this.ticker){clearInterval(this.ticker);this.ticker=undefined;}
+    for(const off of this.unlisten.splice(0))off();
+    const lifecycle=++this.lifecycle;
     this.alive=true;
-    this.startup=this.boot();return this.startup;
+    this.snapshot.ready=false;this.snapshot.error=null;this.booting=true;this.bootFailed=false;
+    this.abort=new AbortController();
+    this.startup=(this.stopping??Promise.resolve()).then(async()=>{
+      if(this.currentLifecycle(lifecycle))await this.boot(lifecycle);
+    }).finally(()=>{if(this.currentLifecycle(lifecycle))this.booting=false;});
+    return this.startup;
   }
+  private currentLifecycle(lifecycle:number):boolean{return this.alive&&this.lifecycle===lifecycle;}
   private async bind<T>(name:string,callback:(value:T)=>void): Promise<void> {
-    const off=await this.ports.listen(name,callback);
-    if(this.alive)this.unlisten.push(off);else off();
+    const lifecycle=this.lifecycle;
+    const off=await this.ports.listen<T>(name,value=>{if(this.currentLifecycle(lifecycle))return callback(value);});
+    if(this.currentLifecycle(lifecycle))this.unlisten.push(off);else off();
   }
-  private async boot(): Promise<void> {
+  private async boot(lifecycle:number): Promise<void> {
     try {
       await Promise.all([
         this.bind<ActionRequest>('shell-action',value=>{void this.action(value);}),
@@ -107,7 +123,7 @@ export class ServiceController {
         this.bind('system-audio-error',value=>this.setError(typeof value==='string'?new Error(value):value)),
         this.bind('continuous-error',value=>this.setError(new Error(String(value)))),
         this.bind('audio-encoding-error',value=>this.setError(new Error(String(value)))),
-        this.bind('shell-settings-changed',()=>{void this.refreshStatus().catch(error=>this.setError(error));}),
+        this.bind('shell-settings-changed',()=>{void (this.snapshot.ready?this.refreshStatus():this.start()).catch(error=>this.setError(error));}),
         this.bind<SleepSettings>('sleep-settings-changed',settings=>{this.sleepSettings=settings;}),
         this.bind<string>('sleep-alarm-error',error=>this.setError(new Error(error))),
         this.bind<boolean>('answer-visibility-changed',visible=>{this.snapshot.answerVisible=visible;void this.publish();}),
@@ -116,20 +132,32 @@ export class ServiceController {
           Object.assign(this.snapshot.tts,{enabled:settings.enabled,rate:settings.rate});void this.publish();
         }),
       ]);
-      if(!this.alive)return;
-      try{await this.ports.initialize();}catch(error){this.setError(error);}
+      if(!this.currentLifecycle(lifecycle))return;
+      await this.publish(true);
+      try{await this.ports.initialize();}catch(error){if(this.currentLifecycle(lifecycle))this.setError(error);}
+      if(!this.currentLifecycle(lifecycle))return;
       const [shell,capture,tts]=await Promise.all([
         this.ports.invoke<ShellSettings>('get_shell_settings'),
         this.ports.invoke<CaptureOptions>('get_capture_settings'),
         this.ports.invoke<{enabled:boolean;rate:number}>('get_tts_settings'),
       ]);
-      if(!this.alive)return;
+      if(!this.currentLifecycle(lifecycle))return;
       this.snapshot.shell=shell;this.capture=capture;
       Object.assign(this.snapshot.tts,{enabled:tts.enabled,rate:tts.rate});
+      // A replacement webview inherits the native counter, not the old JS owner.
+      this.modeEpoch++;
+      this.nativeAudioEpoch=await this.ports.invoke<string>('set_sleep_mode',{sleeping:false})??'0';
+      if(!this.currentLifecycle(lifecycle))return;
+      this.snapshot.sleeping=false;
       this.snapshot.ready=true;
       await this.refreshStatus();await this.publish(true);
+      if(!this.currentLifecycle(lifecycle))return;
       this.ticker=setInterval(()=>{void this.refreshStatus().catch(error=>this.setError(error));},1000);
-    } catch(error) {this.setError(error);await this.publish(true);}
+    } catch(error) {
+      if(!this.currentLifecycle(lifecycle))return;
+      this.snapshot.ready=false;this.bootFailed=true;this.setError(error);await this.publish(true).catch(()=>{});
+      if(this.currentLifecycle(lifecycle))this.retry=setTimeout(()=>{if(this.currentLifecycle(lifecycle))void this.start();},3000);
+    }
   }
   async refreshStatus(): Promise<void> {
     const status=await this.ports.status();if(!this.alive)return;
@@ -187,7 +215,7 @@ export class ServiceController {
     if(!request||typeof request.id!=='string'||!this.remember(this.seenActions,request.id))return Promise.resolve();
     const operation=async()=>{
       try {
-        if(request.action!=='snapshot')await this.startup;
+        if(request.action!=='snapshot'&&request.action!=='settings')await this.startup;
         if(!this.alive)return;
         this.snapshot.error=null;
         if(this.snapshot.sleeping&&!['mode','snapshot','settings','tts_stop'].includes(request.action))throw new Error('Ordinary actions are unavailable during Sleep mode.');
@@ -242,13 +270,13 @@ export class ServiceController {
       }catch(error){this.setError(error);await this.publish(true);await this.ports.emit('shell-action-result',{id:request.id,ok:false,error:this.snapshot.error});}
     };
     // Snapshot handshake must not wait behind a pending recording action.
-    if(request.action==='snapshot')return operation();
+    if(request.action==='snapshot'||request.action==='settings')return operation();
     const next=this.actions.catch(()=>{}).then(operation);this.actions=next;return next;
   }
   batch(batch: CaptureBatch): Promise<void> {
     if(!batch||!Number.isSafeInteger(batch.request_id)||!this.remember(this.seenBatches,batch.request_id))return Promise.resolve();
     const epoch=this.modeEpoch;
-    const deliveredDuringTransition=this.transitioning;
+    const deliveredDuringTransition=this.transitioning||!this.snapshot.ready;
     const next=this.requests.catch(()=>{}).then(async()=>{
       await this.startup;await this.modeTransition;if(!this.alive)return;
       const sleeping=this.snapshot.sleeping;
@@ -310,13 +338,21 @@ export class ServiceController {
       if(this.alive)await this.ports.invoke('flush_continuous');
     }
   }
-  async stop(): Promise<void> {
-    this.alive=false;this.snapshot.listening=false;this.abort.abort();this.ports.speech.stop();
-    if(this.ticker)clearInterval(this.ticker);if(this.broadcastTimer)clearTimeout(this.broadcastTimer);
+  stop(): Promise<void> {
+    if(!this.alive&&this.stopping)return this.stopping;
+    this.alive=false;this.lifecycle++;this.modeEpoch++;this.snapshot.ready=false;this.snapshot.listening=false;this.abort.abort();this.ports.speech.stop();
+    const startup=this.startup;this.startup=undefined;this.booting=false;
+    if(this.ticker){clearInterval(this.ticker);this.ticker=undefined;}if(this.broadcastTimer){clearTimeout(this.broadcastTimer);this.broadcastTimer=undefined;}
+    if(this.retry){clearTimeout(this.retry);this.retry=undefined;}
     for(const off of this.unlisten.splice(0))off();
-    await this.reconcileCapture().catch(()=>{});
-    await Promise.allSettled([this.ports.invoke('stop_continuous'),this.ports.invoke('stop_system_audio_capture'),this.ports.invoke('stop_microphone')]);
-    await Promise.allSettled([this.ports.invoke('stop_sleep_alarm'),this.ports.invoke('set_sleep_mode',{sleeping:false})]);
-    this.systemCapturing=false;this.microphoneCapturing=false;
+    this.stopping=(async()=>{
+      await startup?.catch(()=>{});
+      await this.reconcileCapture().catch(()=>{});
+      await Promise.allSettled([this.ports.invoke('stop_continuous'),this.ports.invoke('stop_system_audio_capture'),this.ports.invoke('stop_microphone')]);
+      await Promise.allSettled([this.ports.invoke('stop_sleep_alarm'),this.ports.invoke('set_sleep_mode',{sleeping:false})]);
+      this.systemCapturing=false;this.microphoneCapturing=false;
+      this.snapshot.sleeping=false;this.snapshot.continuous=false;
+    })();
+    return this.stopping;
   }
 }

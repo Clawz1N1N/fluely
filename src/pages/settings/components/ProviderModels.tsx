@@ -9,6 +9,7 @@ import { getSecret, setSecret,removeSecret } from '@/lib/storage/secure.storage'
 import { providerSecretKey } from '@/lib/storage/credential-store';
 import {validateProviderConfiguration} from './provider-config';
 import {publishProviderAccount} from '@/lib/overlay/provider-account-save';
+import {providerSource,providerOptions,canManageProviderAccount,type ProviderSource} from '@/pages/dev/ai-settings-config';
 
 const input='w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
 const button='rounded-md border px-3 py-2 text-sm hover:bg-accent disabled:opacity-50';
@@ -20,19 +21,21 @@ const info=(p:ProviderEntry):ModelInfo=>({id:p.model,name:p.model_display_name||
 function accountFor(p:ProviderEntry):ProviderAccount{return {provider_id:p.provider_id||p.preset,provider_name:p.provider_name||p.preset,credential_id:accountId(p),display_name:p.display_name||p.provider_id||p.preset,preset:p.preset,base_url:p.base_url,kind:p.kind};}
 
 /** One account owns one vault key; the registry owns independently configurable models. */
-export function ProviderModels({initialKind='brain'}:{initialKind?:ProviderKind}){
+export function ProviderModels({initialKind='brain',kind:fixedKind,source='all',hideHeader=false,hideToolbar=false,refreshKey=0}:{initialKind?:ProviderKind;kind?:ProviderKind;source?:ProviderSource;hideHeader?:boolean;hideToolbar?:boolean;refreshKey?:number}){
   useI18n();
-  const [providers,setProviders]=useState<ProviderEntry[]>([]),[kind,setKind]=useState(initialKind);
+  const [providers,setProviders]=useState<ProviderEntry[]>([]),[selectedKind,setKind]=useState(initialKind);
+  const kind=fixedKind??selectedKind;
+  const options=providerOptions(kind,source);
   const [account,setAccount]=useState<ProviderAccount|null>(null),[key,setKey]=useState('');
   const [models,setModels]=useState<ModelInfo[]>([]),[selected,setSelected]=useState<string[]>([]);
   const [dialog,setDialog]=useState(false),[search,setSearch]=useState(''),[manual,setManual]=useState('');
   const [busy,setBusy]=useState(false),[error,setError]=useState(''),[feedback,setFeedback]=useState('');
   const history=useRef(new SelectionHistory()),pending=useRef<AbortController|null>(null);
   const reload=async()=>setProviders(await invoke<ProviderEntry[]>('list_providers'));
-  useEffect(()=>{let alive=true;void invoke<ProviderEntry[]>('list_providers').then(p=>{if(alive)setProviders(p);}).catch(()=>{if(alive)setError(t('Could not load providers'));});return()=>{alive=false;pending.current?.abort();};},[]);
+  useEffect(()=>{let alive=true;void invoke<ProviderEntry[]>('list_providers').then(p=>{if(alive)setProviders(p);}).catch(()=>{if(alive)setError(t('Could not load providers'));});return()=>{alive=false;pending.current?.abort();};},[refreshKey]);
   const perform=async(action:()=>Promise<void>)=>{setBusy(true);setError('');setFeedback('');try{await action();}catch(e){setError(e instanceof Error?t(e.message):t('Could not save provider models'));}finally{setBusy(false);}};
   const chooseAccount=(next:ProviderAccount)=>{pending.current?.abort();setAccount({...next});setKey('');setModels(providers.filter(p=>p.kind===next.kind&&accountId(p)===next.credential_id).map(info));setSearch('');setError('');};
-  const create=()=>chooseAccount({provider_id:'openai',credential_id:crypto.randomUUID(),display_name:'',preset:'openai-compatible',base_url:BUILTIN_PROVIDERS[0].url,kind});
+  const create=()=>{const preset=options[0];chooseAccount({provider_id:preset?.id??'',credential_id:crypto.randomUUID(),display_name:'',preset:preset?.id??'other',base_url:preset?.url??'',kind});};
   const close=()=>{pending.current?.abort();setAccount(null);setKey('');setDialog(false);};
   const openSelection=(next:ModelInfo[])=>{setModels(next);const current=providers.filter(p=>p.kind===kind&&accountId(p)===account?.credential_id).map(p=>p.model).filter(id=>next.some(m=>m.id===id));history.current=new SelectionHistory(current);setSelected(current);setDialog(true);setSearch('');};
   const fetchModels=()=>void perform(async()=>{
@@ -62,7 +65,7 @@ export function ProviderModels({initialKind='brain'}:{initialKind?:ProviderKind}
     await publishProviderAccount(providerSecretKey(account.credential_id,'API_KEY'),key,{get:getSecret,set:setSecret,remove:removeSecret,publish:()=>invoke('save_provider_models',{credentialId:account.credential_id,kind,providers:entries})});
     await reload();close();setFeedback(t('Selected models saved'));
   });
-  const groups=new Map<string,ProviderEntry[]>();for(const p of providers.filter(p=>p.kind===kind)){const id=accountId(p);groups.set(id,[...(groups.get(id)??[]),p]);}
+  const groups=new Map<string,ProviderEntry[]>();for(const p of providers.filter(p=>p.kind===kind&&(source==='all'||providerSource(p)===source))){const id=accountId(p);groups.set(id,[...(groups.get(id)??[]),p]);}
   const selectedModels=models.filter(m=>selected.includes(m.id));
   const setModel=(id:string,patch:Partial<ModelInfo>)=>setModels(current=>current.map(m=>m.id===id?{...m,...patch}:m));
   const modelRow=(p:ProviderEntry)=><div key={p.id} className="space-y-3 rounded-md border p-3">
@@ -73,15 +76,15 @@ export function ProviderModels({initialKind='brain'}:{initialKind?:ProviderKind}
     <button className={button} disabled={busy} onClick={()=>void perform(async()=>{await invoke('upsert_provider',{provider:p});await reload();setFeedback(t('Model settings saved'));})}>{t('Save model settings')}</button>
   </div>;
   return <section className="space-y-4 rounded-lg border p-4" id="provider-models">
-    <h2 className="text-lg font-semibold">{t('Providers and models')}</h2>
-    <p className="text-sm text-muted-foreground">{t('Add an API key, fetch models, and save your selection. Each key has its own model list.')}</p>
+    {!hideHeader&&<><h2 className="text-lg font-semibold">{t('Providers and models')}</h2>
+    <p className="text-sm text-muted-foreground">{t('Add an API key, fetch models, and save your selection. Each key has its own model list.')}</p></>}
     {error&&<p role="alert" className="text-sm text-destructive">{error}</p>}{feedback&&<p role="status" className="text-sm">{feedback}</p>}
-    <div className="flex flex-wrap gap-2">{kinds.map(([id,label])=><button key={id} className={kind===id?primary:button} aria-pressed={kind===id} onClick={()=>{setKind(id);close();}}>{t(label)}</button>)}</div>
-    <button className={button} disabled={busy} onClick={()=>void perform(reload)}>{t('Refresh providers')}</button>
-    {[...groups].map(([id,list])=><div key={id} className="space-y-3 rounded-lg bg-muted/30 p-3"><div className="flex items-center gap-3"><h3 className="font-medium flex-1">{list[0].display_name||BUILTIN_PROVIDERS.find(p=>p.id===list[0].preset)?.name||list[0].preset}</h3><button className={button} disabled={busy} onClick={()=>chooseAccount(accountFor(list[0]))}>{t('Manage models and API key')}</button></div>{list.sort((a,b)=>a.rank-b.rank).map(modelRow)}</div>)}
-    {!account&&<div className="flex gap-2"><button className={primary} disabled={busy} onClick={create}>{t('Add provider or API key')}</button><button className={button} disabled={busy} onClick={()=>chooseAccount({provider_id:'',credential_id:crypto.randomUUID(),provider_name:'',display_name:'',preset:'other',base_url:'',kind})}>{t('Other')}</button></div>}
+    {!hideToolbar&&<><div className="flex flex-wrap gap-2">{kinds.map(([id,label])=><button key={id} className={kind===id?primary:button} aria-pressed={kind===id} onClick={()=>{setKind(id);close();}}>{t(label)}</button>)}</div>
+    <button className={button} disabled={busy} onClick={()=>void perform(reload)}>{t('Refresh providers')}</button></>}
+    {[...groups].map(([id,list])=><div key={id} className="space-y-3 rounded-lg bg-muted/30 p-3"><div className="flex items-center gap-3"><h3 className="font-medium flex-1">{list[0].display_name||BUILTIN_PROVIDERS.find(p=>p.id===list[0].preset)?.name||list[0].preset}</h3>{canManageProviderAccount(list[0])&&<button className={button} disabled={busy} onClick={()=>chooseAccount(accountFor(list[0]))}>{t('Manage models and API key')}</button>}</div>{list.sort((a,b)=>a.rank-b.rank).map(modelRow)}</div>)}
+    {!account&&<div className="flex gap-2"><button className={primary} disabled={busy} onClick={create}>{t('Add provider or API key')}</button>{source!=='system'&&<button className={button} disabled={busy} onClick={()=>chooseAccount({provider_id:'',credential_id:crypto.randomUUID(),provider_name:'',display_name:'',preset:'other',base_url:'',kind})}>{t('Other')}</button>}</div>}
     {account&&<div className="space-y-4 rounded-md border p-4">
-      <Field label="Provider"><select className={input} value={BUILTIN_PROVIDERS.some(p=>p.id===account.preset)?account.preset:'other'} disabled={busy} onChange={e=>{const p=BUILTIN_PROVIDERS.find(p=>p.id===e.target.value);setAccount({...account,preset:p?.id??'other',provider_id:p?.id??'',base_url:p?.url??'',display_name:p?.name??''});setModels([]);}}>{BUILTIN_PROVIDERS.filter(p=>kind==='stt'||!['local-whisper','system-stt'].includes(p.id)).map(p=><option key={p.id} value={p.id}>{p.name}</option>)}<option value="other">{t('Other')}</option></select></Field>
+      <Field label="Provider"><select className={input} value={options.some(p=>p.id===account.preset)?account.preset:'other'} disabled={busy} onChange={e=>{const p=options.find(p=>p.id===e.target.value);setAccount({...account,preset:p?.id??'other',provider_id:p?.id??'',base_url:p?.url??'',display_name:p?.name??''});setModels([]);}}>{options.map(p=><option key={p.id} value={p.id}>{p.name}</option>)}{source!=='system'&&<option value="other">{t('Other')}</option>}</select></Field>
       {!BUILTIN_PROVIDERS.some(p=>p.id===account.preset)&&<div className="grid gap-3 md:grid-cols-2"><Field label="Provider name"><input className={input} value={account.provider_name??''} onChange={e=>setAccount({...account,provider_name:e.target.value})}/></Field><Field label="Provider ID"><input className={input} value={account.provider_id} maxLength={128} onChange={e=>setAccount({...account,provider_id:e.target.value})}/></Field><Field label="Base URL"><input className={input} type="url" value={account.base_url} onChange={e=>setAccount({...account,base_url:e.target.value})}/></Field><p className="text-xs text-muted-foreground self-end">{t('Other providers use the OpenAI-compatible API.')}</p></div>}
       <Field label="Display name"><input className={input} value={account.display_name} placeholder={t('Name this API key or account')} onChange={e=>setAccount({...account,display_name:e.target.value})}/></Field>
       {account.preset!=='system-stt'&&<Field label="API key"><input className={input} type="password" autoComplete="new-password" value={key} placeholder={providers.some(p=>accountId(p)===account.credential_id&&p.secret_keys.length)?t('Leave blank to keep the saved key'):t('Enter API key')} onChange={e=>setKey(e.target.value)}/></Field>}

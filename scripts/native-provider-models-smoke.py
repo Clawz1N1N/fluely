@@ -14,7 +14,9 @@ invoke('open_dashboard')
 dashboard=next(tab for tab in list_tabs() if tab['url'].endswith('/settings'))
 switch_tab(dashboard['targetId'])
 js("(async()=>{localStorage.setItem('fluely.interface-language','en');await window.__TAURI_INTERNALS__.invoke('plugin:event|emit',{event:'fluely-interface-language',payload:'en'});})()")
-settle(lambda:js("document.querySelector('#provider-models h2')?.textContent")=='Providers and models')
+settle(lambda:js("[...document.querySelectorAll('aside nav button')].some(button=>button.textContent.trim()==='AI settings')"))
+js("[...document.querySelectorAll('aside nav button')].find(button=>button.textContent.trim()==='AI settings').click()")
+settle(lambda:js("location.pathname==='/dev' && document.querySelector('main header label')?.textContent==='AI settings' && !!document.querySelector('#provider-models')"))
 assert not js("document.querySelector('#provider-models').textContent.includes('cURL')")
 def button(text,scope='#provider-models'):
     return js("(()=>{const parent=document.querySelector("+json.dumps(scope)+");const b=[...parent.querySelectorAll('button')].find(b=>b.textContent.trim()==="+json.dumps(text)+");if(!b)throw Error('Missing button '+"+json.dumps(text)+");b.click();return true;})()")
@@ -63,7 +65,10 @@ try:
     assert owned_accounts[0]!=owned_accounts[1]
     print('native_provider_models_modal_cancel_history_capabilities_two_keys',True)
     # Vision picker must list only image-capable models, even if registered as brain.
-    js("[...document.querySelectorAll('select')].find(s=>[...s.options].some(o=>o.value==='pixel-text')).value='semantic'")
+    button('Vision','main')
+    settle(lambda:js("[...document.querySelectorAll('label')].some(label=>label.querySelector('span')?.textContent==='Screen vision method')"))
+    js("(()=>{const label=[...document.querySelectorAll('label')].find(label=>label.querySelector('span')?.textContent==='Screen vision method');const select=label.querySelector('select');Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set.call(select,'semantic');select.dispatchEvent(new Event('change',{bubbles:true}));})()")
+    settle(lambda:js("[...document.querySelectorAll('label')].some(label=>label.querySelector('span')?.textContent==='Vision model')"))
     selector=js("(()=>{const label=[...document.querySelectorAll('label')].find(l=>l.querySelector('span')?.textContent==='Vision model');const s=label.querySelector('select');s.dispatchEvent(new FocusEvent('focusin',{bubbles:true}));return true;})()")
     settle(lambda:js("(()=>{const label=[...document.querySelectorAll('label')].find(l=>l.querySelector('span')?.textContent==='Vision model');return [...label.querySelector('select').options].filter(o=>o.value).length;})()")>=2)
     options=js("(()=>{const label=[...document.querySelectorAll('label')].find(l=>l.querySelector('span')?.textContent==='Vision model');return [...label.querySelector('select').options].filter(o=>o.value).map(o=>o.textContent);})()")

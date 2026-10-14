@@ -9,7 +9,7 @@ export const ACTION_LABELS: Record<ButtonAction, string> = {
   answer: 'Відповідь', chat: 'Чат', tts: 'Озвучення', mode: 'Sleep mode', settings: 'Налаштування',
 };
 const ICONS = { listen: Mic, screenshot: Camera, continuous: Eye, answer: MessageSquare, chat: Square, tts: Volume2, mode: Moon, settings: Settings };
-export function actionIsDisabled(action:ButtonAction,state:ServiceSnapshot){return !state.ready||(state.sleeping&&action!=='mode'&&action!=='settings');}
+export function actionIsDisabled(action:ButtonAction,state:ServiceSnapshot){return action!=='settings'&&(!state.ready||(state.sleeping&&action!=='mode'));}
 
 export function actionIsActive(action: ButtonAction, state: ServiceSnapshot) {
   switch (action) {

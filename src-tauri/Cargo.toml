@@ -1,6 +1,6 @@
 [package]
 name = "fluely"
-version = "0.2.0"
+version = "0.2.1"
 description = "Configurable desktop AI overlay with local and cloud models, speech and screen vision"
 authors = ["Clawz1N1N", "Srikanth Nani <mail@srikanthnani.com>"]
 license = "GPL-3.0"

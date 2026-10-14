@@ -5,6 +5,17 @@ export const catalog: Record<string, Translations> = Object.create(null);
 
 // English and Ukrainian sources are aliases so older UI components share one catalog.
 const rows = String.raw`
+TTS settings were saved, but backend profiles could not be saved locally.|Налаштування озвучення збережено, але профілі способів озвучення не вдалося зберегти локально.|Настройки озвучивания сохранены, но профили способов озвучивания не удалось сохранить локально.
+AI settings|Налаштування ШІ|Настройки ИИ
+AI modules|Модулі ШІ|Модули ИИ
+Provider source|Джерело провайдерів|Источник провайдеров
+Reasoning|Мислення|Мышление
+Text-to-speech|Озвучення тексту|Озвучивание текста
+Cloud providers|Хмарні провайдери|Облачные провайдеры
+Fetch models to list the Windows speech recognizers installed on this PC. Install a speech language pack if no recognizers are available.|Натисніть «Отримати моделі», щоб побачити встановлені на цьому ПК рушії розпізнавання Windows. Якщо їх немає, встановіть мовний пакет розпізнавання.|Нажмите «Получить модели», чтобы увидеть установленные на этом ПК движки распознавания Windows. Если их нет, установите языковой пакет распознавания.
+Save to activate this text-to-speech backend.|Збережіть, щоб увімкнути цей спосіб озвучення.|Сохраните, чтобы включить этот способ озвучивания.
+Piper voice model (.onnx)|Модель голосу Piper (.onnx)|Модель голоса Piper (.onnx)
+Local Piper needs an installed executable and an ONNX voice model. Whisper and Nemotron recognize speech; they do not generate voices.|Локальному Piper потрібні встановлена програма та ONNX-модель голосу. Whisper і Nemotron розпізнають мовлення; вони не створюють голос.|Локальному Piper нужны установленная программа и ONNX-модель голоса. Whisper и Nemotron распознают речь; они не создают голос.
 GGUF ASR queue is full (maximum 8 recordings); use another STT provider or a smaller model|Черга GGUF ASR заповнена (максимум 8 записів); використайте інший STT або меншу модель|Очередь GGUF ASR заполнена (максимум 8 записей); используйте другой STT или меньшую модель
 GGUF ASR queue wait exceeded the 90-second request deadline|Очікування в черзі GGUF ASR перевищило 90-секундний ліміт запиту|Ожидание в очереди GGUF ASR превысило 90-секундный лимит запроса
 ASR native library|Нативна бібліотека ASR|Нативная библиотека ASR

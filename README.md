@@ -1,49 +1,146 @@
+<div align="center">
+
+<img src="src-tauri/icons/128x128.png" width="88" height="88" alt="Fluely icon" />
+
 # Fluely
 
-Fluely — настільний помічник ШІ з прозорим оверлеєм, голосовим введенням і зором екрана. Це незалежний форк [Pluely](https://github.com/iamsrikanthnani/pluely), який підтримує [Clawz1N1N](https://github.com/Clawz1N1N). Ліцензія: **GPL-3.0**. Автор оригіналу — Srikanth Nani; його авторство та ліцензії залежностей збережено.
+**A desktop AI assistant that stays within reach.**
 
-## Що змінилося
+Transparent controls, voice input, screen understanding, and your choice of local or cloud models.
 
-- Інтерфейс українською, російською та англійською. Перший запуск використовує мову системи; вибір у налаштуваннях зберігається й поширюється між вікнами.
-- Прозорий чат пропускає кліки до програми під ним. **Shift + \\** перемикає непрозорий режим введення, переміщення та зміни розміру; повторне натискання або Escape завершує взаємодію. Чат переміщується по всій робочій області монітора, за винятком панелі завдань.
-- Компактні бічні або верхня/нижня панелі, окремі кнопки та власний макет. Редактор дозволяє створювати групи, переносити кнопки між групами, змінювати порядок, кількість стовпців, координати, монітор, розміри, відступи, видимість і прозорість. Кнопку можна відокремити у власне вікно.
-- Окрема прозорість налаштувань, чату, стандартних панелей, окремих кнопок і власних груп. Службові повідомлення відображаються унизу праворуч.
-- **Ctrl + Alt + H** приховує всі видимі вікна Fluely, включно з налаштуваннями, чатом і повідомленнями. Повторне натискання повертає попередню видимість; обробка запитів продовжується. Обидві комбінації можна змінити безпосередньо в налаштуваннях.
-- Вікно налаштувань не має кнопки на панелі завдань. Згортання й закриття приховують його; шестерня знову відкриває налаштування.
-- Локальні й хмарні провайдери мислення, STT, TTS та зору мають незалежні пріоритети, ліміти й резервні варіанти. Ключі API зберігаються у системному сховищі облікових даних.
-- Провайдери налаштовуються без cURL: API-ключ, Fetch models, пошук і вибір чекбоксами. Кілька ключів одного сервісу мають окремі списки моделей; для кожної моделі можна змінити контекст, максимальну відповідь і підтримку зображень/аудіо. Other додає сервіс через окремі поля. [Докладніше](docs/provider-models.md).
-- Півмісяць вмикає **сон**: скріншоти й мікрофон зупиняються, звук системи продовжує STT → ШІ. Код у відповіді запускає власний трек на вибраному аудіовиході. Інструкція, код, трек, пристрій і гучність налаштовуються на сторінці **Аудіо**.
-- Нативний мікрофон CPAL/WASAPI без запиту дозволу вебсторінки. Запис запускається за дією користувача; політика приватності Windows зберігається. Кожне вікно отримує лише власне аудіо.
-- Власне ім’я EXE та запису автозапуску: стандартно **my program.exe**. Зміна імені потребує перезапуску. Це перейменовує лише власний процес Fluely; допоміжні процеси WebView2 мають системні назви.
+[Download](https://github.com/Clawz1N1N/fluely/releases) · [Provider guide](docs/provider-models.md) · [Vision guide](docs/vision-methods.md) · [Sleep mode](docs/sleep-mode.md) · [Issues](https://github.com/Clawz1N1N/fluely/issues)
 
-## Локальні моделі
+![Windows](https://img.shields.io/badge/platform-Windows_x64-0078D4)
+![License](https://img.shields.io/badge/license-GPL--3.0-blue)
+![Stack](https://img.shields.io/badge/built_with-Tauri_%2B_React_%2B_Rust-24C8D8)
 
-У **Налаштування → Локальні рушії** виберіть тип, встановіть рушій, завантажте рекомендовану модель або виберіть власні файли й натисніть «Запустити». Завантаження моделей відбувається лише після натискання кнопки. Офіційні пакети й моделі закріплено за версією та перевіряються за розміром і SHA-256; джерела й ліцензії зберігаються поруч.
+</div>
 
-| Призначення | Рушій | Рекомендована модель | Завантаження |
+Fluely combines a compact desktop overlay with chat, speech recognition, text-to-speech, and screen context. Use cloud services, run models on your own computer, or combine them. Separate provider priorities and limits let each task use the models you configure.
+
+This is an independent fork of [Pluely](https://github.com/iamsrikanthnani/pluely), maintained by [Clawz1N1N](https://github.com/Clawz1N1N). Original authorship and GPL licensing are preserved.
+
+## What you can do
+
+| Feature | How it works |
+|---|---|
+| **Work beside your apps** | The passive answer overlay is transparent and passes clicks through. Switch into interaction mode to type, move, or resize it. |
+| **Build your own controls** | Choose side strips, top/bottom strips, separate buttons, or a custom layout. Group, detach, reorder, enable, and position controls across monitors. Adjust size, spacing, columns, and opacity. |
+| **Talk and listen** | Native microphone and system-audio capture feed your chosen speech recognizer. Replies can use system, cloud, or separately configured Piper voices. |
+| **Understand the screen** | Send changed screenshots through a visual model, or try the experimental pixel-to-text method. Text-only reasoning models can receive scene descriptions. |
+| **Choose models without writing cURL** | Add a service and API key, fetch its models, and select them in a searchable checkbox dialog. Configure multiple accounts, capabilities, context/output limits, rank, and quotas. |
+| **Run locally** | Install optional CPU engines and explicitly download recommended models. Managed servers use loopback addresses; GGUF speech recognition runs in an isolated native worker. |
+| **Listen in Sleep mode** | The crescent stops ordinary actions, microphone, and screenshots while system audio continues through STT and AI. A configured response marker plays your chosen alarm track on the selected output. |
+| **Control visibility** | Hide and restore all Fluely windows with a shortcut. Processing continues while hidden. Settings stays off the taskbar and reopens from the gear. |
+
+The interface supports English, Ukrainian, and Russian. First launch follows the system language; your selection is saved and shared across windows.
+
+## Get started on Windows
+
+Windows x64 is the primary tested platform. The application requires the [Microsoft Edge WebView2 Runtime](https://developer.microsoft.com/en-us/microsoft-edge/webview2/). Local model downloads need additional disk space and an internet connection; cloud models need their service's API key.
+
+### Install
+
+1. Open [Fluely Releases](https://github.com/Clawz1N1N/fluely/releases) and choose the Windows MSI or `.exe` installer. Version 0.2.1 installs for your Windows user without administrator rights.
+2. Check the release's installation notes and checksums. Close an existing Fluely instance before updating.
+3. Run the installer, then open Fluely from its installed shortcut.
+4. Click the overlay **gear** to open Settings, then open **AI settings** in the navigation. Configure reasoning and, if needed, speech or vision.
+
+If an older copy was installed for all Windows users, uninstall that copy before switching to the per-user installer. See the release notes for verified installation and upgrade paths.
+
+### Portable use
+
+Download `fluely.exe`, or extract the portable ZIP, into a writable folder and double-click the executable. The single EXE is enough to start Fluely when WebView2 is installed; settings and runtime data are created in a `profile` folder beside it. Documentation and the optional `START_FLUELY.cmd` launcher are included in the ZIP for convenience.
+
+For a different profile location, run this from the folder containing `fluely.exe`:
+
+```powershell
+.\fluely.exe --fluely-profile "D:\Apps\Fluely\profile"
+```
+
+The profile path must be absolute. You can also set `FLUELY_DATA_DIR` before starting the application. The older `PLUELY_DATA_DIR` name remains supported.
+
+Installed copies use Windows application-data locations and retain existing compatible profiles.
+
+The profile contains settings, chat data, and optional downloaded engines/models. API secrets remain in the operating system's credential store; copying the profile does not transfer those credentials to another computer. Keep profiles out of source control.
+
+### Set up your first model
+
+Open **AI settings** and choose **Reasoning**, **Speech recognition**, **Text-to-speech**, or **Vision**. Each module separates **Cloud providers** and **Local engines**; speech modules also offer **System** where supported.
+
+For a cloud service, choose the module's **Cloud providers** tab, add an account, enter its key, and use **Fetch models**. Select suitable models and save. Use the separate **Other** fields for an OpenAI-compatible service. See the [provider guide](docs/provider-models.md) for discovery, account isolation, capabilities, and limits.
+
+For local use, choose the module's **Local engines** tab, install an engine, download the recommended model or select compatible files, and press **Start**. Engines and models are separate downloads. Start audio listening explicitly from the overlay.
+
+## Overlay controls
+
+| Control | Action |
+|---|---|
+| Microphone | Toggle configured audio listening. |
+| Camera | Capture the screen now. |
+| Eye | Toggle continuous screen vision. |
+| Answer / chat | Show the answer or open text input. |
+| Speaker | Toggle reply speech. |
+| Crescent | Enter or leave Sleep mode. |
+| Gear | Open Settings. |
+
+Default shortcuts:
+
+- **Shift + Backslash (`\`)** toggles answer interaction mode. Press it again or **Escape** to return to the passive overlay.
+- **Ctrl + Alt + H** hides all visible Fluely windows, including Settings, answers, and status. Press it again to restore the previous visibility.
+
+Both shortcuts are configurable. Answer movement uses the monitor's work area, excluding the taskbar. Separate opacity settings cover the answer, Settings, standard strips, individual buttons, and custom groups. Status appears in a small bottom-right window.
+
+## Local AI and speech
+
+The built-in downloader uses pinned official runtime packages and model revisions, checks sizes and SHA-256 hashes, and keeps source/license information beside downloads. Current recommendations favor modest CPU hardware; larger compatible models can be selected manually.
+
+| Purpose | Engine | Recommended download | Approximate model size |
 |---|---|---|---|
-| Мислення | [llama.cpp](https://github.com/ggml-org/llama.cpp) | Qwen2.5 0.5B Instruct Q4 GGUF | ≈491 МБ |
-| STT | [whisper.cpp](https://github.com/ggml-org/whisper.cpp) | багатомовна Whisper tiny | ≈78 МБ |
-| STT GGUF | [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) | Nemotron 3.5 ASR Streaming 0.6B Q4_K_M | ≈496 МБ |
-| Зір | llama.cpp / libmtmd | SmolVLM 256M Q8 GGUF + відповідний mmproj | ≈279 МБ |
+| Reasoning | [llama.cpp](https://github.com/ggml-org/llama.cpp) | Qwen2.5 0.5B Instruct Q4_K_M GGUF | 491 MB |
+| Speech recognition | [whisper.cpp](https://github.com/ggml-org/whisper.cpp) | Multilingual Whisper tiny | 78 MB |
+| GGUF speech recognition | [transcribe.cpp](https://github.com/handy-computer/transcribe.cpp) | Nemotron 3.5 ASR Streaming 0.6B Q4_K_M | 496 MB |
+| Visual understanding | llama.cpp / libmtmd | SmolVLM 256M Q8_0 plus matching projector | 279 MB combined |
 
-Процеси слухають тільки `127.0.0.1`; застосунок керує їх запуском і завершенням. Типові параметри орієнтовано на CPU та комп’ютери з 8 ГБ RAM: 4 потоки, контекст 2048. Для іншої моделі можна змінити ці параметри.
+Start with 4 threads and a 2048-token context on an 8 GB computer, then adjust to your hardware and workload. Running several models together consumes more memory than any single model. Performance and recognition accuracy depend on the model, language, audio, and machine.
 
-**Whisper використовує власні GGML `.bin` ваги, а не текстовий GGUF.** Для зору потрібен проєктор, сумісний із конкретною моделлю. Можна вибрати більші сумісні моделі: маленька рекомендована модель зору може неправильно читати дрібний текст, рахувати об’єкти та описувати деталі.
+**Model formats matter:** Whisper uses whisper.cpp GGML `.bin` weights. GGUF ASR needs a supported speech architecture; an ordinary reasoning GGUF is incompatible. A vision model needs its matching `mmproj` projector. Nemotron's model license is OpenMDW-1.1; it is not the same license as the application or Whisper.
 
-Простий системний STT доступний у **Провайдери й моделі → Розпізнавання мовлення → Windows: офлайн-розпізнавання**. Він використовує встановлені `System.Speech` recognizers і не потребує хмарного ключа. Якщо для вибраної мови Windows не має розпізнавача, застосунок повідомить про це; локальний Whisper є окремим доступним варіантом.
+For better Whisper recognition, consider a compatible multilingual `base` or `small` model instead of `tiny`, and set the spoken language when known. Larger models trade additional memory and latency for potentially better accuracy. The current pinned `b5454` engine corresponds to stable whisper.cpp `v1.9.5`; see the [CPU and model research notes](docs/whisper-cpu-options.md) for verified assets and hashes.
 
-## Зір для текстової моделі
+Windows offline speech recognition is also available through installed `System.Speech` recognizers. It does not require a cloud key or a downloaded Whisper model. If Windows has no recognizer for the chosen language, Fluely reports that explicitly; install the relevant speech pack or choose a local/cloud STT provider.
 
-Кнопка з оком вмикає зір екрана. Окрема локальна або хмарна мультимодальна модель аналізує зображення, об’єкти, діаграми, кольори та просторове розташування, а текстовий опис передається моделі мислення. OCR та дерево інтерфейсу можуть доповнювати цей опис. Без налаштованого провайдера зору застосунок показує помилку, а не видає OCR за мультимодальний аналіз.
+## Screen understanding
 
-У налаштуваннях є два методи: опис знімків окремою моделлю зору або **Pixel-to-text** на основі TheiaVision. Вибір моделі показує лише увімкнені моделі з позначеною підтримкою зображень. Pixel-to-text локально перетворює пікселі на текстові карти яскравості й кольорів, які інтерпретує модель мислення. Це експериментальний, втратний метод: розпізнавання об’єктів і дрібних деталей не гарантовано. [Порівняння методів та оцінка VDLM](docs/vision-methods.md).
+Fluely offers two methods:
 
-Змінені кадри проходять дедуплікацію. Обмежена пам’ять сцени підтримує наступні запитання; застарілі спостереження позначаються й видаляються. Налаштування визначають інтервал, монітор, кількість кадрів і розмір знімків. Захищений оверлей виключається з підтримуваного захоплення Windows; поведінка сторонніх засобів захоплення та ексклюзивного повноекранного режиму залежить від ОС.
+- **Visual model → scene description.** An enabled image-capable model describes screenshots for the reasoning model. OCR and Windows UI Automation can supplement the description. Missing vision configuration produces an explicit error.
+- **Pixel-to-text, experimental.** A local CPU conversion produces bounded luminance and color grids inspired by TheiaVision. The reasoning model interprets those grids directly, without a separate visual model.
 
-## Збірка
+Changed frames are deduplicated, and bounded per-monitor scene memory supports follow-up questions. Capture settings control the monitor, interval, frame count, and image size. Attached images can still go directly to an image-capable reasoning model.
 
-Потрібні Node.js 22+, Rust stable, інструменти платформної збірки Tauri та WebView2 на Windows. На Windows установіть Visual Studio C++ Build Tools і Windows SDK.
+Pixel grids are lossy, and small visual models can miss text, counts, and fine details. Neither method guarantees accurate object recognition. The [vision guide](docs/vision-methods.md) explains the implementation and why this is not a VDLM implementation.
+
+## Sleep and alarms
+
+Use **Audio → Sleep mode** to configure the additional prompt, literal alarm marker (default `<+!SOS!+>`), local track, output device, and track volume. Supported tracks are WAV, MP3, OGG, and FLAC.
+
+During Sleep, only system audio continues into speech recognition and reasoning. Regular response TTS stays silent. Marker detection works across streamed chunks and triggers at most once per response. Leaving Sleep restores the prior listening/vision flags; transitions cancel ordinary work and discard stale context.
+
+Use **Test alarm** to save the current settings and check the actual output route. An unavailable selected device produces an error instead of switching speakers, and track volume does not change Windows master volume. The model decides when to emit the marker; Fluely does not independently verify the condition. See the [Sleep guide](docs/sleep-mode.md).
+
+## Data, identity, and practical limits
+
+- **Local and cloud data:** local inference runs on your computer. Cloud providers receive the questions, audio, images, or scene text required for the selected task. API keys use the OS credential store.
+- **Existing profiles:** legacy Pluely profile, database, and credential identifiers remain compatible. Rebranding does not require deleting your existing data.
+- **Own process name:** release builds can launch a managed copy of Fluely with a configurable basename, default `my program.exe`. The Startup display name is configurable too. Save and explicitly restart to apply a new alias. Only Fluely's own binary/Startup entry is managed; WebView2 helper processes retain their own names.
+- **Startup permissions:** Windows can deny Startup changes to an executable carrying a low-integrity sandbox label. The production routines were verified at normal user integrity; no ACL changes or privileged broker are used. A sign-in/reboot acceptance test is separate from a registry round trip.
+- **Capture exclusion:** supported Windows capture paths honor the overlay's display-affinity setting. This is not a guarantee for every recorder or exclusive fullscreen application.
+- **Signing and platforms:** current builds are not presented as Authenticode-signed. Changing PE metadata can invalidate a signature. Windows features have received the primary native testing; macOS/Linux source paths do not establish equivalent release support.
+
+## Build from source
+
+Install Node.js 22+, a current Rust stable toolchain, and the [Tauri platform prerequisites](https://v2.tauri.app/start/prerequisites/). On Windows, use Visual Studio C++ Build Tools, the Windows SDK, and WebView2.
 
 ```sh
 npm ci
@@ -51,25 +148,18 @@ npm run check
 npm test
 cargo test --manifest-path src-tauri/Cargo.toml --lib
 npm run tauri dev
+```
+
+Create release binaries and installers with:
+
+```sh
 npm run tauri build
 ```
 
-`npm run build` збирає інтерфейс. `npm run tauri build` створює EXE та встановлювачі MSI/NSIS. У Windows-оточенні цього репозиторію `scripts/rust-env.cmd` налаштовує локально встановлені інструменти C++; на іншій машині використовуйте власне середовище збірки.
+`npm run build` builds the frontend only. `scripts/rust-env.cmd` configures the development machine's installed C++ tools; other machines should use their own toolchain environment. Debug builds skip the automatic process-alias relaunch. `FLUELY_DISABLE_ALIAS=1` also disables that relaunch for bounded diagnostics.
 
-Для переносного профілю задайте абсолютний `FLUELY_DATA_DIR` або `--fluely-profile <absolute-directory>`. Старий `PLUELY_DATA_DIR`, імена бази/ключів та наявний профіль Pluely підтримуються для сумісності. Особисті профілі, API-ключі, моделі, журналювання й результати збірки не слід додавати до Git.
+## License and attribution
 
-На Windows звичайний релізний запуск готує власну копію EXE з вибраним іменем у профілі й запускає її. Для налагодження цього не відбувається; `FLUELY_DISABLE_ALIAS=1` також вимикає автоматичний перезапуск. Зміна PE metadata може порушувати зовнішній Authenticode-підпис; поточна збірка не заявлена як підписана.
+Fluely is licensed under [GPL-3.0](LICENSE). Original Pluely author: [Srikanth Nani](https://github.com/iamsrikanthnani). Fork maintainer: [Clawz1N1N](https://github.com/Clawz1N1N).
 
-## English
-
-Fluely is an independent GPL-3.0 fork of Pluely with a click-through desktop overlay, a free layout editor, English/Ukrainian/Russian UI, native microphone input, configurable hide-all shortcuts, and separate local/cloud brain, STT, TTS and vision providers. Local execution uses llama.cpp and whisper.cpp with explicit, checksum-verified model downloads. A separate multimodal model gives text-only models semantic screen context; small model accuracy remains limited. Settings are opened with the overlay gear. See the sections above for controls, model formats, storage compatibility and build commands.
-
-## Русский
-
-Fluely — независимый GPL-3.0 форк Pluely: прозрачный оверлей с пропуском кликов, свободный редактор макета, русский/украинский/английский интерфейс, нативный микрофон, комбинация полного скрытия и независимые локальные/облачные провайдеры мышления, STT, TTS и зрения. Локальные модели работают через llama.cpp и whisper.cpp; скачивание запускается явно и проверяется по SHA-256. Отдельная мультимодальная модель передаёт текстовым моделям описание экрана. Точность маленьких моделей ограничена. Настройки открываются шестернёй на оверлее.
-
-## Авторство та залежності
-
-Оригінальний Pluely створив [Srikanth Nani](https://github.com/iamsrikanthnani). Форк зберігає GPL-3.0 та upstream copyright. Дивіться [LICENSE](LICENSE), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) та ліцензії завантажених рушіїв/моделей. Історичні звіти попереднього етапу зберігаються в `_research`; вони описують відповідні старі збірки.
-
-Код і звернення: [Clawz1N1N/fluely](https://github.com/Clawz1N1N/fluely).
+Original copyright, vendored dependency licenses, and TheiaVision's MIT notice are retained. Optional runtimes and models have their own licenses; consult [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the notices supplied with each download.

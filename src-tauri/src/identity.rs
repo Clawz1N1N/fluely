@@ -4,6 +4,8 @@
 mod core;
 #[path = "identity_native.rs"]
 mod native;
+#[path = "identity_launch_core.rs"]
+mod launch_core;
 use serde::{Deserialize, Serialize};
 use std::{
     hash::{Hash, Hasher},
@@ -363,11 +365,8 @@ fn alias_enabled() -> bool {
         && !cfg!(debug_assertions)
         && std::env::var_os("FLUELY_DISABLE_ALIAS").as_deref() != Some(std::ffi::OsStr::new("1"))
 }
-fn launch(target: &Path) -> Result<(), String> {
-    let mut command = std::process::Command::new(target);
-    command
-        .args(std::env::args_os().skip(1))
-        .env(LOOP_ENV, target);
+fn launch(target: &Path, profile: &Path) -> Result<(), String> {
+    let mut command = launch_core::command(target, profile, std::env::args_os().skip(1));
     #[cfg(windows)]
     {
         use std::os::windows::process::CommandExt;
@@ -427,7 +426,7 @@ pub fn bootstrap(identifier: &str) -> Result<bool, String> {
     }
     let config = previous.map(|stored| stored.config).unwrap_or_default();
     let next = save_for_profile(&profile, config)?;
-    launch(&next.target_executable)?;
+    launch(&next.target_executable, &profile)?;
     Ok(true)
 }
 
@@ -467,7 +466,7 @@ pub async fn restart_identity(app: AppHandle) -> Result<(), String> {
         if !stored.target_executable.is_file() {
             return Err("Own alias executable is missing; save the settings again".into());
         }
-        launch(&stored.target_executable)
+        launch(&stored.target_executable, &profile)
     })
     .await
     .map_err(|e| e.to_string())??;

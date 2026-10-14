@@ -1,5 +1,14 @@
 # Third-party notices
 
+## Tauri WiX installer template
+
+`src-tauri/installer/per-user.wxs` is derived from the official Tauri CLI 2.7.1
+[WiX template](https://github.com/tauri-apps/tauri/blob/tauri-cli-v2.7.1/crates/tauri-bundler/src/bundle/windows/msi/main.wxs),
+licensed under MIT or Apache-2.0 by the Tauri Programme within The Commons
+Conservancy and its contributors. Fluely changes installation scope, the
+per-user destination and per-user protocol registration. The original Tauri
+license terms remain applicable to this template.
+
 Fluely is a GPL-3.0 fork of [Pluely](https://github.com/iamsrikanthnani/pluely), originally created by Srikanth Nani. Original copyright and the full GPL text in LICENSE are retained. Fork maintenance: Clawz1N1N.
 
 The source uses Tauri, React, TypeScript, Vite, CPAL/WASAPI, SQLite and other dependencies listed in package-lock.json and src-tauri/Cargo.lock. Their license texts remain in their source distributions. Vendored tauri-plugin-keychain and tauri-plugin-sql preserve their upstream license files.

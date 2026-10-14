@@ -68,8 +68,8 @@ export const useMenuItems = () => {
 
     {
       icon: Code,
-      label: t("Dev space"),
-      href: "/dev-space",
+      label: t("AI settings"),
+      href: "/dev",
     },
   ];
 

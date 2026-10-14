@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "Fluely",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "identifier": "com.clawz1n1n.fluely",
   "build": {
     "beforeDevCommand": "npm run dev",
@@ -47,10 +47,15 @@
     ],
     "resources": [
       "info.plist",
-      "fluely.desktop"
+      "fluely.desktop",
+      "installed-profile.flag"
     ],
     "macOS": {
       "minimumSystemVersion": "10.13"
+    },
+    "windows": {
+      "wix": { "template": "installer/per-user.wxs" },
+      "nsis": { "installMode": "currentUser" }
     }
   },
   "plugins": {

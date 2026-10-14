@@ -228,7 +228,7 @@ npm error audit endpoint returned an error
     "detail": ""
   }
 }
-npm error Log files were not written due to an error writing to the directory: C:\Users\broma\AppData\Local\npm-cache\_logs
+npm error Log files were not written due to an error writing to the directory: %USERPROFILE%\AppData\Local\npm-cache\_logs
 npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal
 ```
 
@@ -308,14 +308,14 @@ npm error     at async module.exports (C:\nodejs\node_modules\npm\lib\cli\entry.
 npm error   errno: -4048,
 npm error   code: 'EPERM',
 npm error   syscall: 'mkdtemp',
-npm error   path: 'C:\\Users\\broma\\AppData\\Local\\npm-cache\\_cacache\\tmp\\XXXXXX'
+npm error   path: '%USERPROFILE%\\AppData\\Local\\npm-cache\\_cacache\\tmp\\XXXXXX'
 npm error }
 npm error
 npm error The operation was rejected by your operating system.
 npm error It's possible that the file was already in use (by a text editor or antivirus), or that you lack permissions to access it.
 npm error
 npm error If you believe this might be a permissions issue, please double-check the permissions of the file and its containing directories, or try running the command again as root/Administrator.
-npm error Log files were not written due to an error writing to the directory: C:\Users\broma\AppData\Local\npm-cache\_logs
+npm error Log files were not written due to an error writing to the directory: %USERPROFILE%\AppData\Local\npm-cache\_logs
 npm error You can rerun the command with `--loglevel=verbose` to see the logs in your terminal
 ```
 
@@ -325,7 +325,7 @@ Full log: logs/r2-vitest-availability.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-exact.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-exact.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -342,7 +342,7 @@ Full log: logs/ring-exact.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -359,7 +359,7 @@ Full log: logs/ring-no-z7.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-brepro.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -376,7 +376,7 @@ Full log: logs/ring-no-brepro.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -393,7 +393,7 @@ Full log: logs/ring-no-z7-brepro.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-wall.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -410,7 +410,7 @@ Full log: logs/ring-no-wall.log
 
 Directory: <workspace>
 
-Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `"C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-no-z7-brepro-wall.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -427,7 +427,7 @@ Full log: logs/ring-no-z7-brepro-wall.log
 
 Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-22621.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-22621.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -444,7 +444,7 @@ Full log: logs/ring-vcvars-22621.log
 
 Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.26100.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-26100.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.26100.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-26100.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -461,7 +461,7 @@ Full log: logs/ring-vcvars-26100.log
 
 Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.28000.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-28000.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.28000.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-28000.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -478,7 +478,7 @@ Full log: logs/ring-vcvars-28000.log
 
 Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-no-z7-brepro-wall.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-no-z7-brepro-wall.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -495,7 +495,7 @@ Full log: logs/ring-vcvars-no-z7-brepro-wall.log
 
 Directory: <workspace>
 
-Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 -vcvars_ver=14.44 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-1444.o" "-c" "C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
+Command: `call "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Auxiliary\Build\vcvars64.bat" 10.0.22621.0 -vcvars_ver=14.44 && cmd /d /c "set VCToolsVersion & set WindowsSDKVersion & set WindowsSdkDir & where cl" && "C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.44.35207\bin\HostX64\x64\cl.exe" "-nologo" "-MD" "-Z7" "-Brepro" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include" "-I" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\pregenerated" "-W4" "/Gy" "/Zc:wchar_t" "/Zc:forScope" "/Zc:inline" "/Wall" "/wd4127" "/wd4464" "/wd4514" "/wd4710" "/wd4711" "/wd4820" "/wd5045" "-DNDEBUG" "-Fo<workspace>\_research\ring-probe\ring-vcvars-1444.o" "-c" "%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\crypto/curve25519/curve25519.c"`
 
 Exit code: 1
 
@@ -522,7 +522,7 @@ Last 20 output lines:
 npm error code EALLOWREMOTE
 npm error Fetching packages of type "remote" have been disabled
 npm error Refusing to fetch "https://registry.npmjs.org/@tailwindcss/oxide-wasm32-wasi/-/oxide-wasm32-wasi-4.1.12.tgz"
-npm error A complete log of this run can be found in: C:\Users\broma\OneDrive\Desktop\my_pluely_fork\.npm-cache\_logs\2026-10-11T20_58_56_230Z-debug-0.log
+npm error A complete log of this run can be found in: <delivery>\.npm-cache\_logs\2026-10-11T20_58_56_230Z-debug-0.log
 ```
 
 Full log: logs/r2-vitest-workspace-cache.log
@@ -557,13 +557,13 @@ Last 20 lines:
 npm notice run vite
 ✘ [ERROR] Cannot read directory "../../../..": Access is denied.
 
-✘ [ERROR] Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
+✘ [ERROR] Could not resolve "<workspace>\\vite.config.ts"
 
 failed to load config from <workspace>\vite.config.ts
 error when starting dev server:
 Error: Build failed with 2 errors:
 error: Cannot read directory "../../../..": Access is denied.
-error: Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
+error: Could not resolve "<workspace>\\vite.config.ts"
     at failureErrorWithLog (<workspace>\node_modules\esbuild\lib\main.js:1467:15)
     at <workspace>\node_modules\esbuild\lib\main.js:926:25
     at runOnEndCallbacks (<workspace>\node_modules\esbuild\lib\main.js:1307:45)
@@ -590,7 +590,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-exact-native.log
@@ -607,7 +607,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-no-z7-native.log
@@ -624,7 +624,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-no-brepro-native.log
@@ -641,7 +641,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-no-z7-brepro-native.log
@@ -658,7 +658,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-no-wall-native.log
@@ -675,7 +675,7 @@ Last 20 output lines:
 
 ```text
 curve25519.c
-C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
+%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\ring-0.17.14\include\ring-core/base.h(25): fatal error C1083: Не удается открыть файл включение: stddef.h: No such file or directory,
 ```
 
 Full log: logs/ring-no-z7-brepro-wall-native.log
@@ -694,13 +694,13 @@ Last 20 output lines:
 npm notice run tsc && vite build
 ✘ [ERROR] Cannot read directory "../../../..": Access is denied.
 
-✘ [ERROR] Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
+✘ [ERROR] Could not resolve "<workspace>\\vite.config.ts"
 
 failed to load config from <workspace>\vite.config.ts
 error during build:
 Error: Build failed with 2 errors:
 error: Cannot read directory "../../../..": Access is denied.
-error: Could not resolve "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\vite.config.ts"
+error: Could not resolve "<workspace>\\vite.config.ts"
     at failureErrorWithLog (<workspace>\node_modules\esbuild\lib\main.js:1467:15)
     at <workspace>\node_modules\esbuild\lib\main.js:926:25
     at runOnEndCallbacks (<workspace>\node_modules\esbuild\lib\main.js:1307:45)
@@ -876,7 +876,7 @@ node_modules/onnxruntime-web/dist/ort-web.min.js (6:62546): Use of eval in "node
 rendering chunks...
 ✗ Build failed in 40.38s
 error during build:
-[vite:esbuild-transpile] remove C:\Users\broma\AppData\Local\Temp\esbuild-62479067d4172ec0bf1224f0ffc0a988ea4c200a2cf2482c7267e4cdcd55a77d: Access is denied.
+[vite:esbuild-transpile] remove %USERPROFILE%\AppData\Local\Temp\esbuild-62479067d4172ec0bf1224f0ffc0a988ea4c200a2cf2482c7267e4cdcd55a77d: Access is denied.
     at <workspace>\node_modules\esbuild\lib\main.js:718:38
     at responseCallbacks.<computed> (<workspace>\node_modules\esbuild\lib\main.js:603:9)
     at handleIncomingPacket (<workspace>\node_modules\esbuild\lib\main.js:657:31)
@@ -1216,7 +1216,7 @@ Last 20 output lines:
        3E000 .rdata
         2000 .reloc
        C1000 .text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 Native Rust executable starts.
 ```
 
@@ -1238,7 +1238,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r3-native-com-probe.log
@@ -1294,7 +1294,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 COM Rust executable starts.
 ```
 
@@ -1326,7 +1326,7 @@ Caused by:
 
   --- stderr
 
-  thread 'main' (2644) panicked at C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\zerocopy-0.8.26\build.rs:229:9:
+  thread 'main' (2644) panicked at %USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\zerocopy-0.8.26\build.rs:229:9:
   rustc failed with status: exit code: 0xc0000142
   rustc output:
   note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
@@ -1351,7 +1351,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 cwd=.: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
 cwd=C:/Users/broma/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.26: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
 ```
@@ -1374,7 +1374,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 cwd=.: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
 cwd=C:/Users/broma/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/zerocopy-0.8.26: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
 CREATE_NO_WINDOW: Ok(Output { status: ExitStatus(ExitStatus(3221225794)), stdout: "", stderr: "" })
@@ -1433,7 +1433,7 @@ not ok 1 - tests\\structured.test.mjs
   ---
   duration_ms: 448.1973
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\structured.test.mjs:1:1'
+  location: '<workspace>\\tests\\structured.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -1731,7 +1731,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
    Compiling vswhom-sys v0.1.3
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
@@ -1758,7 +1758,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
    Compiling vswhom-sys v0.1.3
     Checking icu_locale_core v2.0.0
     Checking percent-encoding v2.3.1
@@ -1792,7 +1792,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r3-parser-compile.log
@@ -2083,7 +2083,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
    Compiling vswhom-sys v0.1.3
     Checking icu_provider v2.0.0
    Compiling time-core v0.1.4
@@ -2117,7 +2117,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r4-shell-store-red-compile.log
@@ -2173,7 +2173,7 @@ Last 20 lines:
 
   ➜  Local:   http://localhost:1420/
      Running DevCommand (`cargo  run --no-default-features --color always --`)
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
         Info Watching <workspace>\src-tauri for changes...
    Compiling vswhom-sys v0.1.3
 error: failed to run custom build command for `vswhom-sys v0.1.3`
@@ -2233,7 +2233,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r4-shell-store-green-compile.log
@@ -2503,7 +2503,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r4-shell-store-reviewed-compile.log
@@ -2914,7 +2914,7 @@ Exit code: 101
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 1 test
 test tests::single_pick_consumes_one_request_across_all_windows ... FAILED
@@ -2953,7 +2953,7 @@ not ok 1 - tests\\credentials.test.mjs
   ---
   duration_ms: 742.8069
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\credentials.test.mjs:1:1'
+  location: '<workspace>\\tests\\credentials.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -3059,7 +3059,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 1 test
 test tests::single_pick_consumes_one_request_across_all_windows ... ok
@@ -3154,7 +3154,7 @@ not ok 1 - tests\\shell-service.test.mjs
   ---
   duration_ms: 431.4411
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\shell-service.test.mjs:1:1'
+  location: '<workspace>\\tests\\shell-service.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -3188,7 +3188,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 12 tests
 test tests::exclusions_disabled_kind_and_image_gate_do_not_consume_budget ... ok
@@ -3224,7 +3224,7 @@ not ok 1 - tests\\network.test.mjs
   ---
   duration_ms: 508.4044
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\network.test.mjs:1:1'
+  location: '<workspace>\\tests\\network.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -3330,7 +3330,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 5 tests
 test tests::old_metadata_gets_all_frontend_defaults ... ok
@@ -3359,7 +3359,7 @@ not ok 1 - tests\\service.test.mjs
   ---
   duration_ms: 447.3872
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\service.test.mjs:1:1'
+  location: '<workspace>\\tests\\service.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -3390,7 +3390,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 7 tests
 test tests::after_speech_deadline_starts_with_first_context ... ok
@@ -3487,7 +3487,7 @@ Exit code: 101
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
    Compiling vswhom-sys v0.1.3
 error: failed to run custom build command for `vswhom-sys v0.1.3`
 
@@ -3544,7 +3544,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 7 tests
 test tests::after_speech_deadline_starts_with_first_context ... ok
@@ -3589,7 +3589,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r5-capture-rustfmt.log
@@ -3609,7 +3609,7 @@ not ok 1 - tests\\speech.test.mjs
   ---
   duration_ms: 426.0665
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\speech.test.mjs:1:1'
+  location: '<workspace>\\tests\\speech.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -3680,10 +3680,10 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 error: linking with `link.exe` failed: exit code: 1181
   |
-  = note: "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\rustcbdTEve\\symbols.o" "<11 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\debug\\deps/libtauri-a499677259465649.rlib" "src-tauri\\target\\debug\\deps/{libdirs-b331ced2b2c7237e,libdirs_sys-ef754249a51745da,liboption_ext-1b1f0de9680ccdf0,libwindow_vibrancy-7f181337665ff6f4,libmime-4e1e1f648333f894,libgetrandom-a6567cf2ae69d232,libtauri_runtime_wry-f83317c2d11a0acc,libsoftbuffer-f345912b3dae0df5,libwry-e48a11da0d8a5549,libtao-568f6c60ce81f878,libwindows_version-da60dbabad63b2c8,liblog-e46cf55bcd329e33,liblazy_static-f5ce520619b7341f,libmuda-db4623e369d9edfd,libwindows_sys-9d514d9a15e7e2c4,libwindows_targets-a652594f9d110b33,libkeyboard_types-8b99f788e08792ce,libbitflags-b4b0edddda6d79a0,libunicode_segmentation-7b45ca4159c0e2e0,libonce_cell-555430c1890d0425,libcrossbeam_channel-a42f31248d4e0f11,libcrossbeam_utils-43386cc734374d01,libtokio-88127afd228226e0,libsocket2-b7f5b170df727415,libmio-fefd39be36caec6c,libparking_lot-6048507e46709f77,libparking_lot_core-4c49b3133df30ec8,libcfg_if-0ab342f271b64c19,liblock_api-d394ea2f1bfb2733,libscopeguard-9676f3a15593b57d,libpin_project_lite-376025b213b6b8c4,libtauri_runtime-50ebdaa22b6f5312,libwebview2_com-e59340407b9d5149,libwebview2_com_sys-5bc6c44300a25e2e,libcookie-19ff53fb9fb1dc6f,libtime-e4a4f0cd2eedbfd0,libtime_core-7592b3b6ae0c2632,libnum_conv-076656bd7bb900eb,libderanged-35bf659e7b354288,libpowerfmt-91c2a7a0468e2714,libwindows-78d39e1734753091,libwindows_collections-300e458590c4705a,libwindows_core-3b4cbdbbcdadc376,libwindows_strings-4b964f85437d5d13,libwindows_result-0fd82cb1d60dbf99,libwindows_link-009379110338dbf1,libdpi-881de92a3aa1e48e,libserialize_to_javascript-4284decbf4fd0367,libraw_window_handle-457681b07d4ae0d3,libtauri_utils-67c190d3922e7859,libdunce-364c964ad7af664a,libinfer-08a6d42fc67475ac,libcfb-632468754922d674,libbyteorder-2039fa7114d7586e,libuuid-e15cce2133bb1cbb,libbrotli-355790f7dfd1c9a2,libbrotli_decompressor-121dd413f4f5d5f3,liballoc_stdlib-b2f4e6e7b1289205,liballoc_no_stdlib-6faa74c49d69ac43,liburlpattern-513275ed0d6de3bf,libunic_ucd_ident-c56e343c74cf64d7,libunic_ucd_version-cdc9472252c7c43b,libunic_common-773f513399c6e8ce,libunic_char_property-2cb93dc135537c36,libunic_char_range-9cc79a5380a2a4b7,libregex-744c430ac8485eb1,libregex_automata-5891eb383654cc51,libaho_corasick-991816dd86e89dd0,libregex_syntax-33105c6b94920d55,libglob-42bc6c6ef81ba769,libwalkdir-e66599da805a0a7b,libsame_file-6e028d440af3caa9,libwinapi_util-2ca9a28cb7d36d80,libwindows_sys-a15d5f5750c10539,libwindows_targets-44c005a22dda159d,libjson_patch-9d1e955557dd1286,libthiserror-31939ca28475c055,libjsonptr-5ef164b76b2cd6e2,libserde_with-e6f74531611c6b26,libserde_json-8a9eb406b35d8e16,libmemchr-3334553162413ee2,libryu-b74af20bf31d8d9f,libhttp-88e748de1a1e438b,libitoa-a56583bc2b8e861d,libbytes-d947f3d80df6b95c,libfnv-36728eea275fa207,libphf-29dc5ef0cad0b301,libphf_shared-3711dd84c8ad4932,libsiphasher-528601dc4641cb9d,libtoml-cf251e2d02affe31,libtoml_writer-a02a1e797f936880,libtoml_parser-010f48eecdc5daec,libwinnow-33a5e95c88a2e5f0,libserde_spanned-9041f1e578a40ffb,libtoml_datetime-e88480bf05a62c43,libserde_untagged-e60be1e08c8d497d,liberased_serde-c90605fd6ae29c0f,libtypeid-216a312e4f9da2c8,liburl-a1ce7e038c31256e,libidna-a9c1e5715d5430b5,libutf8_iter-2a14d849263544ef,libidna_adapter-f81affec105d46a1,libicu_properties-185d4acf1ba8a2f5,libicu_properties_data-5e356b9aa5f95a1b,libicu_normalizer-21bbabdfa3c22b20,libsmallvec-9951de9d40ab6e60,libicu_normalizer_data-f6ea7f4ae5bb6b8a,libicu_collections-ecbffe37bb15b968,libpotential_utf-a137a436bab5b1be,libicu_provider-b6ef4a133b2a7e55,libicu_locale_core-5b26b751f42b031e,libtinystr-9470a7da1fd7c111,liblitemap-f14ccdf021cbe665,libwriteable-c3670b493ea2f0cd,libzerovec-af4986a4427adb33,libzerotrie-823d108b166d52f4,libyoke-49138591c68c6c97,libstable_deref_trait-f3ad62c20865b167,libzerofrom-200d350b9971c66c,libform_urlencoded-cdee0266979142b8,libpercent_encoding-91b439957dcb619c,libthiserror-0af1ddda0e14a110,libanyhow-8ebb6b4a07ede215,libsemver-9dd033217175344e}.rlib" "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\debug\\deps/libserde-747e161eb53ca74d.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "windows.0.53.0.lib" "windows.0.52.0.lib" "advapi32.lib" "windows.0.52.0.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:src-tauri\\target\\provider-registry-tests.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-0.natvis" "/NATVIS:C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-1.natvis" "/NATVIS:C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-2.natvis"
+  = note: "C:\\Program Files\\Microsoft Visual Studio\\18\\Community\\VC\\Tools\\MSVC\\14.51.36231\\bin\\HostX64\\x64\\link.exe" "/NOLOGO" "<workspace>\\src-tauri\\target\\rustcbdTEve\\symbols.o" "<11 object files omitted>" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libtest-*,libgetopts-*,librustc_std_workspace_std-*}.rlib" "<workspace>\\src-tauri\\target\\debug\\deps/libtauri-a499677259465649.rlib" "src-tauri\\target\\debug\\deps/{libdirs-b331ced2b2c7237e,libdirs_sys-ef754249a51745da,liboption_ext-1b1f0de9680ccdf0,libwindow_vibrancy-7f181337665ff6f4,libmime-4e1e1f648333f894,libgetrandom-a6567cf2ae69d232,libtauri_runtime_wry-f83317c2d11a0acc,libsoftbuffer-f345912b3dae0df5,libwry-e48a11da0d8a5549,libtao-568f6c60ce81f878,libwindows_version-da60dbabad63b2c8,liblog-e46cf55bcd329e33,liblazy_static-f5ce520619b7341f,libmuda-db4623e369d9edfd,libwindows_sys-9d514d9a15e7e2c4,libwindows_targets-a652594f9d110b33,libkeyboard_types-8b99f788e08792ce,libbitflags-b4b0edddda6d79a0,libunicode_segmentation-7b45ca4159c0e2e0,libonce_cell-555430c1890d0425,libcrossbeam_channel-a42f31248d4e0f11,libcrossbeam_utils-43386cc734374d01,libtokio-88127afd228226e0,libsocket2-b7f5b170df727415,libmio-fefd39be36caec6c,libparking_lot-6048507e46709f77,libparking_lot_core-4c49b3133df30ec8,libcfg_if-0ab342f271b64c19,liblock_api-d394ea2f1bfb2733,libscopeguard-9676f3a15593b57d,libpin_project_lite-376025b213b6b8c4,libtauri_runtime-50ebdaa22b6f5312,libwebview2_com-e59340407b9d5149,libwebview2_com_sys-5bc6c44300a25e2e,libcookie-19ff53fb9fb1dc6f,libtime-e4a4f0cd2eedbfd0,libtime_core-7592b3b6ae0c2632,libnum_conv-076656bd7bb900eb,libderanged-35bf659e7b354288,libpowerfmt-91c2a7a0468e2714,libwindows-78d39e1734753091,libwindows_collections-300e458590c4705a,libwindows_core-3b4cbdbbcdadc376,libwindows_strings-4b964f85437d5d13,libwindows_result-0fd82cb1d60dbf99,libwindows_link-009379110338dbf1,libdpi-881de92a3aa1e48e,libserialize_to_javascript-4284decbf4fd0367,libraw_window_handle-457681b07d4ae0d3,libtauri_utils-67c190d3922e7859,libdunce-364c964ad7af664a,libinfer-08a6d42fc67475ac,libcfb-632468754922d674,libbyteorder-2039fa7114d7586e,libuuid-e15cce2133bb1cbb,libbrotli-355790f7dfd1c9a2,libbrotli_decompressor-121dd413f4f5d5f3,liballoc_stdlib-b2f4e6e7b1289205,liballoc_no_stdlib-6faa74c49d69ac43,liburlpattern-513275ed0d6de3bf,libunic_ucd_ident-c56e343c74cf64d7,libunic_ucd_version-cdc9472252c7c43b,libunic_common-773f513399c6e8ce,libunic_char_property-2cb93dc135537c36,libunic_char_range-9cc79a5380a2a4b7,libregex-744c430ac8485eb1,libregex_automata-5891eb383654cc51,libaho_corasick-991816dd86e89dd0,libregex_syntax-33105c6b94920d55,libglob-42bc6c6ef81ba769,libwalkdir-e66599da805a0a7b,libsame_file-6e028d440af3caa9,libwinapi_util-2ca9a28cb7d36d80,libwindows_sys-a15d5f5750c10539,libwindows_targets-44c005a22dda159d,libjson_patch-9d1e955557dd1286,libthiserror-31939ca28475c055,libjsonptr-5ef164b76b2cd6e2,libserde_with-e6f74531611c6b26,libserde_json-8a9eb406b35d8e16,libmemchr-3334553162413ee2,libryu-b74af20bf31d8d9f,libhttp-88e748de1a1e438b,libitoa-a56583bc2b8e861d,libbytes-d947f3d80df6b95c,libfnv-36728eea275fa207,libphf-29dc5ef0cad0b301,libphf_shared-3711dd84c8ad4932,libsiphasher-528601dc4641cb9d,libtoml-cf251e2d02affe31,libtoml_writer-a02a1e797f936880,libtoml_parser-010f48eecdc5daec,libwinnow-33a5e95c88a2e5f0,libserde_spanned-9041f1e578a40ffb,libtoml_datetime-e88480bf05a62c43,libserde_untagged-e60be1e08c8d497d,liberased_serde-c90605fd6ae29c0f,libtypeid-216a312e4f9da2c8,liburl-a1ce7e038c31256e,libidna-a9c1e5715d5430b5,libutf8_iter-2a14d849263544ef,libidna_adapter-f81affec105d46a1,libicu_properties-185d4acf1ba8a2f5,libicu_properties_data-5e356b9aa5f95a1b,libicu_normalizer-21bbabdfa3c22b20,libsmallvec-9951de9d40ab6e60,libicu_normalizer_data-f6ea7f4ae5bb6b8a,libicu_collections-ecbffe37bb15b968,libpotential_utf-a137a436bab5b1be,libicu_provider-b6ef4a133b2a7e55,libicu_locale_core-5b26b751f42b031e,libtinystr-9470a7da1fd7c111,liblitemap-f14ccdf021cbe665,libwriteable-c3670b493ea2f0cd,libzerovec-af4986a4427adb33,libzerotrie-823d108b166d52f4,libyoke-49138591c68c6c97,libstable_deref_trait-f3ad62c20865b167,libzerofrom-200d350b9971c66c,libform_urlencoded-cdee0266979142b8,libpercent_encoding-91b439957dcb619c,libthiserror-0af1ddda0e14a110,libanyhow-8ebb6b4a07ede215,libsemver-9dd033217175344e}.rlib" "<workspace>\\src-tauri\\target\\debug\\deps/libserde-747e161eb53ca74d.rlib" "<sysroot>\\lib\\rustlib\\x86_64-pc-windows-msvc\\lib/{libstd-*,libpanic_unwind-*,libcfg_if-*,libwindows_link-*,librustc_demangle-*,libstd_detect-*,libhashbrown-*,librustc_std_workspace_alloc-*,libunwind-*,librustc_std_workspace_core-*,liballoc-*,libcore-*,libcompiler_builtins-*}.rlib" "kernel32.lib" "windows.0.53.0.lib" "windows.0.52.0.lib" "advapi32.lib" "windows.0.52.0.lib" "kernel32.lib" "kernel32.lib" "kernel32.lib" "ntdll.lib" "userenv.lib" "ws2_32.lib" "dbghelp.lib" "/defaultlib:msvcrt" "/NXCOMPAT" "/OUT:src-tauri\\target\\provider-registry-tests.exe" "/OPT:REF,NOICF" "/DEBUG" "/PDBALTPATH:%_PDB%" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\intrinsic.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\liballoc.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libcore.natvis" "/NATVIS:<sysroot>\\lib\\rustlib\\etc\\libstd.natvis" "/NATVIS:<workspace>\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-0.natvis" "/NATVIS:<workspace>\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-1.natvis" "/NATVIS:<workspace>\\src-tauri\\target\\rustcbdTEve\\r5_provider_tests-2.natvis"
   = note: some arguments are omitted. use `--verbose` to show all linker arguments
   = note: LINK : fatal error LNK1181: не удается открыть входной файл "windows.0.53.0.lib"
 
@@ -3732,7 +3732,7 @@ Full log: logs/r5-capture-lifecycle-red.log
 
 Directory: <workspace>
 
-Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
 Exit code: 0
 
@@ -3774,7 +3774,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 9 tests
 test tests::after_speech_deadline_starts_with_first_context ... ok
@@ -3808,7 +3808,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r5-provider-rustfmt.log
@@ -3842,7 +3842,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 warning: in the working copy of 'src-tauri/src/continuous.rs', LF will be replaced by CRLF the next time Git touches it
 ```
 
@@ -3859,7 +3859,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 warning: in the working copy of 'src-tauri/src/continuous.rs', LF will be replaced by CRLF the next time Git touches it
 ```
 
@@ -3869,7 +3869,7 @@ Full log: logs/r5-capture-final-format2.log
 
 Directory: <workspace>
 
-Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
 Exit code: 0
 
@@ -3941,7 +3941,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 ```
 
 Full log: logs/r5-provider-final-rustfmt.log
@@ -3971,7 +3971,7 @@ Full log: logs/r5-agent-tsc.log
 
 Directory: <workspace>
 
-Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=C:\Users\broma\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
+Command: `set CARGO_PKG_NAME=pluely& set CARGO_PKG_VERSION=0.1.9& call scripts\rust-env.cmd rustc --edition=2021 --test _research\temp\r5-provider-tests.rs -o src-tauri\target\provider-registry-tests.exe -L dependency=src-tauri\target\debug\deps -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.53.0\lib -L native=%USERPROFILE%\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\windows_x86_64_msvc-0.52.6\lib --extern tauri=src-tauri\target\debug\deps\libtauri-a499677259465649.rlib --extern serde=src-tauri\target\debug\deps\libserde-747e161eb53ca74d.rlib --extern serde_json=src-tauri\target\debug\deps\libserde_json-8a9eb406b35d8e16.rlib && src-tauri\target\provider-registry-tests.exe`
 
 Exit code: 0
 
@@ -4222,7 +4222,7 @@ Exit code: 1
 Last 20 output lines:
 
 ```text
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\provider-config.test.mjs:39:1'
+  location: '<workspace>\\tests\\provider-config.test.mjs:39:1'
   failureType: 'testCodeFailure'
   error: 'Missing expected rejection.'
   code: 'ERR_ASSERTION'
@@ -4257,7 +4257,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
 
 running 5 tests
 test tests::high_dpi_defaults_include_physical_monitor_origin ... ok
@@ -4518,33 +4518,33 @@ Full log: logs/r5-literal-template-green.log
 
 Directory: <workspace>
 
-Command: `python C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex status --json`
+Command: `python %USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex status --json`
 
 Exit code: 1
 
 Last 20 output lines:
 
 ```text
-FileNotFoundError: [WinError 3] Системе не удается найти указанный путь: 'C:\\Users\\broma\\.mem0\\codex-plugin'
+FileNotFoundError: [WinError 3] Системе не удается найти указанный путь: '%USERPROFILE%\\.mem0\\codex-plugin'
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 154, in <module>
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 154, in <module>
     raise SystemExit(main())
                      ~~~~^^
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 88, in main
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 88, in main
     store = EvidenceStore()
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_core.py", line 558, in __init__
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_core.py", line 558, in __init__
     directory.mkdir(parents=True, exist_ok=True)
     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1015, in mkdir
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1015, in mkdir
     self.parent.mkdir(parents=True, exist_ok=True)
     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1011, in mkdir
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1011, in mkdir
     os.mkdir(self, mode)
     ~~~~~~~~^^^^^^^^^^^^
-PermissionError: [WinError 5] Отказано в доступе: 'C:\\Users\\broma\\.mem0'
+PermissionError: [WinError 5] Отказано в доступе: '%USERPROFILE%\\.mem0'
 ```
 
 Full log: logs/plugin-mem0-status.log
@@ -4553,33 +4553,33 @@ Full log: logs/plugin-mem0-status.log
 
 Directory: <workspace>
 
-Command: `python C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex doctor`
+Command: `python %USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py --harness codex doctor`
 
 Exit code: 1
 
 Last 20 output lines:
 
 ```text
-FileNotFoundError: [WinError 3] Системе не удается найти указанный путь: 'C:\\Users\\broma\\.mem0\\codex-plugin'
+FileNotFoundError: [WinError 3] Системе не удается найти указанный путь: '%USERPROFILE%\\.mem0\\codex-plugin'
 
 During handling of the above exception, another exception occurred:
 
 Traceback (most recent call last):
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 154, in <module>
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 154, in <module>
     raise SystemExit(main())
                      ~~~~^^
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 88, in main
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_cli.py", line 88, in main
     store = EvidenceStore()
-  File "C:\Users\broma\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_core.py", line 558, in __init__
+  File "%USERPROFILE%\.codex\plugins\cache\mem0-plugins\mem0\0.3.3\core\memory_core.py", line 558, in __init__
     directory.mkdir(parents=True, exist_ok=True)
     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1015, in mkdir
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1015, in mkdir
     self.parent.mkdir(parents=True, exist_ok=True)
     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1011, in mkdir
+  File "%USERPROFILE%\AppData\Local\Programs\Python\Python314\Lib\pathlib\__init__.py", line 1011, in mkdir
     os.mkdir(self, mode)
     ~~~~~~~~^^^^^^^^^^^^
-PermissionError: [WinError 5] Отказано в доступе: 'C:\\Users\\broma\\.mem0'
+PermissionError: [WinError 5] Отказано в доступе: '%USERPROFILE%\\.mem0'
 ```
 
 Full log: logs/plugin-mem0-doctor.log
@@ -4638,7 +4638,7 @@ Last 20 output lines:
 ** Copyright (c) 2026 Microsoft Corporation
 **********************************************************************
 [vcvarsall.bat] Environment initialized for: 'x64'
-warn: could not canonicalize path C:\Users\broma
+warn: could not canonicalize path %USERPROFILE%
    Compiling vswhom-sys v0.1.3
    Compiling time-macros v0.2.22
     Checking icu_normalizer_data v2.0.0
@@ -5144,7 +5144,7 @@ not ok 1 - tests\\screen-context.test.mjs
   ---
   duration_ms: 501.38
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\screen-context.test.mjs:1:1'
+  location: '<workspace>\\tests\\screen-context.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -5214,7 +5214,7 @@ not ok 1 - tests\\audio-speech.test.mjs
   ---
   duration_ms: 597.7405
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\audio-speech.test.mjs:1:1'
+  location: '<workspace>\\tests\\audio-speech.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -5327,13 +5327,13 @@ stack backtrace:
    2: core::result::unwrap_failed
              at /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\result.rs:1870
    3: enum2$<core::result::Result<tuple$<>,enum2$<tauri::error::Error> > >::expect<tuple$<>,enum2$<tauri::error::Error> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
    4: pluely_lib::run
              at .\src-tauri\src\lib.rs:221
    5: pluely::main
              at .\src-tauri\src\main.rs:5
    6: core::ops::function::FnOnce::call_once<void (*)(),tuple$<> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
 note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
 ```
 
@@ -5462,7 +5462,7 @@ Probes: none
 Last 20 lines:
 
 ```text
-SQL startup connection: sqlite:C:\Users\broma\AppData\Roaming\com.srikanthnani.pluely\pluely.db
+SQL startup connection: sqlite:%USERPROFILE%\AppData\Roaming\com.srikanthnani.pluely\pluely.db
 
 thread 'main' (14664) panicked at src\lib.rs:222:10:
 error while running tauri application: PluginInitialization("sql", "while executing migrations: error returned from database: (code: 14) unable to open database file")
@@ -5474,13 +5474,13 @@ stack backtrace:
    2: core::result::unwrap_failed
              at /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\result.rs:1870
    3: enum2$<core::result::Result<tuple$<>,enum2$<tauri::error::Error> > >::expect<tuple$<>,enum2$<tauri::error::Error> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
    4: pluely_lib::run
              at .\src-tauri\src\lib.rs:222
    5: pluely::main
              at .\src-tauri\src\main.rs:5
    6: core::ops::function::FnOnce::call_once<void (*)(),tuple$<> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
 note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
 ```
 
@@ -5791,13 +5791,13 @@ stack backtrace:
    2: core::result::unwrap_failed
              at /rustc/48a229ceaefd4985c50990b14116b6d856af0985/library\core\src\result.rs:1870
    3: enum2$<core::result::Result<tuple$<>,enum2$<tauri::error::Error> > >::expect<tuple$<>,enum2$<tauri::error::Error> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\result.rs:1183
    4: pluely_lib::run
              at .\src-tauri\src\lib.rs:236
    5: pluely::main
              at .\src-tauri\src\main.rs:5
    6: core::ops::function::FnOnce::call_once<void (*)(),tuple$<> >
-             at C:\Users\broma\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
+             at %USERPROFILE%\.rustup\toolchains\stable-x86_64-pc-windows-msvc\lib\rustlib\src\rust\library\core\src\ops\function.rs:250
 note: Some details are omitted, run with `RUST_BACKTRACE=full` for a verbose backtrace.
 ```
 
@@ -5818,7 +5818,7 @@ not ok 1 - tests\\action-client.test.mjs
   ---
   duration_ms: 1181.9165
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\action-client.test.mjs:1:1'
+  location: '<workspace>\\tests\\action-client.test.mjs:1:1'
   failureType: 'testCodeFailure'
   exitCode: 1
   signal: ~
@@ -6256,7 +6256,7 @@ Exit code: 0
 Last 20 output lines:
 
 ```text
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Verifying wix package
  Downloading https://github.com/wixtoolset/wix3/releases/download/wix3141rtm/wix314-binaries.zip
         Info validating hash
@@ -6264,7 +6264,7 @@ Last 20 output lines:
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Verifying NSIS package
  Downloading https://github.com/tauri-apps/binary-releases/releases/download/nsis-3/nsis-3.zip
         Info validating hash
@@ -6297,7 +6297,7 @@ not ok 1 - tests\\network.test.mjs
   ---
   duration_ms: 1004.6001
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\network.test.mjs:1:1'
+  location: '<workspace>\\tests\\network.test.mjs:1:1'
   failureType: 'testTimeoutFailure'
   error: 'test timed out after 1000ms'
   code: 'ERR_TEST_FAILURE'
@@ -6327,7 +6327,7 @@ Last 20 output lines:
 
 ```text
   type: 'test'
-  location: 'C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\tests\\network.test.mjs:24:1'
+  location: '<workspace>\\tests\\network.test.mjs:24:1'
   failureType: 'testCodeFailure'
   error: 'Missing expected rejection.'
   code: 'ERR_ASSERTION'
@@ -6441,11 +6441,11 @@ dist/assets/index-BwwZ0sgF.js                         2,398.68 kB │ gzip: 634.
    Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 53s
        Built application at: <workspace>\src-tauri\target\release\pluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
@@ -6469,10 +6469,10 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 12, in <module>
 AssertionError: {'busy': False, 'main': '', 'side': '', 'speak': '', 'error': 'Усі провайдери brain відхилили запит. Перевірте ключі, моделі та адреси.', 'clientIds': ['smoke-q1', 'smoke-q2']}
@@ -6679,11 +6679,11 @@ dist/assets/index-B-l5KYNF.js                         2,398.91 kB │ gzip: 634.
    Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 07s
        Built application at: <workspace>\src-tauri\target\release\pluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
@@ -6802,7 +6802,7 @@ Full log: logs/resume-audit-safe-fix.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
 Exit code: 1
 
@@ -6812,13 +6812,13 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
 keychain True
 listener True
 configure True
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 12, in <module>
 AssertionError: {'busy': False, 'main': 'Перевірено $x^2$.', 'side': 'Додатково.', 'speak': 'Просте пояснення.', 'error': None, 'clientIds': ['smoke-q1', 'smoke-q2']}
@@ -6865,7 +6865,7 @@ Full log: logs/resume-client-regressions.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
 Exit code: 0
 
@@ -7366,11 +7366,11 @@ dist/assets/index-B0vJpHpq.js                         1,988.15 kB │ gzip: 590.
    Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 22s
        Built application at: <workspace>\src-tauri\target\release\pluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
@@ -7494,11 +7494,11 @@ dist/assets/index-ul2su-Z3.js                         1,988.43 kB │ gzip: 590.
    Compiling pluely v0.1.9 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 43s
        Built application at: <workspace>\src-tauri\target\release\pluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\pluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\pluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Pluely_0.1.9_x64-setup.exe
     Finished 2 bundles at:
@@ -7512,7 +7512,7 @@ Full log: logs/resume-transparent-release.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-smoke.py`
 
 Exit code: 0
 
@@ -7535,7 +7535,7 @@ Full log: logs/resume-final-native-batch.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
 
 Exit code: 1
 
@@ -7547,17 +7547,17 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 23, in <module>
   File "<string>", line 16, in policy
-  File "C:\Users\broma\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 466, in check_output
+  File "%USERPROFILE%\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 466, in check_output
     return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 571, in run
+  File "%USERPROFILE%\AppData\Roaming\uv\python\cpython-3.12-windows-x86_64-none\Lib\subprocess.py", line 571, in run
     raise CalledProcessError(retcode, process.args,
 subprocess.CalledProcessError: Command '['powershell.exe', '-NoProfile', '-File', 'scripts/inspect-windows.ps1', '-ProcessId', '15464', '-Json']' returned non-zero exit status 1.
 registered_interaction shift+backslash
@@ -7570,7 +7570,7 @@ Full log: logs/resume-final-native-ui.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-vision-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-vision-smoke.py`
 
 Exit code: 0
 
@@ -7586,7 +7586,7 @@ Full log: logs/resume-final-native-vision.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-ui-smoke.py`
 
 Exit code: 0
 
@@ -7661,7 +7661,7 @@ Full log: logs/resume-delivery-clippy.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\AppData\Local\tauri\WixTools314\dark.exe -nologo -x _research\temp\msi-payload src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi _research\temp\msi-payload.wxs`
+Command: `%USERPROFILE%\AppData\Local\tauri\WixTools314\dark.exe -nologo -x _research\temp\msi-payload src-tauri\target\release\bundle\msi\Pluely_0.1.9_x64_en-US.msi _research\temp\msi-payload.wxs`
 
 Exit code: 0
 
@@ -8657,11 +8657,11 @@ dist/assets/index-DVFVwB73.js                         1,724.24 kB │ gzip: 517.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 14s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -8767,11 +8767,11 @@ dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 28s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -8859,11 +8859,11 @@ dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 22s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -8877,7 +8877,7 @@ Full log: logs/fluely-taskbar-package.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 1
 
@@ -8887,10 +8887,10 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 28, in <module>
 AssertionError: {'ProcessId': 14160, 'Handle': '0x7202ee', 'Title': 'Fluely - Dashboard', 'ClassName': 'Tauri Window', 'Visible': True, 'IsForeground': False, 'Rectangle': {'Left': 361, 'Top': 93, 'Right': 1175, 'Bottom': 731}, 'RectangleQuerySucceeded': True, 'RectangleQueryError': 0, 'ExtendedStyles': 262416, 'ExtendedStylesHex': '0x00040110', 'ExtendedStylesQueryError': 0, 'DecodedStyles': [], 'AffinityQuerySucceeded': True, 'DisplayAffinity': 17, 'DisplayAffinityHex': '0x00000011', 'AffinityQueryError': 0, 'AffinityAssessment': 'WDA_EXCLUDEFROMCAPTURE configured; capture test still required'}
@@ -8919,11 +8919,11 @@ dist/assets/index-BNpgG796.js                         1,724.81 kB │ gzip: 517.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 03s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -8937,7 +8937,7 @@ Full log: logs/fluely-native-final-build.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 1
 
@@ -8947,10 +8947,10 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 70, in <module>
 settings_no_taskbar ['TOOLWINDOW']
@@ -8968,7 +8968,7 @@ Full log: logs/fluely-native-ui-fixed.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 1
 
@@ -8978,10 +8978,10 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
 settings_no_taskbar ['TOOLWINDOW']
 three_languages True
@@ -9017,11 +9017,11 @@ dist/assets/index-Gqfgg7e8.js                         1,725.24 kB │ gzip: 518.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 2m 11s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -9035,7 +9035,7 @@ Full log: logs/fluely-delivery-build.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 1
 
@@ -9045,7 +9045,7 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
 settings_no_taskbar ['TOOLWINDOW']
 three_languages True
 settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
@@ -9053,9 +9053,9 @@ settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
 minimize_hides_and_gear_reopens True
 custom_layout_drag_persists True
 hide_all_and_hidden_rebuild_restore True
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 85, in <module>
 AssertionError: {'width': 68, 'height': 233}
@@ -9120,7 +9120,7 @@ Full log: logs/fluely-delivery-check.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 0
 
@@ -9146,7 +9146,7 @@ Full log: logs/fluely-native-ui-pass.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
 
 Exit code: 0
 
@@ -9166,7 +9166,7 @@ Full log: logs/fluely-managed-cpu-inference.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 0
 
@@ -9192,30 +9192,30 @@ Full log: logs/fluely-release-ui.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
 
 Exit code: 1
 
 Last 20 output lines:
 
 ```text
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 8, in <module>
   File "<string>", line 4, in invoke
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
     result = fn(*args, **kwargs)
              ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
     result = _js_evaluate(expression, sid)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
     return _runtime_evaluate(expression, session_id=sid, await_promise=True)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
     return _runtime_value(r, expression)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
     raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
 RuntimeError: JavaScript evaluation failed at line 0, column 0: Open own startup setting: Windows error 5; expression: window.__TAURI_INTERNALS__.invoke("save_identity_config",{"config": {"executable_alias": "my program.exe", "startup_name": "Fluely-smoke-5c326db3d43a4eaba0af...
 own_startup_entry_removed True
@@ -9601,11 +9601,11 @@ Last 20 output lines:
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 52s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -9619,7 +9619,7 @@ Full log: logs/fluely-expanded-release-build.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
 
 Exit code: 0
 
@@ -9663,7 +9663,7 @@ Full log: logs/fluely-final-check.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-provider-models-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-models-smoke.py`
 
 Exit code: 0
 
@@ -9716,30 +9716,30 @@ Full log: logs/fluely-final-rust-tests.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\fluely-startup-smoke.py`
 
 Exit code: 1
 
 Last 20 output lines:
 
 ```text
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 8, in <module>
   File "<string>", line 4, in invoke
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
     result = fn(*args, **kwargs)
              ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
     result = _js_evaluate(expression, sid)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
     return _runtime_evaluate(expression, session_id=sid, await_promise=True)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
     return _runtime_value(r, expression)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
     raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
 RuntimeError: JavaScript evaluation failed at line 0, column 0: Open own startup setting: Windows error 5; expression: window.__TAURI_INTERNALS__.invoke("save_identity_config",{"config": {"executable_alias": "my program.exe", "startup_name": "Fluely-smoke-cdc55a9e83d14167b751...
 own_startup_entry_removed True
@@ -9843,7 +9843,7 @@ Full log: logs/fluely-release-clippy-final.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
 
 Exit code: 1
 
@@ -9852,19 +9852,19 @@ Last 20 output lines:
 ```text
     result = fn(*args, **kwargs)
              ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
     result = _js_evaluate(expression, sid)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
     return _runtime_evaluate(expression, session_id=sid, await_promise=True)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 137, in _runtime_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 137, in _runtime_evaluate
     r = cdp("Runtime.evaluate", session_id=session_id, expression=expression, returnByValue=True, awaitPromise=await_promise)
         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 74, in cdp
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 74, in cdp
     return _send(
            ^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 68, in _send
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 68, in _send
     if "error" in r: raise RuntimeError(r["error"])
                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 RuntimeError: Separator is not found, and chunk exceed the limit
@@ -9878,29 +9878,29 @@ Full log: logs/fluely-native-managed-gguf-asr.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
 
 Exit code: 1
 
 Last 20 output lines:
 
 ```text
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 21, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
     result = fn(*args, **kwargs)
              ^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
     result = _js_evaluate(expression, sid)
              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
     return _runtime_evaluate(expression, session_id=sid, await_promise=True)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 140, in _runtime_evaluate
     return _runtime_value(r, expression)
            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 127, in _runtime_value
     raise RuntimeError(f"JavaScript evaluation failed{loc}: {desc}; expression: {_js_snippet(expression)}")
 managed_gguf_asr_loaded 0.75
 managed_gguf_asr_owned_cleanup True
@@ -9930,11 +9930,11 @@ dist/assets/index-DhK48RSq.js                         1,756.85 kB │ gzip: 529.
    Compiling fluely v0.2.0 (<workspace>\src-tauri)
     Finished `release` profile [optimized] target(s) in 1m 43s
        Built application at: <workspace>\src-tauri\target\release\fluely.exe
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
         Info Target: x64
      Running candle for "main.wxs"
      Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.0_x64_en-US.msi
-        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type nsis
         Info Target: x64
      Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.0_x64-setup.exe
     Finished 2 bundles at:
@@ -9948,7 +9948,7 @@ Full log: logs/fluely-verified-release-build.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-gguf-asr-smoke.py`
 
 Exit code: 0
 
@@ -9968,7 +9968,7 @@ Full log: logs/fluely-final-managed-gguf-asr.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
 
 Exit code: 1
 
@@ -9978,10 +9978,10 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 27, in <module>
   File "<string>", line 11, in settle
@@ -10013,7 +10013,7 @@ Full log: logs/fluely-release-final-check.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < _research\temp\service-snapshot-inspect.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\service-snapshot-inspect.py`
 
 Exit code: 0
 
@@ -10032,7 +10032,7 @@ Full log: logs/fluely-service-snapshot-diagnostic.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
 
 Exit code: 1
 
@@ -10042,12 +10042,12 @@ Last 20 output lines:
 Traceback (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
-  File "C:\Users\broma\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
 sleep_system_only_fragmented_code_native_alarm_route Колонки (Realtek(R) Audio)
 sleep_vision_fixture_cleanup True
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
     _run(args)
-  File "C:\Users\broma\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
     exec(code, globals())
   File "<string>", line 44, in <module>
 AssertionError
@@ -10059,7 +10059,7 @@ Full log: logs/fluely-final-sleep-vision-native2.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sleep-vision-smoke.py`
 
 Exit code: 0
 
@@ -10078,7 +10078,7 @@ Full log: logs/fluely-final-sleep-vision-native3.log
 
 Directory: <workspace>
 
-Command: `C:\Users\broma\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-local-engines-smoke.py`
 
 Exit code: 0
 
@@ -10093,3 +10093,644 @@ managed_server_cleanup True
 ```
 
 Full log: logs/fluely-final-managed-whisper-vision.log
+
+## fluely-real-path-build — 2026-10-13T19:02:05.122Z
+
+Directory: <workspace>
+
+Command: `npm run build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+dist/assets/tsx-COt5Ahok.js                             175.54 kB │ gzip:  16.51 kB
+dist/assets/jsx-g9-lgVsj.js                             177.79 kB │ gzip:  16.61 kB
+dist/assets/typescript-DlfHMoPT.js                      181.07 kB │ gzip:  16.03 kB
+dist/assets/angular-ts-C26w9mnW.js                      183.82 kB │ gzip:  16.63 kB
+dist/assets/code-block-IT6T5CEO-CLKg6z0n.js             186.31 kB │ gzip:  60.73 kB
+dist/assets/vue-vine-CCdTUzyM.js                        190.22 kB │ gzip:  18.07 kB
+dist/assets/wolfram-lXgVvXCa.js                         262.39 kB │ gzip:  77.14 kB
+dist/assets/cytoscape.esm-BB4DxJjf.js                   443.04 kB │ gzip: 141.98 kB
+dist/assets/wasm-CG6Dc4jp.js                            622.34 kB │ gzip: 230.29 kB
+dist/assets/cpp-CofmeUqb.js                             626.08 kB │ gzip:  44.82 kB
+dist/assets/mermaid.core-BLXNpXUh.js                    644.44 kB │ gzip: 157.19 kB
+dist/assets/cynefin-OW5HDTMX-C1P3_f5Q.js                687.91 kB │ gzip: 154.14 kB
+dist/assets/emacs-lisp-C9XAeP06.js                      779.85 kB │ gzip: 196.03 kB
+dist/assets/index-jeXQ8IKe.js                         1,757.63 kB │ gzip: 529.47 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 51.77s
+```
+
+Full log: logs/fluely-real-path-build.log
+
+## fluely-portable-profile-red — 2026-10-13T19:08:42.231Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib app_paths::tests`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+error[E0425]: cannot find function `default_windows_profile` in this scope
+  --> src\app_paths.rs:72:20
+   |
+72 | ...   assert_eq!(default_windows_profile(&root.join("fluely.exe"), Some(&roaming)).unwrap(), Some(roaming.join("com.srikanthnani.plu...
+   |                  ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `default_windows_profile` in this scope
+  --> src\app_paths.rs:74:20
+   |
+74 |         assert_eq!(default_windows_profile(&root.join("fluely.exe"), Some(&roaming)).unwrap(), None);
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+error[E0425]: cannot find function `default_windows_profile` in this scope
+  --> src\app_paths.rs:81:17
+   |
+81 |         assert!(default_windows_profile(&root.join("fluely.exe"), None).is_err());
+   |                 ^^^^^^^^^^^^^^^^^^^^^^^ not found in this scope
+
+For more information about this error, try `rustc --explain E0425`.
+error: could not compile `fluely` (lib test) due to 5 previous errors
+```
+
+Full log: logs/fluely-portable-profile-red.log
+
+## fluely-release-repair-check — 2026-10-13T19:11:11.237Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.1 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 477 text files checked; 0 failures.
+```
+
+Full log: logs/fluely-release-repair-check.log
+
+## fluely-release-repair-node — 2026-10-13T19:11:24.149Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 136 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2345
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 137 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 0.8635
+  type: 'test'
+  ...
+1..137
+# tests 137
+# suites 0
+# pass 137
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18938.6247
+```
+
+Full log: logs/fluely-release-repair-node.log
+
+## fluely-portable-profile-green — 2026-10-13T19:10:46.318Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib app_paths::tests`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 01s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\fluely_lib-0adf3ad9fb564df6.exe)
+
+running 3 tests
+test app_paths::tests::standalone_executable_uses_adjacent_profile_without_appdata ... ok
+test app_paths::tests::invalid_installed_marker_is_a_visible_configuration_error ... ok
+test app_paths::tests::installed_marker_preserves_os_paths_and_legacy_migration ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 105 filtered out; finished in 0.00s
+```
+
+Full log: logs/fluely-portable-profile-green.log
+
+## fluely-release-repair-rust — 2026-10-13T19:12:51.258Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 108 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.47s
+```
+
+Full log: logs/fluely-release-repair-rust.log
+
+## fluely-installed-alias-profile-red — 2026-10-13T19:14:19.821Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd rustc --test --edition 2021 src-tauri/src/identity_launch_core.rs -o _research/temp/identity-launch-core-tests.exe && _research\temp\identity-launch-core-tests.exe`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+[vcvarsall.bat] Environment initialized for: 'x64'
+
+running 1 test
+test tests::installed_alias_keeps_the_resolved_profile_when_no_cli_profile_was_given ... FAILED
+
+failures:
+
+---- tests::installed_alias_keeps_the_resolved_profile_when_no_cli_profile_was_given stdout ----
+
+thread 'tests::installed_alias_keeps_the_resolved_profile_when_no_cli_profile_was_given' (5040) panicked at src-tauri/src/identity_launch_core.rs:15:13:
+assertion `left == right` failed
+  left: None
+ right: Some("C:\\Users\\owner\\AppData\\Roaming\\com.clawz1n1n.fluely")
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    tests::installed_alias_keeps_the_resolved_profile_when_no_cli_profile_was_given
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/fluely-installed-alias-profile-red.log
+
+## fluely-installed-alias-profile-green — 2026-10-13T19:14:47.858Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd rustc --test --edition 2021 src-tauri/src/identity_launch_core.rs -o _research/temp/identity-launch-core-tests.exe && _research\temp\identity-launch-core-tests.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+
+running 1 test
+test tests::installed_alias_keeps_the_resolved_profile_when_no_cli_profile_was_given ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+```
+
+Full log: logs/fluely-installed-alias-profile-green.log
+
+## fluely-release-repair-clippy — 2026-10-13T19:14:49.311Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 12.43s
+```
+
+Full log: logs/fluely-release-repair-clippy.log
+
+## fluely-release-repair-rust-final — 2026-10-13T19:17:09.960Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test sleep::audio::tests::pcm_track_decodes_with_original_duration_and_channels ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 109 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.47s
+```
+
+Full log: logs/fluely-release-repair-rust-final.log
+
+## fluely-021-frontend-checks — 2026-10-14T05:47:37.083Z
+
+Directory: <workspace>
+
+Command: `npm run check && npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 143 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.6322
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 144 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.467
+  type: 'test'
+  ...
+1..144
+# tests 144
+# suites 0
+# pass 144
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 17427.4808
+```
+
+Full log: logs/fluely-021-frontend-checks.log
+
+## fluely-021-native-checks — 2026-10-14T05:47:40.317Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib && call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test microphone::core::tests::uninterrupted_speech_is_bounded_and_continues ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 110 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.61s
+
+    Checking fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 5.87s
+```
+
+Full log: logs/fluely-021-native-checks.log
+
+## fluely-021-release-build — 2026-10-14T05:48:30.900Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+dist/assets/cpp-CofmeUqb.js                             626.08 kB │ gzip:  44.82 kB
+dist/assets/mermaid.core-D55wdoJY.js                    644.44 kB │ gzip: 157.19 kB
+dist/assets/cynefin-OW5HDTMX-DVP16FZh.js                687.91 kB │ gzip: 154.14 kB
+dist/assets/emacs-lisp-C9XAeP06.js                      779.85 kB │ gzip: 196.03 kB
+dist/assets/index-DuP2pH1c.js                         1,752.89 kB │ gzip: 528.16 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 41.33s
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 51s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.1_x64_en-US.msi
+failed to bundle project: error running light.exe: `failed to run %USERPROFILE%\AppData\Local\tauri\WixTools314\light.exe`
+       Error failed to bundle project: error running light.exe: `failed to run %USERPROFILE%\AppData\Local\tauri\WixTools314\light.exe`
+```
+
+Full log: logs/fluely-021-release-build.log
+
+## fluely-021-native-ui — 2026-10-14T05:55:30.468Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+  File "<string>", line 11, in invoke
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 168, in wrapper
+    result = fn(*args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 571, in js
+    result = _js_evaluate(expression, sid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 587, in _js_evaluate
+    return _runtime_evaluate(expression, session_id=sid, await_promise=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\helpers.py", line 139, in _runtime_evaluate
+    raise RuntimeError(f"Runtime.evaluate timed out; expression: {_js_snippet(expression)}") from e
+RuntimeError: Runtime.evaluate timed out; expression: window.__TAURI_INTERNALS__.invoke("find_shell_buttons")
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+```
+
+Full log: logs/fluely-021-native-ui.log
+
+## fluely-021-release-build-green — 2026-10-14T05:54:15.114Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+dist/assets/wasm-CG6Dc4jp.js                            622.34 kB │ gzip: 230.29 kB
+dist/assets/cpp-CofmeUqb.js                             626.08 kB │ gzip:  44.82 kB
+dist/assets/mermaid.core-D55wdoJY.js                    644.44 kB │ gzip: 157.19 kB
+dist/assets/cynefin-OW5HDTMX-DVP16FZh.js                687.91 kB │ gzip: 154.14 kB
+dist/assets/emacs-lisp-C9XAeP06.js                      779.85 kB │ gzip: 196.03 kB
+dist/assets/index-DuP2pH1c.js                         1,752.89 kB │ gzip: 528.16 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 34.10s
+   Compiling fluely v0.2.1 (<workspace>\src-tauri)
+    Finished `release` profile [optimized] target(s) in 2m 47s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "<workspace>\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+failed to bundle project: error running candle.exe: `failed to run %USERPROFILE%\AppData\Local\tauri\WixTools314\candle.exe`
+       Error failed to bundle project: error running candle.exe: `failed to run %USERPROFILE%\AppData\Local\tauri\WixTools314\candle.exe`
+```
+
+Full log: logs/fluely-021-release-build-green.log
+
+## fluely-021-installer-bundle — 2026-10-14T05:59:49.211Z
+
+Directory: <workspace>
+
+Command: `npm run tauri -- bundle --verbose`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+Processed 1 file, writing output (x86-unicode):
+
+Output: "<workspace>\src-tauri\target\release\nsis\x64\nsis-output.exe"
+Install: 6 pages (384 bytes), 3 sections (6216 bytes), 1857 instructions (51996 bytes), 401 strings (14770 bytes), 1 language table (414 bytes).
+Uninstall: 2 pages (192 bytes), 1 section (2072 bytes), 611 instructions (17108 bytes), 199 strings (7430 bytes), 1 language table (274 bytes).
+Datablock optimizer saved 26498 bytes (~0.0%).
+
+Using lzma (compress whole) compression.
+
+EXE header size:               52736 / 38912 bytes
+Install code:                          (74244 bytes)
+Install data:                          (33667655 bytes)
+Uninstall code+data:                   (93676 bytes)
+Compressed data:            14498530 / 33835575 bytes
+CRC (0x19217712):                  4 / 4 bytes
+
+Total size:                 14551270 / 33874491 bytes (42.9%)
+    Finished [tauri_bundler::bundle] 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.1_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.1_x64-setup.exe
+```
+
+Full log: logs/fluely-021-installer-bundle.log
+
+## fluely-021-native-ui-final — 2026-10-14T06:00:17.445Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-fluely-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+settings_no_taskbar ['TOOLWINDOW']
+three_languages True
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945)
+settings_alpha color(srgb 0.0393766 0.039393 0.0393945 / 0)
+minimize_hides_and_gear_reopens True
+custom_layout_drag_persists True
+hide_all_and_hidden_rebuild_restore True
+compact_geometry_and_custom_recovery True
+chat_full_physical_workarea True
+native_mic_owned_and_stopped True
+alias_prepared_without_autostart True
+```
+
+Full log: logs/fluely-021-native-ui-final.log
+
+## fluely-021-native-providers — 2026-10-14T06:02:13.459Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-models-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_provider_models_modal_cancel_history_capabilities_two_keys True
+native_vision_picker_only_image_capable_models True
+owned_provider_fixture_cleanup True
+```
+
+Full log: logs/fluely-021-native-providers.log
+
+## fluely-021-msi-install-test — 2026-10-14T06:02:38.031Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-021-msi.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+MSI install=0; administrator=False; marker=valid; 2502/2503=absent; product={2466BEC5-8C7B-49B9-827A-2EDE46447D2D}
+MSI uninstall=0; isolated test executable removed
+```
+
+Full log: logs/fluely-021-msi-install-test.log
+
+## fluely-021-nsis-install-test — 2026-10-14T06:04:17.953Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-021-nsis.ps1`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+processed file: <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.1_x64-setup.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS install=0; no shortcuts; installed marker=valid; temporary-file error absent
+processed file: <workspace>\_research\temp\nsis-021-install\uninstall.exe
+Successfully processed 1 files; Failed processing 0 files
+Exception calling "DeleteValue" with "1" argument(s): "Cannot write to the registry key."
+At <workspace>\_research\temp\test-021-nsis.ps1:26 char:54
++ ... f($key -and $key.GetValue('') -eq $destination){$key.DeleteValue('')}
++                                                     ~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (:) [], ParentContainsErrorRecordException
+    + FullyQualifiedErrorId : UnauthorizedAccessException
+```
+
+Full log: logs/fluely-021-nsis-install-test.log
+
+## fluely-021-nsis-install-final — 2026-10-14T06:04:45.208Z
+
+Directory: <workspace>
+
+Command: `powershell.exe -NoProfile -ExecutionPolicy Bypass -File _research\temp\test-021-nsis.ps1`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+processed file: <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.1_x64-setup.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS install=0; no shortcuts; installed marker=valid; temporary-file error absent
+processed file: <workspace>\_research\temp\nsis-021-install\uninstall.exe
+Successfully processed 1 files; Failed processing 0 files
+NSIS uninstall=0; isolated test executable removed
+```
+
+Full log: logs/fluely-021-nsis-install-final.log
+
+## fluely-021-portable-direct — 2026-10-14T06:08:02.128Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-portable-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+single_exe_direct_launch_adjacent_profile_and_default_alias True
+four_ai_modules_cloud_local_system_sources_and_piper True
+ai_settings_screenshot_saved True
+```
+
+Full log: logs/fluely-021-portable-direct.log

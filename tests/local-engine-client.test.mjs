@@ -21,3 +21,16 @@ test('native microphone payload becomes a WAV blob and rejects arbitrary data',a
   assert.equal(blob.type,'audio/wav');assert.equal(blob.size,44);
   assert.throws(()=>nativeMicrophoneWave(btoa('not a wav')),/Invalid native microphone audio/);
 });
+
+test('engine start and stop notify sibling provider lists only after successful native registry changes',async()=>{
+  const operations=[],draft={...config,model_path:'C:/Models/unsaved.gguf'};
+  const client=createLocalEngineClient(async command=>{operations.push(command);return {state:'running'};});
+  await client.start(draft,()=>operations.push('refresh-providers'));
+  await client.stop('brain',()=>operations.push('refresh-providers'));
+  assert.deepEqual(operations,['save_local_engine_config','start_local_engine','refresh-providers','stop_local_engine','refresh-providers']);
+  assert.equal(draft.model_path,'C:/Models/unsaved.gguf');
+  let refreshes=0;
+  const failed=createLocalEngineClient(async()=>{throw new Error('Native failure');});
+  await assert.rejects(failed.start(draft,()=>refreshes++),/Native failure/);
+  assert.equal(refreshes,0);
+});

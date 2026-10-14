@@ -16,11 +16,13 @@ export function createLocalEngineClient(call: Invoke = invoke) {
     configs: () => call<LocalEngineConfig[]>('get_local_engine_configs'),
     status: () => call<LocalEngineStatus[]>('get_local_engine_status'),
     save: (config: LocalEngineConfig) => call<void>('save_local_engine_config', { config }),
-    start: async (config: LocalEngineConfig) => {
+    start: async (config: LocalEngineConfig,onProviderChanged?:()=>void) => {
       await call<void>('save_local_engine_config', { config });
-      return call<LocalEngineStatus>('start_local_engine', { kind: config.kind });
+      const status=await call<LocalEngineStatus>('start_local_engine', { kind: config.kind });
+      onProviderChanged?.();
+      return status;
     },
-    stop: (kind: LocalEngineKind) => call<void>('stop_local_engine', { kind }),
+    stop: async (kind: LocalEngineKind,onProviderChanged?:()=>void) => {await call<void>('stop_local_engine', { kind });onProviderChanged?.();},
     test: (kind: LocalEngineKind) => call<string>('test_local_engine', { kind }),
     install: (kind: LocalEngineKind) => call<string>('install_local_engine', { kind }),
     installModel: (kind: LocalEngineKind) => call<InstalledLocalModel>('install_recommended_local_model', { kind }),

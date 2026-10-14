@@ -1,9 +1,9 @@
 @echo off
 setlocal
-set "PLUELY_DATA_DIR=%~dp0profile"
+set "FLUELY_DATA_DIR=%~dp0profile"
 if /i "%~1"=="--wait" goto wait
-start "" "%~dp0pluely.exe"
+start "" "%~dp0fluely.exe" --fluely-profile "%~dp0profile"
 exit /b 0
 :wait
-"%~dp0pluely.exe"
+"%~dp0fluely.exe" --fluely-profile "%~dp0profile"
 exit /b %errorlevel%

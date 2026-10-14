@@ -38,6 +38,7 @@ export default function AppRoutes() {
           <Route path="/audio" element={<Audio />} />
           <Route path="/responses" element={<Responses />} />
           <Route path="/dev-space" element={<DevSpace />} />
+          <Route path="/dev" element={<DevSpace />} />
         </Route>
         {/* Shell overlay windows (routed by window label in main.tsx) */}
         <Route path="/shell/side-strip" element={<ShellSideStrip />} />

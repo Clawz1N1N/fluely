@@ -27,7 +27,7 @@ const recommendations = {
   'gguf-asr':'Recommended: Nemotron 3.5 ASR Streaming 0.6B Q4_K_M (496 MB, OpenMDW 1.1). Supports Ukrainian, Russian, English and other listed languages. The official native CPU engine download is about 18 MB.',
 };
 
-export function LocalEngineSettings() {
+export function LocalEngineSettings({kinds:visibleKinds=kinds,hideHeader=false,refreshKey=0,onProviderChanged}:{kinds?:LocalEngineKind[];hideHeader?:boolean;refreshKey?:number;onProviderChanged?():void}={}) {
   const { t } = useI18n();
   const [configs, setConfigs] = useState<LocalEngineConfig[]>([]);
   const [statuses, setStatuses] = useState<LocalEngineStatus[]>([]);
@@ -44,7 +44,7 @@ export function LocalEngineSettings() {
     const subscription = listen<{ kind: LocalEngineKind; name: string; received: number; total: number }>('local-model-download', event => { if (alive) setProgress(event.payload); });
     void subscription.catch(() => {});
     return () => { alive = false; clearInterval(interval); void subscription.then(off => off()).catch(() => {}); };
-  }, []);
+  }, [refreshKey]);
   const change = (kind: LocalEngineKind, patch: Partial<LocalEngineConfig>) => {
     setConfigs(current => current.map(config => config.kind === kind ? { ...config, ...patch } : config));
   };
@@ -59,14 +59,14 @@ export function LocalEngineSettings() {
     if (path) change(config.kind, { [field]: path });
   }, '');
   return <section className="space-y-4 rounded-lg border p-4">
-    <h2 className="text-lg font-semibold">{t('Local engines')}</h2>
+    {!hideHeader&&<><h2 className="text-lg font-semibold">{t('Local engines')}</h2>
     <p className="text-sm text-muted-foreground">{t('Run independent brain, speech and vision models on this PC. Servers listen only on 127.0.0.1. Start each engine explicitly; nothing records or loads automatically.')}</p>
     <p className="text-sm text-muted-foreground">{t('The CPU engine downloader installs verified official llama.cpp (about 20 MB), whisper.cpp (about 9 MB) or transcribe.cpp (about 18 MB) releases. GGUF ASR runs in an isolated native worker. Model downloads are separate; check their size and license first.')}</p>
-    <p className="text-sm text-muted-foreground">{t('For simple offline speech without a downloaded model, add a Windows system speech provider in Speech recognition settings. Only installed Windows recognizers are available.')}</p>
+    <p className="text-sm text-muted-foreground">{t('For simple offline speech without a downloaded model, add a Windows system speech provider in Speech recognition settings. Only installed Windows recognizers are available.')}</p></>}
     {error && <p role="alert" className="break-words text-sm text-destructive">{t(error)}</p>}
     {feedback && <p role="status" className="text-sm">{t(feedback)}</p>}
     {configs.length === 0 && !error && <p className="text-sm">{t('Loading local engine settings…')}</p>}
-    {kinds.map(kind => {
+    {visibleKinds.map(kind => {
       const config = configs.find(config => config.kind === kind); if (!config) return null;
       const status = statuses.find(status => status.kind === kind);
       const running = status?.state === 'running'; const starting = status?.state === 'starting';
@@ -89,8 +89,8 @@ export function LocalEngineSettings() {
         <p className="text-xs text-muted-foreground">{t('GPU acceleration needs a compatible engine build. The bundled CPU download works with GPU layers set to 0.')}</p>
         <div className="flex flex-wrap gap-2">
           <button className={button} disabled={disabled || running} onClick={() => void action(kind, () => localEngineClient.save(config), 'Local engine settings saved')}>{t('Save')}</button>
-          <button className={button} disabled={disabled || running} onClick={() => void action(kind, () => localEngineClient.start(config), 'Local engine is ready and registered as a provider')}>{t('Start')}</button>
-          <button className={button} disabled={!running && !starting} onClick={() => void action(kind, () => localEngineClient.stop(kind), 'Local engine stopped')}>{t('Stop')}</button>
+          <button className={button} disabled={disabled || running} onClick={() => void action(kind, () => localEngineClient.start(config,onProviderChanged), 'Local engine is ready and registered as a provider')}>{t('Start')}</button>
+          <button className={button} disabled={!running && !starting} onClick={() => void action(kind, () => localEngineClient.stop(kind,onProviderChanged), 'Local engine stopped')}>{t('Stop')}</button>
           <button className={button} disabled={disabled || !running} onClick={() => void action(kind, () => localEngineClient.test(kind), 'Local server is healthy and its model is loaded')}>{t('Test')}</button>
           <button className={button} disabled={disabled || running} onClick={() => void action(kind, async () => {
             const executable = await localEngineClient.install(kind); const updated = { ...config, executable };

@@ -5,11 +5,6 @@ import { DEFAULT_SYSTEM_PROMPT, STORAGE_KEYS } from '@/config';
 import { DEFAULT_STRUCTURED_PROMPT } from '@/lib/overlay/structured';
 import type { ProviderStatus, RequestLimits } from '@/lib/overlay/provider-types';
 import { UNLIMITED } from '@/lib/overlay/provider-types';
-import { ProviderModels } from './ProviderModels';
-import {VisionMethodSettings} from './VisionMethodSettings';
-import type {ProviderEntry} from '@/lib/overlay/provider-types';
-import type { VisionSettings } from '@/lib/overlay/screen-context';
-import { useServiceSnapshot } from '@/hooks/useServiceSnapshot';
 import type { ShellSettings } from '@/lib/overlay/contracts';
 import { ACTION_LABELS,SHELL_ACTIONS } from '@/components/Shell/ShellControls';
 
@@ -18,7 +13,6 @@ interface CaptureSettings {
   max_frames: number; max_long_side: number; jpeg_quality: number; dedup_threshold: number;
   max_wait_secs: number; microphone: boolean; system_audio: boolean;
 }
-interface TtsSettings { backend: 'system' | 'piper' | 'cloud'; enabled: boolean; voice: string; language: string; rate: number; stream: boolean;piper_executable:string }
 const control = 'w-full rounded-md border border-input bg-background px-3 py-2 text-sm';
 const button = 'rounded-md border border-input px-3 py-2 text-sm hover:bg-accent disabled:opacity-50';
 const primary = `${button} bg-primary text-primary-foreground hover:bg-primary/90`;
@@ -37,17 +31,12 @@ function Limits({ value, onChange }: { value: RequestLimits; onChange(value: Req
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return <section className="space-y-4 rounded-lg border p-4"><h2 className="text-lg font-semibold">{t(title)}</h2>{children}</section>;
 }
-export function OverlaySettings() {
+export function OverlaySettings({section='general'}:{section?:'general'|'reasoning'}={}) {
   useI18n();
-  const {snapshot}=useServiceSnapshot();
   const [globalLimits, setGlobalLimits] = useState<RequestLimits>({ ...UNLIMITED });
   const [manualNeutral, setManualNeutral] = useState(false);
   const [capture, setCapture] = useState<CaptureSettings | null>(null);
-  const [tts, setTts] = useState<TtsSettings | null>(null);
   const [shell, setShell] = useState<ShellSettings | null>(null);
-  const [vision, setVision] = useState<VisionSettings | null>(null);
-  const [registeredModels,setRegisteredModels]=useState<ProviderEntry[]>([]);
-  const refreshRegisteredModels=()=>{void invoke<ProviderEntry[]>('list_providers').then(setRegisteredModels).catch(()=>{});};
   const [systemPrompt, setSystemPrompt] = useState(() => localStorage.getItem(STORAGE_KEYS.SYSTEM_PROMPT) ?? DEFAULT_SYSTEM_PROMPT);
   const [structuredPrompt, setStructuredPrompt] = useState(() => localStorage.getItem('structured_output_prompt') ?? DEFAULT_STRUCTURED_PROMPT);
   const [busy, setBusy] = useState(false);
@@ -56,20 +45,16 @@ export function OverlaySettings() {
   const [feedback, setFeedback] = useState('');
 
   useEffect(() => {
-    refreshRegisteredModels();
     let mounted = true;
     void Promise.allSettled([
       invoke<ProviderStatus>('get_providers_status', { kind: 'brain' }),
-      invoke<CaptureSettings>('get_capture_settings'), invoke<TtsSettings>('get_tts_settings'), invoke<ShellSettings>('get_shell_settings'),
-      invoke<VisionSettings>('get_vision_settings'),
-    ]).then(([registry, captureResult, ttsResult, shellResult, visionResult]) => {
+      invoke<CaptureSettings>('get_capture_settings'), invoke<ShellSettings>('get_shell_settings'),
+    ]).then(([registry, captureResult, shellResult]) => {
       if (!mounted) return;
       if (registry.status === 'fulfilled') { setGlobalLimits(registry.value.globalLimits); setManualNeutral(registry.value.manualNeutral); }
-      if (visionResult.status === 'fulfilled') setVision(visionResult.value);
       if (captureResult.status === 'fulfilled') setCapture(captureResult.value);
-      if (ttsResult.status === 'fulfilled') setTts(ttsResult.value);
       if (shellResult.status === 'fulfilled') setShell(shellResult.value);
-      if ([registry, captureResult, ttsResult, shellResult].some(result => result.status === 'rejected')) setError(t("Не вдалося завантажити частину налаштувань. Відкрийте цю сторінку повторно."));
+      if ([registry, captureResult, shellResult].some(result => result.status === 'rejected')) setError(t("Не вдалося завантажити частину налаштувань. Відкрийте цю сторінку повторно."));
       setLoading(false);
     });
     return () => { mounted = false; };
@@ -85,8 +70,7 @@ export function OverlaySettings() {
     {feedback && <div role="status" className="rounded-md bg-primary/10 p-3 text-sm">{t(feedback)}</div>}
     {loading && <p role="status" className="text-sm text-muted-foreground">{t("Завантаження налаштувань…")}</p>}
     <fieldset disabled={busy || loading} className="min-w-0 space-y-6">
-      <ProviderModels />
-      <Section title={t("Спільні ліміти й нейтральний режим")}>
+      {section==='reasoning'&&<Section title={t("Спільні ліміти й нейтральний режим")}>
         <form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
           await invoke('set_global_limits', { limits: globalLimits }); await invoke('set_neutral_mode', { enabled: manualNeutral });
         }, 'Спільні ліміти збережено.', 'Не вдалося зберегти спільні ліміти.'); }}>
@@ -95,8 +79,8 @@ export function OverlaySettings() {
           <Toggle label={t("Нейтральний режим: призупинити всі запити")} checked={manualNeutral} onChange={setManualNeutral} />
           <button type="submit" className={primary}>{t("Зберегти ліміти")}</button>
         </form>
-      </Section>
-      {capture && <Section title={t("Знімки екрана й аудіо")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
+      </Section>}
+      {section==='general'&&capture && <Section title={t("Знімки екрана й аудіо")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
         await invoke('update_capture_settings', { settings: capture }); setCapture(await invoke<CaptureSettings>('get_capture_settings'));
       }, 'Налаштування знімків та аудіо збережено.', 'Не вдалося зберегти налаштування знімків та аудіо.'); }}>
         <div className="grid gap-3 md:grid-cols-2">
@@ -113,27 +97,7 @@ export function OverlaySettings() {
         <div className="flex flex-wrap gap-4"><Toggle label={t("Мікрофон")} checked={capture.microphone} onChange={microphone => setCapture({ ...capture, microphone })} /><Toggle label={t("Звук системи")} checked={capture.system_audio} onChange={system_audio => setCapture({ ...capture, system_audio })} /></div>
         <button className={primary} type="submit">{t("Зберегти знімки й аудіо")}</button>
       </form></Section>}
-      {vision && <Section title={t("Екран для текстових моделей")}><form className="space-y-4" onSubmit={event => {
-        event.preventDefault(); void act(async () => { await invoke('update_vision_settings', { settings: vision }); setVision(await invoke<VisionSettings>('get_vision_settings')); }, 'Аналіз екрана збережено.', 'Не вдалося зберегти аналіз екрана.');
-      }}>
-        <VisionMethodSettings value={vision} onChange={setVision} providers={registeredModels} onRefresh={refreshRegisteredModels}/>
-        <button className={primary} type="submit">{t("Зберегти аналіз екрана")}</button>
-      </form></Section>}
-      {tts && <Section title={t("Озвучення відповіді")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
-        await invoke('update_tts_settings', { settings: tts }); setTts(await invoke<TtsSettings>('get_tts_settings'));
-      }, 'Налаштування озвучення збережено.', 'Не вдалося зберегти налаштування озвучення.'); }}>
-        <Toggle label={t("Озвучення увімкнено")} checked={tts.enabled} onChange={enabled => setTts({ ...tts, enabled })} />
-        <div className="grid gap-3 md:grid-cols-2">
-          <Field label={t("Спосіб озвучення")}><select className={control} value={tts.backend} onChange={event => setTts({ ...tts, backend: event.target.value as TtsSettings['backend'] })}><option value="system">{t("Системний голос")}</option><option value="piper">{t("Piper — локальний голос")}</option><option value="cloud">{t("Хмарний провайдер TTS")}</option></select></Field>
-          <Field label={t("Голос")} hint={t("Для системного голосу можна залишити порожнім.")}><input className={control} list="system-voice-list" value={tts.voice} onChange={event => setTts({ ...tts, voice: event.target.value })} /><datalist id="system-voice-list">{snapshot.tts.voices.map(voice=><option key={voice.id} value={voice.id}>{voice.name} · {voice.language}</option>)}</datalist></Field>
-          <Field label={t("Мова")}><input className={control} required value={tts.language} placeholder={'uk-UA'} onChange={event => setTts({ ...tts, language: event.target.value })} /></Field>
-          <Field label={t("Швидкість")}><input className={control} type="number" min={0.5} max={2} step={0.1} required value={tts.rate} onChange={event => setTts({ ...tts, rate: Number(event.target.value) })} /></Field>
-        </div>
-        <Toggle label={t("Читати завершені речення під час надходження відповіді")} checked={tts.stream} onChange={stream => setTts({ ...tts, stream })} />
-        {tts.backend === 'piper' && <Field label={t("Програма Piper")} hint={t("Встановіть Piper локально. У полі «Голос» укажіть шлях до .onnx моделі.")}><input className={control} value={tts.piper_executable} onChange={event => setTts({ ...tts, piper_executable: event.target.value })} /></Field>}
-        <button className={primary} type="submit">{t("Зберегти озвучення")}</button>
-      </form></Section>}
-      {shell && <Section title={t("Вигляд накладеного інтерфейсу")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
+      {section==='general'&&shell && <Section title={t("Вигляд накладеного інтерфейсу")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
         await invoke('set_ui_mode', { mode: shell.ui_mode }); await invoke('set_shimmer', { enabled: shell.shimmer });
         await invoke('set_shimmer_speed', { speed: shell.shimmer_speed }); await invoke('set_answer_opacity', { opacity: shell.answer_opacity });
         await invoke('set_shell_opacity',{label:'strips',opacity:shell.strip_opacity});
@@ -151,13 +115,13 @@ export function OverlaySettings() {
         <Toggle label={t("Переливання кольорів")} checked={shell.shimmer} onChange={shimmer => setShell({ ...shell, shimmer })} />
         <button className={primary} type="submit">{t("Зберегти вигляд")}</button>
       </form></Section>}
-      <Section title={t("Інструкції для моделі")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
+      {section==='reasoning'&&<Section title={t("Інструкції для моделі")}><form className="space-y-4" onSubmit={event => { event.preventDefault(); void act(async () => {
         localStorage.setItem(STORAGE_KEYS.SYSTEM_PROMPT, systemPrompt); localStorage.setItem('structured_output_prompt', structuredPrompt);
       }, 'Інструкції збережено.', 'Не вдалося зберегти інструкції.'); }}>
         <Field label={t("Системна інструкція")}><textarea className={`${control} min-h-36`} value={systemPrompt} onChange={event => setSystemPrompt(event.target.value)} /></Field>
         <Field label={t("Структура відповіді")} hint={t("Залиште теги <main>, <side> і <speak>, щоб розділити розв’язок, пояснення та озвучення.")}><textarea className={`${control} min-h-36`} value={structuredPrompt} onChange={event => setStructuredPrompt(event.target.value)} /></Field>
         <button className={primary} type="submit">{t("Зберегти інструкції")}</button>
-      </form></Section>
+      </form></Section>}
     </fieldset>
   </div>;
 }
