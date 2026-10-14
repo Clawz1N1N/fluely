@@ -26,7 +26,7 @@
 - [x] Chat and prompts: relocate instructions, add mode defaults and compact selectors, persist preferences and enforce them in actual reasoning/STT/TTS/vision requests. Test selection filtering, prompt composition and stale selections.
 - [x] Appearance and repository link: reproduce native failure, fix at its source, verify visible/computed appearance independent of service readiness; use the system URL opener with visible errors.
 - [x] Documentation: remove the requested README columns, explain quotas and beta status, record reproducible upstream/portability findings.
-- [ ] Integration/release: encoding, TypeScript, Node tests, Rust tests/Clippy, isolated native UI tests; build and package per-user installers/portable binary; review changes, commit/push, publish beta assets and remove superseded release.
+- [x] Integration/release: encoding, TypeScript, Node tests, Rust tests/Clippy, isolated native UI tests; build and package per-user installers/portable binary; review changes, commit/push, publish beta assets and remove superseded release.
 
 ## Review focus
 
