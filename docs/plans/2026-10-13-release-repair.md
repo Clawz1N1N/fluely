@@ -38,4 +38,5 @@ verification/publication.
 - Native UI and provider modal tests pass. Ruling: asynchronous polling gives eight WebView creation a bounded 60-second acceptance window instead of the CDP helper's shorter synchronous promise limit; the command must actually complete.
 - Single-file portable direct launch and automatic alias use the same adjacent profile. AI module/source UI verification passes.
 - Independent final review found no reproducible important correctness gaps. Release 0.2.1 is packaged with hashes; the portable ZIP excludes user profiles, credentials and installer-only markers. Previous 0.2.0 files are archived and the real profile is preserved.
-- GitHub source and release publication is the final remaining step.
+- Publication complete: source commit `844fd84` is on both `master` and `custom-overlay`. Release [v0.2.1](https://github.com/Clawz1N1N/fluely/releases/tag/v0.2.1) contains all five artifacts; each GitHub asset's SHA-256 matches the local verified file, and its tag points to that source commit. The real portable profile's modification timestamp remains October 13, 21:47:24.
+- Completion limits: actual Windows sign-in/autostart and cross-scope upgrades remain user acceptance checks, as recorded in the release notes. All work in this repair plan is complete.
