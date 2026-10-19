@@ -14020,3 +14020,202 @@ ok 15 - a JSON response arriving after cancellation yields no late text
 ```
 
 Full log: logs/beta023-last-context.log
+
+## beta023-publish-build — 2026-10-19T18:35:29.296Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1m 10s
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 3m 17s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-publish-build.log
+
+## beta023-cancel19-sessions — 2026-10-19T18:41:57.423Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sessions-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_upgrade_startup_preserves_migration_3_and_imports_legacy_chat True
+native_two_panels_selected_models_router_reasoning_rename_and_new_session True
+native_recorded_audio_transcript_time_and_speaker_archive True
+native_provider_failure_keeps_sanitized_diagnostic True
+```
+
+Full log: logs/beta023-cancel19-sessions.log
+
+## beta023-cancel19-providers — 2026-10-19T18:42:05.873Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-tools-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_account_modal_rename_add_same_key_and_settings_preserved True
+native_invalid_key_discovery_alert_does_not_replace_saved_key True
+native_webview_DOM_drop_intake_and_forged_grant_rejection True
+native_passive_chat_ignores_drop True
+native_agent_tool_continuation_two_requests_exact_usage_and_TTS_bindings True
+```
+
+Full log: logs/beta023-cancel19-providers.log
+
+## beta023-cancel19-abort — 2026-10-19T18:42:09.976Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-tool-cancel-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_cancelled_tool_continuation_keeps_model_healthy_and_new_chat_empty True
+```
+
+Full log: logs/beta023-cancel19-abort.log
+
+## beta023-tagged-build — 2026-10-19T18:41:20.321Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1m 2s
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 40s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-tagged-build.log
+
+## beta023-final-sessions — 2026-10-19T18:46:42.472Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sessions-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_upgrade_startup_preserves_migration_3_and_imports_legacy_chat True
+native_two_panels_selected_models_router_reasoning_rename_and_new_session True
+native_recorded_audio_transcript_time_and_speaker_archive True
+native_provider_failure_keeps_sanitized_diagnostic True
+```
+
+Full log: logs/beta023-final-sessions.log
+
+## beta023-final-documents — 2026-10-19T18:46:48.804Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_docx_worker_preview_request_and_original_file_archive True
+native_pdf_worker_and_local_font_assets True
+native_all_eight_images_survive_the_three_screen_frame_limit True
+native_context_90_percent_compression_preserves_archive_and_shows_counter True
+```
+
+Full log: logs/beta023-final-documents.log
+
+## beta023-final-providers — 2026-10-19T18:46:53.033Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-tools-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_account_modal_rename_add_same_key_and_settings_preserved True
+native_invalid_key_discovery_alert_does_not_replace_saved_key True
+native_webview_DOM_drop_intake_and_forged_grant_rejection True
+native_passive_chat_ignores_drop True
+native_agent_tool_continuation_two_requests_exact_usage_and_TTS_bindings True
+```
+
+Full log: logs/beta023-final-providers.log
+
+## beta023-final-cancel — 2026-10-19T18:46:56.661Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-tool-cancel-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_cancelled_tool_continuation_keeps_model_healthy_and_new_chat_empty True
+```
+
+Full log: logs/beta023-final-cancel.log

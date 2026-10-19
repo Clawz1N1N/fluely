@@ -32,3 +32,5 @@ The reported `rustc.exe` 0xc0000142 occurred in the restricted compilation envir
 Legacy DOC/XLS/PPT/RTF conversion requires installed LibreOffice, which was unavailable on this machine; its adapter was compiled and unit checked, rather than accepted against a real LibreOffice installation. Scanned PDFs require OCR/page images. File features extract reference content for inference and preserve originals; they do not provide an Office layout editor.
 
 Checks and bounded diagnostic tails are recorded in `_research/BUILD_LOG.md`. Temporary profiles, captured media, the copied installed database and credentials are excluded from source and release assets.
+
+The final Windows candidate repeated all native session/document/provider checks and delayed-tool cancellation successfully on 2026-10-19. Cancelling the second request neither applied a provider cooldown nor inserted late text into the new chat. Published artifact hashes and release state are recorded in [publication evidence](publication-0.2.3-beta.1.md).

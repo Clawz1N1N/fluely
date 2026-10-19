@@ -19,7 +19,7 @@
 - [x] Icons: validate imported image, persist profile-owned icon, update desktop windows and Windows executable aliases where supported; provide reset.
 - [x] Platform sources: gate desktop dependencies, separate mobile startup, implement Android permission/overlay bridge and capture lifecycle; document OS restrictions and unbuilt status.
 - [x] Integration: TypeScript/Node/Rust checks, native upgrade fixture and UI acceptance, actual installed startup, Windows release build and package verification.
-- [ ] Publication: push source, publish beta assets with verified hashes, then delete superseded GitHub releases.
+- [x] Publication: push source, publish beta assets with verified hashes, then delete superseded GitHub releases.
 
 ## Review focus
 
