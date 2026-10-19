@@ -1,0 +1,7 @@
+{
+  "identifier": "android-app",
+  "description": "Android app with explicit native consent controls",
+  "windows": ["main"],
+  "platforms": ["android"],
+  "permissions": ["core:default", "http:default", "opener:default", "sql:default", "fluely-mobile:default"]
+}

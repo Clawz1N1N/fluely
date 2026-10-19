@@ -76,6 +76,7 @@ impl RawFrame {
 pub struct Dispatch<F, T> {
     pub request_id: u64,
     pub frames: Vec<F>,
+    attachment_count:usize,
     pub transcript: Vec<T>,
     pub questions: Vec<String>,
     pub client_ids: Vec<String>,
@@ -83,6 +84,7 @@ pub struct Dispatch<F, T> {
 
 pub struct BatchQueue<F, T> {
     frames: Vec<F>,
+    attachments:Vec<F>,
     transcript: Vec<T>,
     questions: Vec<String>,
     client_ids: Vec<String>,
@@ -96,6 +98,7 @@ impl<F, T> Default for BatchQueue<F, T> {
     fn default() -> Self {
         Self {
             frames: vec![],
+            attachments:vec![],
             transcript: vec![],
             questions: vec![],
             client_ids: vec![],
@@ -110,6 +113,7 @@ impl<F, T> Default for BatchQueue<F, T> {
 impl<F, T> BatchQueue<F, T> {
     pub fn discard_context(&mut self) -> Vec<String> {
         self.frames.clear();
+        self.attachments.clear();
         self.transcript.clear();
         self.questions.clear();
         self.first_pending = None;
@@ -141,15 +145,20 @@ impl<F, T> BatchQueue<F, T> {
         if text.is_empty() {
             return Err("Question is empty".into());
         }
-        if text.len() > 32_768 {
-            return Err("Question exceeds 32768 bytes".into());
+        if text.len() > 1_572_864 {
+            return Err("Question and document text exceed 1.5 MiB".into());
         }
         if self.questions.len() >= 64 {
             return Err("Pending question queue is full".into());
         }
+        if self.questions.iter().map(|text|text.len()).sum::<usize>()+text.len()>8*1024*1024{return Err("Pending question text exceeds 8 MiB".into());}
         self.mark_pending(now);
         self.questions.push(text.into());
         Ok(())
+    }
+    pub fn question_with_attachments(&mut self,text:String,attachments:Vec<F>,now:Instant)->Result<(),String>{
+        if self.attachments.len()+attachments.len()>8{return Err("At most 8 image attachments can wait in one request".into());}
+        self.question(text,now)?;self.attachments.extend(attachments);Ok(())
     }
     pub fn audio(&mut self, pending: bool) -> Result<(), String> {
         self.audio_pending = if pending {
@@ -176,9 +185,10 @@ impl<F, T> BatchQueue<F, T> {
         self.next_request_id = self.next_request_id.checked_add(1)?;
         self.in_flight = Some(id);
         self.first_pending = None;
+        let attachment_count=self.attachments.len();let mut frames=std::mem::take(&mut self.frames);frames.append(&mut self.attachments);
         Some(Dispatch {
             request_id: id,
-            frames: std::mem::take(&mut self.frames),
+            frames,attachment_count,
             transcript: std::mem::take(&mut self.transcript),
             questions: std::mem::take(&mut self.questions),
             client_ids: std::mem::take(&mut self.client_ids),
@@ -192,8 +202,9 @@ impl<F, T> BatchQueue<F, T> {
         Ok(())
     }
     // Caller holds its queue lock across emission and rollback.
-    pub fn restore(&mut self, batch: Dispatch<F, T>, now: Instant) {
+    pub fn restore(&mut self, mut batch: Dispatch<F, T>, now: Instant) {
         self.in_flight = None;
+        self.attachments=batch.frames.split_off(batch.frames.len().saturating_sub(batch.attachment_count));
         self.frames = batch.frames;
         self.transcript = batch.transcript;
         self.questions = batch.questions;
@@ -318,6 +329,17 @@ mod tests {
         }
         assert!(queue.question("overflow".into(), now).is_err());
         assert_eq!(queue.dispatch().unwrap().questions.len(), 64);
+    }
+    #[test]
+    fn documents_and_user_images_survive_screen_frame_limits_and_dispatch_retry() {
+        let now=Instant::now();let mut queue=BatchQueue::<u8,u8>::default();
+        queue.frames(vec![1,2,3],1,now);
+        queue.question_with_attachments("document text ".repeat(20_000),(10..18).collect(),now).unwrap();
+        queue.frames(vec![4,5],1,now);
+        assert!(queue.question_with_attachments("too many images".into(),vec![18],now).is_err());
+        let batch=queue.dispatch().unwrap();assert_eq!(batch.frames,[5,10,11,12,13,14,15,16,17]);assert_eq!(batch.questions.len(),1);
+        queue.restore(batch,now);queue.frames(vec![6],1,now);
+        let retried=queue.dispatch().unwrap();assert_eq!(retried.frames,[6,10,11,12,13,14,15,16,17]);
     }
 
     #[test]

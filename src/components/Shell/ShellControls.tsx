@@ -1,6 +1,7 @@
 import { Camera, Moon, MessageSquare, Mic, Settings, Square, Eye, Volume2 } from 'lucide-react';
 import {t,useI18n} from '@/lib/i18n';
 import type { ServiceSnapshot, ShellAction } from '@/lib/overlay/contracts';
+import type {NeuralAvailability} from '@/lib/overlay/neural-availability';
 
 export const SHELL_ACTIONS = ['listen', 'screenshot', 'continuous', 'answer', 'chat', 'tts', 'mode', 'settings'] as const;
 export type ButtonAction = typeof SHELL_ACTIONS[number];
@@ -9,7 +10,22 @@ export const ACTION_LABELS: Record<ButtonAction, string> = {
   answer: 'Відповідь', chat: 'Чат', tts: 'Озвучення', mode: 'Sleep mode', settings: 'Налаштування',
 };
 const ICONS = { listen: Mic, screenshot: Camera, continuous: Eye, answer: MessageSquare, chat: Square, tts: Volume2, mode: Moon, settings: Settings };
-export function actionIsDisabled(action:ButtonAction,state:ServiceSnapshot){return action!=='settings'&&(!state.ready||(state.sleeping&&action!=='mode'));}
+export function actionIsDisabled(action:ButtonAction,state:ServiceSnapshot&{availability?:NeuralAvailability}){
+  if(action==='settings')return false;
+  if(!state.ready||(state.sleeping&&action!=='mode'))return true;
+  const available=state.availability;
+  if(!available)return false;
+  switch(action){
+    case 'listen':return !state.listening&&!available.stt;
+    case 'screenshot':return !available.brain||!available.vision;
+    case 'continuous':return !state.continuous&&(!available.brain||!available.vision);
+    case 'answer':return !state.answerVisible&&!available.brain;
+    case 'chat':return !available.brain;
+    case 'tts':return !state.tts.speaking&&!state.tts.paused&&!available.tts;
+    case 'mode':return !state.sleeping&&(!available.brain||!available.stt);
+    default:return false;
+  }
+}
 
 export function actionIsActive(action: ButtonAction, state: ServiceSnapshot) {
   switch (action) {

@@ -10,6 +10,8 @@ Transparent controls, voice input, screen understanding, and your choice of loca
 
 [Download](https://github.com/Clawz1N1N/fluely/releases) · [Provider guide](docs/provider-models.md) · [Vision guide](docs/vision-methods.md) · [Sleep mode](docs/sleep-mode.md) · [Issues](https://github.com/Clawz1N1N/fluely/issues)
 
+Windows beta releases are available now. [macOS, Linux and Android source ports](docs/platforms.md) are included with documented feature limits and remain unbuilt.
+
 ![Windows](https://img.shields.io/badge/platform-Windows_x64-0078D4)
 ![License](https://img.shields.io/badge/license-GPL--3.0-blue)
 ![Stack](https://img.shields.io/badge/built_with-Tauri_%2B_React_%2B_Rust-24C8D8)
@@ -29,6 +31,9 @@ This is an independent fork of [Pluely](https://github.com/iamsrikanthnani/pluel
 | **Talk and listen** | Native microphone and system-audio capture feed your chosen speech recognizer. Replies can use system, cloud, or separately configured Piper voices. |
 | **Understand the screen** | Send changed screenshots through a visual model, or try the experimental pixel-to-text method. Text-only reasoning models can receive scene descriptions. |
 | **Choose models without writing cURL** | Add a service and API key, fetch its models, and select them in a searchable checkbox dialog. Configure multiple accounts, capabilities, context/output limits, rank, and quotas. |
+| **Keep complete conversations** | New sessions start empty. Reopen and rename earlier sessions with questions, replies, audio/transcripts, screenshots/vision notes, files and timestamps. |
+| **Bring your documents** | Preview text, Office, OpenDocument and PDF attachments before sending. [Readers and format limits](docs/documents-context.md) are documented; older Office files use installed LibreOffice. |
+| **Manage context** | See token estimates and provider-reported usage. At 90% occupancy, older turns are summarized without removing the original archive. |
 | **Run locally** | Install optional CPU engines and explicitly download recommended models. Managed servers use loopback addresses; GGUF speech recognition runs in an isolated native worker. |
 | **Listen in Sleep mode** | The crescent stops ordinary actions, microphone, and screenshots while system audio continues through STT and AI. A configured response marker plays your chosen alarm track on the selected output. |
 | **Control visibility** | Hide and restore all Fluely windows with a shortcut. Processing continues while hidden. Settings stays off the taskbar and reopens from the gear. |

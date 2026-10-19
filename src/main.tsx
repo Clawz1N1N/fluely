@@ -6,13 +6,19 @@ import "./global.css";
 import { getCurrentWindow } from "@tauri-apps/api/window";
 import AppRoutes from "./routes";
 import ServiceRuntime from './components/ServiceRuntime';
+const MobileApp = React.lazy(()=>import('./components/MobileApp'));
 
 const currentWindow = getCurrentWindow();
 const windowLabel = currentWindow.label;
 
 // Render different components based on window label
 // Shell overlay windows render their dedicated shell components.
-if (windowLabel === 'main') {
+if (/Android/i.test(navigator.userAgent)) {
+  document.documentElement.dataset.fluelyDashboard='true';
+  ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <ThemeProvider><React.Suspense fallback={<p>Fluely…</p>}><MobileApp /></React.Suspense></ThemeProvider>
+  );
+} else if (windowLabel === 'main') {
   ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(<ServiceRuntime />);
 } else if (
   windowLabel.startsWith("strip-") ||

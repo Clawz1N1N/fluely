@@ -1,103 +1,33 @@
-import { t, useI18n } from "@/lib/i18n";
-import { Badge, Input, Card, Empty } from "@/components";
-import { useHistory } from "@/hooks";
-import { PageLayout } from "@/layouts";
-import { MessageCircleIcon, Search } from "lucide-react";
-import moment from "moment";
-import { useNavigate } from "react-router-dom";
+import {useEffect,useState} from 'react';
+import {invoke} from '@tauri-apps/api/core';
+import {listen,type UnlistenFn} from '@tauri-apps/api/event';
+import {t,useI18n} from '@/lib/i18n';
+import {Badge,Input,Card,Empty,Button} from '@/components';
+import {PageLayout} from '@/layouts';
+import {MessageCircleIcon,Search} from 'lucide-react';
+import {useNavigate} from 'react-router-dom';
+import type {SessionSummary} from '@/lib/overlay/session-store';
+import {useServiceSnapshot} from '@/hooks/useServiceSnapshot';
 
-const Dashboard = () => {
-  const { language } = useI18n();
-  const conversations = useHistory();
-  const navigate = useNavigate();
-  // Group conversations by date
-  const groupedConversations = conversations.conversations.reduce(
-    (acc, doc) => {
-      const dateKey = moment(doc.updatedAt).format("YYYY-MM-DD");
-      if (!acc[dateKey]) {
-        acc[dateKey] = [];
-      }
-      acc[dateKey].push(doc);
-      return acc;
-    },
-    {} as Record<string, typeof conversations.conversations>
-  );
-
-  // Sort dates in descending order (most recent first)
-  const sortedDates = Object.keys(groupedConversations).sort((a, b) =>
-    moment(b).diff(moment(a))
-  );
-
-  return (
-    <PageLayout
-      title={t("All conversations")}
-      description={t("View all your conversations")}
-    >
-      <>
-        {conversations.conversations.length === 0 ? (
-          <Empty
-            isLoading={conversations.isLoading}
-            icon={MessageCircleIcon}
-            title={t("No conversations found")}
-            description={t("Start a new conversation to get started")}
-          />
-        ) : (
-          <div className="flex flex-col gap-6 pb-8">
-            <div className="relative mb-4 w-1/3">
-              <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                type="text"
-                placeholder={t("Search conversations...")}
-                className="pl-9 focus-visible:ring-0 focus-visible:ring-offset-0"
-                value={conversations.search}
-                onChange={(e) => conversations.setSearch(e.target.value)}
-              />
-            </div>
-            {sortedDates
-              .filter((dateKey) =>
-                conversations?.search?.length === 0
-                  ? true
-                  : groupedConversations?.[dateKey]?.some((doc) =>
-                      doc?.title
-                        .toLowerCase()
-                        .includes(conversations?.search?.toLowerCase() || "")
-                    )
-              )
-              .map((dateKey) => (
-                <div key={dateKey} className="flex flex-col gap-3">
-                  <p className="text-xs text-muted-foreground select-none font-medium">
-                    {new Intl.DateTimeFormat(language, {weekday: 'short', month: 'short', day: 'numeric'}).format(moment(dateKey).toDate())}
-                  </p>
-                  <div className="grid grid-cols-1 gap-3">
-                    {groupedConversations[dateKey].map((doc) => (
-                      <Card
-                        key={doc.id}
-                        className="shadow-none select-none p-4 gap-0 group relative transition-all !bg-black/5 dark:!bg-white/5 hover:!border-primary/50 cursor-pointer"
-                        onClick={() => navigate(`/chats/view/${doc.id}`)}
-                      >
-                        <div className="flex items-center justify-between">
-                          <p className="line-clamp-1 text-sm mr-8">
-                            {doc.title}
-                          </p>
-                          <div className="flex items-center gap-1">
-                            <Badge variant="outline" className="text-xs">
-                              {t('Messages: {count}', {count: doc.messages.length})}
-                            </Badge>
-                            <Badge variant="outline" className="text-xs">
-                              {new Intl.DateTimeFormat(language, {hour: 'numeric', minute: '2-digit'}).format(moment(doc.updatedAt).toDate())}
-                            </Badge>
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                  </div>
-                </div>
-              ))}
-          </div>
-        )}
-      </>
-    </PageLayout>
-  );
+const Chats=()=>{
+  const {language}=useI18n(),navigate=useNavigate();
+  const {act}=useServiceSnapshot();
+  const [query,setQuery]=useState(''),[sessions,setSessions]=useState<SessionSummary[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState('');
+  useEffect(()=>{
+    let disposed=false,off:UnlistenFn|undefined;
+    const refresh=()=>invoke<SessionSummary[]>('list_chat_sessions',{query}).then(value=>{if(!disposed){setSessions(value);setError('');}}).catch(error=>{if(!disposed)setError(String(error));}).finally(()=>{if(!disposed)setLoading(false);});
+    const timer=setTimeout(()=>void refresh(),150);
+    void listen('chat-sessions-changed',()=>void refresh()).then(stop=>{if(disposed)stop();else off=stop;}).catch(()=>{});
+    return()=>{disposed=true;clearTimeout(timer);off?.();};
+  },[query]);
+  const rows=sessions.map(session=>({id:session.id,title:session.title,updated:session.updated_at,count:session.event_count}));
+  return <PageLayout title={t('Chats')} description={t('Saved conversations, transcripts, audio, and screen observations')} rightSlot={<Button variant="outline" onClick={()=>void act('session_new').then(ok=>{if(ok)void act('chat');})}>{t('New chat')}</Button>}>
+    <div className="relative mb-5 max-w-lg"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"/><Input aria-label={t('Search sessions')} placeholder={t('Search sessions…')} className="pl-9" value={query} onChange={event=>setQuery(event.target.value)}/></div>
+    {error&&<p role="alert" className="mb-3 text-sm text-destructive">{error}</p>}
+    {!rows.length?<Empty isLoading={loading} icon={MessageCircleIcon} title={t('No saved sessions')} description={t('Start a new conversation to get started')}/>:<div className="flex flex-col gap-3 pb-8">{rows.map(row=><Card key={row.id} className="cursor-pointer gap-1 p-4 shadow-none hover:border-primary/50" onClick={()=>navigate(`/chats/view/${row.id}`)}>
+      <div className="flex flex-wrap items-center justify-between gap-2"><p className="min-w-0 truncate text-sm">{row.title}</p><Badge variant="outline">{t('Events: {count}',{count:row.count})}</Badge></div>
+      <time className="text-xs text-muted-foreground">{new Intl.DateTimeFormat(language,{year:'numeric',month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}).format(new Date(row.updated))}</time>
+    </Card>)}</div>}
+  </PageLayout>;
 };
-
-export default Dashboard;
+export default Chats;

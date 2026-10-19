@@ -1,6 +1,6 @@
 [package]
 name = "fluely"
-version = "0.2.2"
+version = "0.2.3"
 description = "Configurable desktop AI overlay with local and cloud models, speech and screen vision"
 authors = ["Clawz1N1N", "Srikanth Nani <mail@srikanthnani.com>"]
 license = "GPL-3.0"
@@ -19,7 +19,7 @@ edition = "2021"
 # to make the lib name unique and wouldn't conflict with the bin name.
 # This seems to be only an issue on Windows, see https://github.com/rust-lang/cargo/issues/8519
 name = "fluely_lib"
-crate-type = ["rlib"]
+crate-type = ["rlib", "cdylib", "staticlib"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
@@ -29,7 +29,6 @@ dotenv = "0.15"
 tauri = { version = "2", features = ["macos-private-api"] }
 tauri-plugin-opener = "2"
 tauri-plugin-http = { version = "2.5.2", default-features = false, features = ["rustls-tls"] }
-tauri-plugin-global-shortcut = "2"
 tauri-plugin-keychain = "2.0"
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
@@ -38,19 +37,26 @@ ring = "0.17"
 flate2 = "1"
 tar = "0.4"
 image = "0.25.6"
-xcap = "0.0.12"
 base64 = "0.22"
-cpal = "0.15.3"
-rodio = { version = "0.20", default-features = false, features = ["wav", "mp3", "vorbis", "flac"] }
 hound = "3.5.1"
 tokio = { version = "1.0", features = ["full"] }
 dotenv = "0.15"
 futures-util = "0.3"
 anyhow = "1.0"
 tracing = "0.1"
-ringbuf = "0.4.8"
-tauri-plugin-shell = "2.3.1"
 tauri-plugin-sql = { version = "2", features = ["sqlite"] }
+sqlx = { version = "0.8", default-features = false, features = ["sqlite", "runtime-tokio"] }
+
+[target.'cfg(not(any(target_os = "android", target_os = "ios")))'.dependencies]
+tauri-plugin-global-shortcut = "2"
+tauri-plugin-shell = "2.3.1"
+xcap = "0.0.12"
+cpal = "0.15.3"
+rodio = { version = "0.20", default-features = false, features = ["wav", "mp3", "vorbis", "flac"] }
+ringbuf = "0.4.8"
+
+[target.'cfg(target_os = "android")'.dependencies]
+tauri-plugin-fluely-mobile = { path = "vendor/tauri-plugin-fluely-mobile" }
 
 [target.'cfg(target_os = "macos")'.dependencies]
 tauri-plugin-macos-permissions = "2"

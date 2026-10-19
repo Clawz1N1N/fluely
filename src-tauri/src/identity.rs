@@ -211,6 +211,8 @@ fn prepare_alias(profile: &Path, source: &Path, alias: &str) -> Result<PathBuf, 
     metadata.len().hash(&mut hash);
     metadata.modified().ok().hash(&mut hash);
     alias.hash(&mut hash);
+    let icon = crate::app_icon::alias_icon(profile)?;
+    icon.hash(&mut hash);
     let directory = profile
         .join("bin")
         .join(format!("alias-{:016x}", hash.finish()));
@@ -227,6 +229,7 @@ fn prepare_alias(profile: &Path, source: &Path, alias: &str) -> Result<PathBuf, 
     let result = (|| {
         std::fs::copy(source, &temporary).map_err(|e| format!("Copy own executable: {e}"))?;
         native::patch_version(&temporary, alias)?;
+        if let Some(bytes) = &icon { crate::app_icon::patch_alias(&temporary, bytes)?; }
         std::fs::rename(&temporary, &target)
             .map_err(|e| format!("Publish own executable alias: {e}"))?;
         Ok(target)
@@ -304,6 +307,7 @@ fn rollback_startup(previous: Option<&StoredIdentity>, next: &StoredIdentity) {
     }
 }
 fn save_for_profile(profile: &Path, config: IdentityConfig) -> Result<StoredIdentity, String> {
+    if !cfg!(windows) { return Err("Executable and startup aliases require Windows".into()); }
     config.validate()?;
     let current = std::env::current_exe().map_err(|e| e.to_string())?;
     let previous = read_stored(profile)?.or_else(|| legacy_previous(&current));
@@ -347,7 +351,7 @@ fn status(profile: &Path) -> Result<IdentityStatus, String> {
             .map(|path| path.to_string_lossy().into())
             .unwrap_or_default(),
         alias_active: active,
-        restart_required: !active,
+        restart_required: cfg!(windows) && !active,
         autostart_active,
         metadata_patched: stored.is_some(),
         automatic_alias_enabled: alias_enabled(),
@@ -359,6 +363,16 @@ fn status(profile: &Path) -> Result<IdentityStatus, String> {
             None
         },
     })
+}
+
+/// Reprepare the owned alias after its saved icon changes, preserving names/startup.
+#[cfg(windows)]
+pub fn refresh_saved_icon(app: &AppHandle) -> Result<(), String> {
+    let state = app.state::<IdentityState>();
+    let _guard = state.mutation.lock().map_err(|_| "Identity settings lock unavailable")?;
+    let profile = crate::app_paths::data_dir(app)?;
+    let config = read_stored(&profile)?.map(|stored| stored.config).unwrap_or_default();
+    save_for_profile(&profile, config).map(|_| ())
 }
 fn alias_enabled() -> bool {
     cfg!(windows)

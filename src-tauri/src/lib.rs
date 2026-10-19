@@ -1,37 +1,68 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+#[cfg(desktop)]
 mod capture;
 mod app_paths;
+#[cfg(desktop)]
 mod startup;
 mod db;
+mod chat_sessions;
+mod document_files;
+#[cfg(desktop)]
 mod shortcuts;
+#[cfg(desktop)]
 mod shell;
+#[cfg(desktop)]
 mod overlay_layout;
 mod shell_store;
+#[cfg(desktop)]
 mod continuous;
+#[cfg(desktop)]
 mod vision;
+#[cfg(desktop)]
 mod sleep;
+#[cfg(desktop)]
 mod ui_automation;
 mod providers;
 mod chat_preferences;
+#[cfg(desktop)]
 mod repository_link;
 mod structured;
 mod structured_core;
+#[cfg(desktop)]
 mod tts;
+#[cfg(desktop)]
 mod stt;
+#[cfg(desktop)]
 mod local_engines;
+#[cfg(desktop)]
 pub use local_engines::gguf_asr_worker_mode;
+#[cfg(desktop)]
 mod microphone;
+#[cfg(desktop)]
+mod audio_levels;
+#[cfg(desktop)]
+mod app_icon;
+#[cfg(desktop)]
 mod file_picker;
+#[cfg(desktop)]
 mod identity;
 mod locale;
+#[cfg(desktop)]
 mod window;
+#[cfg(desktop)]
 use std::sync::{Arc, Mutex};
+#[cfg(desktop)]
 use tauri::Manager;
+#[cfg(desktop)]
 use tokio::task::JoinHandle;
+#[cfg(desktop)]
 mod speaker;
+#[cfg(desktop)]
 use capture::CaptureState;
+#[cfg(desktop)]
 use speaker::VadConfig;
 
+#[cfg(desktop)]
 #[derive(Default)]
 pub struct AudioState {
     stream_task: Arc<Mutex<Option<JoinHandle<()>>>>,
@@ -44,6 +75,7 @@ fn get_app_version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+#[cfg(desktop)]
 fn shortcut_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
     tauri_plugin_global_shortcut::Builder::new()
                         .with_handler(move |app, shortcut, event| {
@@ -94,8 +126,8 @@ fn shortcut_plugin<R: tauri::Runtime>() -> tauri::plugin::TauriPlugin<R> {
                         .build()
 }
 
-#[cfg_attr(mobile, tauri::mobile_entry_point)]
-pub fn run() {
+#[cfg(desktop)]
+fn run_desktop() {
     if let Err(error)=app_paths::configure_process_profile(){startup::report(&error);return;}
     let builder = tauri::Builder::default()
         .plugin(shortcut_plugin())
@@ -109,6 +141,9 @@ pub fn run() {
         .manage(microphone::MicrophoneState::default())
         .manage(sleep::SleepState::default())
         .manage(identity::IdentityState::default())
+        .manage(app_icon::AppIconState::default())
+        .manage(chat_sessions::ChatSessionsState::default())
+        .manage(document_files::DroppedDocumentsState::default())
         .manage(CaptureState::default())
         .manage(shortcuts::WindowVisibility {
             is_hidden: Mutex::new(false),
@@ -127,6 +162,18 @@ pub fn run() {
         .plugin(tauri_plugin_shell::init()) // Add shell plugin
         .invoke_handler(tauri::generate_handler![
             locale::get_system_locale,
+            app_icon::get_app_icon_status,
+            document_files::convert_legacy_document,
+            document_files::read_dropped_documents,
+            app_icon::save_app_icon,
+            app_icon::restore_default_app_icon,
+            chat_sessions::create_chat_session,
+            chat_sessions::list_chat_sessions,
+            chat_sessions::get_chat_session,
+            chat_sessions::append_chat_session_event,
+            chat_sessions::rename_chat_session,
+            chat_sessions::delete_chat_session,
+            chat_sessions::read_chat_media,
             repository_link::open_repository,
             local_engines::get_local_engine_configs,
             local_engines::transcribe_gguf_asr_audio,
@@ -277,6 +324,7 @@ pub fn run() {
             if let Err(e) = shell::init_shell(app.handle()) {
                 return Err(format!("Failed to initialize shell windows: {e}").into());
             }
+            app_icon::apply_windows(app.handle())?;
             if let Err(e) = shortcuts::setup_global_shortcuts(app.handle()) {
                 eprintln!("Failed to setup global shortcuts: {}", e);
             }
@@ -305,4 +353,13 @@ pub fn run() {
             app.state::<local_engines::LocalEngineState>().shutdown();
         }
     });
+}
+
+#[cfg(target_os = "android")]
+mod mobile_runtime;
+
+#[cfg_attr(mobile, tauri::mobile_entry_point)]
+pub fn run() {
+    #[cfg(desktop)] run_desktop();
+    #[cfg(target_os = "android")] mobile_runtime::run();
 }

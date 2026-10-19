@@ -11,6 +11,10 @@ mod desktop;
 mod mobile;
 
 // mod commands;
+#[cfg(desktop)]
+mod commands;
+#[cfg(mobile)]
+#[path = "commands_mobile.rs"]
 mod commands;
 mod error;
 mod models;

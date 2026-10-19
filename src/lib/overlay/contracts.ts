@@ -1,11 +1,13 @@
 import type { StructuredAnswer } from './structured';
 import type { RequestLimits } from './provider-types';
 import type {CustomPanel} from './layout';
+import type {Session} from './session-store';
+import type {ContextUsage} from './context-budget';
 
 export type UiMode = 'sidestrips' | 'topbottomstrips' | 'buttons' | 'custom';
 export type ShellAction = 'listen' | 'screenshot' | 'continuous' | 'answer' | 'chat'
   | 'tts' | 'mode' | 'ui_mode' | 'dashboard' | 'settings' | 'ask' | 'snapshot' | 'reset'
-  | 'tts_stop' | 'tts_pause' | 'tts_seek_back' | 'tts_seek_forward';
+  | 'tts_stop' | 'tts_pause' | 'tts_seek_back' | 'tts_seek_forward' | 'session_new' | 'session_select';
 export interface ActionRequest {
   action: ShellAction;
   id: string;
@@ -13,6 +15,8 @@ export interface ActionRequest {
   question?: string;
   clientId?:string;
   images?:string[];
+  sessionId?:string;
+  files?:Array<{name:string;mime:string;base64:string;text?:string}>;
 }
 export interface ShellSettings {
   ui_mode: UiMode;
@@ -52,6 +56,9 @@ export interface ServiceSnapshot extends StructuredAnswer {
   clientIds:string[];
   shell: ShellSettings;
   history: HistoryEntry[];
+  session:Session|null;
+  sessionRevision:number;
+  context:ContextUsage|null;
   tts: SpeechState;
 }
 export const INITIAL_SERVICE_STATE: ServiceSnapshot = {
@@ -62,7 +69,7 @@ export const INITIAL_SERVICE_STATE: ServiceSnapshot = {
   clientIds:[],
   requestCounts: {per_second:0,per_minute:0,per_hour:0,per_day:0},
   requestLimits: {per_second:0,per_minute:0,per_hour:0,per_day:0},
-  main: '', side: '', speak: '', history: [],
+  main: '', side: '', speak: '', history: [], session:null,sessionRevision:0,context:null,
   shell: { ui_mode: 'sidestrips', shimmer: false, shimmer_speed: 3, answer_opacity: 0.32,strip_opacity:0.28,button_opacities:{},custom_panels:[] },
   tts: { enabled: true, speaking: false, paused: false, wordStart: -1, wordEnd: -1, rate: 1, voices: [] },
 };

@@ -276,15 +276,18 @@ fn capture_frames(app: &AppHandle, force: bool, token: Option<u64>) -> Result<()
 pub fn continuous_add_question(app: AppHandle, question: String, client_id:Option<String>, images:Option<Vec<String>>) -> Result<(), String> {
     crate::sleep::ensure_awake(&app)?;
     if question.trim().is_empty(){return Err("Question is empty".into());}
-    if question.trim().len()>32_768{return Err("Question exceeds 32768 bytes".into());}
+    if question.trim().len()>1_572_864{return Err("Question and document text exceed 1.5 MiB".into());}
     if client_id.as_ref().is_some_and(|id|id.len()>128) {return Err("Client ID is too long".into());}
     let settings=get_capture_settings(app.clone())?;
     let mut frames=Vec::new();
     if let Some(images)=images {
-        for encoded in images.into_iter().take(settings.max_frames) {
+        if images.len()>8{return Err("At most 8 image attachments can be sent".into());}
+        for encoded in images {
             if encoded.len()>24*1024*1024 {return Err("Attached image exceeds 24 MiB".into());}
             let raw=base64::engine::general_purpose::STANDARD.decode(encoded).map_err(|_|"Invalid image encoding")?;
-            let image=image::load_from_memory(&raw).map_err(|_|"Invalid attached image")?;
+            let mut reader=image::ImageReader::new(std::io::Cursor::new(raw)).with_guessed_format().map_err(|_|"Invalid attached image")?;
+            let mut limits=image::Limits::default();limits.max_image_width=Some(16384);limits.max_image_height=Some(16384);limits.max_alloc=Some(128*1024*1024);reader.limits(limits);
+            let image=reader.decode().map_err(|_|"Invalid attached image or image dimensions exceed the decoding limit")?;
             let image=downscale(&image,settings.max_long_side).to_rgba8();
             frames.push(Frame{monitor:"attachment".into(),width:image.width(),height:image.height(),
                 jpeg_base64:base64::engine::general_purpose::STANDARD.encode(encode_jpeg(&image,settings.jpeg_quality)?)});
@@ -303,9 +306,8 @@ pub fn continuous_add_question(app: AppHandle, question: String, client_id:Optio
     {
         let mut pending=lock(&state.pending)?;
         crate::sleep::ensure_awake(&app)?;
-        pending.question(question,Instant::now())?;
+        pending.question_with_attachments(question,frames,Instant::now())?;
         if let Some(id)=client_id {pending.client(id);}
-        pending.frames(frames,settings.max_frames,Instant::now());
     }
     drop(barrier);
     try_send_batch(&app)

@@ -58,6 +58,7 @@ export async function* fetchAIResponse(params: {
   registryReserved?:boolean;
   requestOverrides?:Record<string,unknown>;
   resetReasoning?:boolean;
+  resetAgentTools?:boolean;
   beforeSend?:(body:unknown)=>Promise<void>;
   onUsage?:(event:unknown)=>void;
 }): AsyncIterable<string> {
@@ -156,6 +157,7 @@ export async function* fetchAIResponse(params: {
     };
 
     bodyObj = deepVariableReplacer(bodyObj, allVariables);
+    if(params.resetAgentTools){delete bodyObj.tools;delete bodyObj.tool_choice;delete bodyObj.parallel_tool_calls;delete bodyObj.functions;delete bodyObj.function_call;}
     if(params.resetReasoning){
       delete bodyObj.reasoning_effort;
       delete bodyObj.reasoning;
@@ -205,9 +207,11 @@ export async function* fetchAIResponse(params: {
       method: curlJson.method || "POST", headers,
       body: curlJson.method === "GET" ? undefined : JSON.stringify(bodyObj), signal,
     });
-    if (!response.ok) throw ProviderHttpError.fromResponse(response);
-    if (!provider.streaming) {
+    const secrets=Object.entries(allVariables).filter(([key])=>/key|token|secret|password/i.test(key)).map(([,value])=>String(value));
+    if (!response.ok) throw await ProviderHttpError.fromResponseBody(response,secrets);
+    if (!provider.streaming || response.headers.get('content-type')?.includes('application/json')) {
       const json=await response.json();params.onUsage?.(json);
+      const error=ProviderHttpError.fromEvent(json,secrets);if(error)throw error;
       const content = getByPath(json, provider.responseContentPath || "");
       if (typeof content !== 'string') throw new Error('Провайдер повернув відповідь без тексту.');
       yield content;
@@ -215,6 +219,7 @@ export async function* fetchAIResponse(params: {
     }
     if (!response.body) throw new Error('Провайдер не повернув потік відповіді.');
     for await (const event of readEventStream(response.body, signal)) {
+      const error=ProviderHttpError.fromEvent(event,secrets);if(error)throw error;
       params.onUsage?.(event);
       const delta = getStreamingContent(event, provider.responseContentPath || '');
       if (delta) yield delta;

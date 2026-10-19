@@ -16,6 +16,7 @@ export interface ShortcutBinding {
 }
 
 export interface ShortcutsConfig {
+  defaultsVersion?: number;
   bindings: Record<string, ShortcutBinding>;
   customActions?: ShortcutAction[];
 }

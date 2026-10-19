@@ -11,13 +11,12 @@ export const DeleteChats = ({
 }: UseSettingsReturn) => {
   useI18n();
   const [isDeleting, setIsDeleting] = useState(false);
+  const [deleted,setDeleted]=useState(false),[error,setError]=useState('');
 
-  const deleteAllChats = () => {
+  const deleteAllChats = async () => {
     setIsDeleting(true);
-    handleDeleteAllChatsConfirm();
-    setTimeout(() => {
-      setIsDeleting(false);
-    }, 2000);
+    setDeleted(false);setError('');
+    try{await handleDeleteAllChatsConfirm();setDeleted(true);}catch(error){setError(String(error));}finally{setIsDeleting(false);}
   };
 
   return (
@@ -29,7 +28,8 @@ export const DeleteChats = ({
       />
 
       <div className="space-y-2">
-        {isDeleting && (
+        {error&&<p role="alert" className="text-xs text-destructive">{error}</p>}
+        {deleted && (
           <div className="p-3 bg-green-50 border border-green-200 rounded-md">
             <p className="text-xs text-green-700 font-medium">
               {t("✅ All chat history has been successfully deleted.")}</p>

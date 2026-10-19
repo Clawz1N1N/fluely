@@ -6,6 +6,7 @@ import {
   ShortcutAction,
 } from "@/types";
 import { getPlatform } from "@/lib";
+import {migrateTtsShortcuts} from '../overlay/tts-shortcuts';
 
 /**
  * Get platform-specific default key for a shortcut action
@@ -38,6 +39,7 @@ export const getDefaultShortcutsConfig = (): ShortcutsConfig => {
   });
 
   return {
+    defaultsVersion: 2,
     bindings,
     customActions: [],
   };
@@ -53,10 +55,13 @@ export const getShortcutsConfig = (): ShortcutsConfig => {
       const parsed = JSON.parse(stored);
       // Merge with defaults to ensure all default actions are present
       const defaults = getDefaultShortcutsConfig();
-      return {
-        bindings: { ...defaults.bindings, ...parsed.bindings },
+      const config={
+        defaultsVersion: 2,
+        bindings: { ...defaults.bindings, ...(parsed.defaultsVersion>=2?parsed.bindings:migrateTtsShortcuts(parsed.bindings??{},getPlatform())) },
         customActions: parsed.customActions || [],
       };
+      if(!(parsed.defaultsVersion>=2))localStorage.setItem(STORAGE_KEYS.SHORTCUTS,JSON.stringify(config));
+      return config;
     }
     return getDefaultShortcutsConfig();
   } catch (error) {

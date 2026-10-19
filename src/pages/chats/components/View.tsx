@@ -23,7 +23,8 @@ import {
 } from "lucide-react";
 import { useState, useEffect } from "react";
 import moment from "moment";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useSearchParams } from "react-router-dom";
+import {SessionView} from './SessionView';
 import { PageLayout } from "@/layouts";
 import { useHistory, useChatCompletion } from "@/hooks";
 import { useApp } from "@/contexts";
@@ -35,7 +36,7 @@ import {
   AudioRecorder,
 } from ".";
 
-const View = () => {
+const LegacyView = () => {
   const { language } = useI18n();
   const { conversationId } = useParams();
   const { supportsImages } = useApp();
@@ -318,4 +319,5 @@ const View = () => {
   );
 };
 
+const View=()=>{const [parameters]=useSearchParams();return parameters.get('legacy')==='1'?<LegacyView/>:<SessionView/>;};
 export default View;

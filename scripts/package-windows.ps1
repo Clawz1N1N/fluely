@@ -45,10 +45,11 @@ Copy-Item -LiteralPath (Join-Path $repo 'src-tauri\icons\128x128.png') -Destinat
 $readmePath=Join-Path $output 'README.md'
 $readme=(Get-Content -Raw -LiteralPath $readmePath).Replace('src-tauri/icons/128x128.png','docs/fluely-icon.png')
 [IO.File]::WriteAllText($readmePath,$readme,[Text.UTF8Encoding]::new($false))
-$guides=@('provider-models.md','vision-methods.md','sleep-mode.md','whisper-cpu-options.md')
+$guides=@('provider-models.md','vision-methods.md','sleep-mode.md','whisper-cpu-options.md','platforms.md','documents-context.md')
 foreach($guide in $guides){Copy-Item -LiteralPath (Join-Path $repo "docs\$guide") -Destination (Join-Path $docs $guide) -Force}
 $licenses=Join-Path $docs 'licenses';New-Item -ItemType Directory -Path $licenses -Force | Out-Null
 Get-ChildItem -LiteralPath (Join-Path $repo 'docs\licenses') -File | ForEach-Object {Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $licenses $_.Name) -Force}
+Get-ChildItem -LiteralPath (Join-Path $repo 'public\licenses') -File | ForEach-Object {Copy-Item -LiteralPath $_.FullName -Destination (Join-Path $licenses $_.Name) -Force}
 $stage=Join-Path $repo "_research\temp\portable-$version"
 New-Item -ItemType Directory -Path $stage -Force | Out-Null
 $portableFiles=@('fluely.exe','README.md','RELEASE_NOTES.md','LICENSE.txt','THIRD_PARTY_NOTICES.md','START_FLUELY.cmd')

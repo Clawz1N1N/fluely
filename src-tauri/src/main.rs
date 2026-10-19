@@ -2,6 +2,7 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
+    #[cfg(any(target_os="windows",target_os="macos",target_os="linux"))]
     if fluely_lib::gguf_asr_worker_mode() { return; }
     fluely_lib::run()
 }

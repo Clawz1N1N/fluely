@@ -1,5 +1,6 @@
 import type { ProviderEntry } from './provider-types';
 import type { Message } from '@/types';
+import {contextInputTokens,estimateContextTokens} from './context-budget';
 export function imageMime(data:string):string {
   if(data.startsWith('iVBOR'))return 'image/png';
   if(data.startsWith('UklGR'))return 'image/webp';
@@ -10,13 +11,13 @@ export function outputTokenCeiling(entry:ProviderEntry):number {
   return entry.max_output_tokens??Math.max(1,Math.min(4096,Math.floor((entry.context_window??16384)/4)));
 }
 
-/** Conservative character budget for history only. Providers enforce exact token counts. */
+/** Last-resort fitting after summarization; the saved history is never changed. */
 export function fitModelHistory(entry:ProviderEntry,prompt:string,text:string,history:Message[]):Message[] {
   if(!entry.context_window)return history;
   // Keep room for output, image embeddings and tokenizer differences.
-  let remaining=Math.max(0,Math.floor((entry.context_window-outputTokenCeiling(entry))*2)-prompt.length-text.length-2048);
+  let remaining=Math.max(0,entry.context_window-outputTokenCeiling(entry)-contextInputTokens(prompt,text,[],[])-256);
   const kept:Message[]=[];
-  for(let i=history.length-1;i>=0;i--){const cost=JSON.stringify(history[i]).length;if(cost>remaining)break;kept.unshift(history[i]);remaining-=cost;}
+  for(let i=history.length-1;i>=0;i--){const content=history[i].content;const cost=estimateContextTokens(typeof content==='string'?content:JSON.stringify(content))+8;if(cost>remaining)break;kept.unshift(history[i]);remaining-=cost;}
   while(kept[0]?.role==='assistant')kept.shift();
   return kept;
 }
@@ -33,6 +34,8 @@ export function estimateBrainTokens(prompt:string,history:Message[],text:string,
 
 export function reasoningParameters(entry:ProviderEntry):Record<string,unknown> {
   const effort=entry.reasoning_effort??'off';
+  // OpenRouter translates the router-level reasoning object for each upstream.
+  if(entry.preset==='openrouter'||/^https:\/\/openrouter\.ai(?:\/|$)/i.test(entry.base_url??''))return effort==='off'?{reasoning:{enabled:false}}:{reasoning:{effort}};
   if(entry.preset==='google') {
     if(/^gemini-3/i.test(entry.model??'')) {
       const pro=/pro/i.test(entry.model??'');

@@ -1486,7 +1486,7 @@ dependencies = [
 
 [[package]]
 name = "fluely"
-version = "0.2.2"
+version = "0.2.3"
 dependencies = [
  "anyhow",
  "base64 0.22.1",
@@ -1504,11 +1504,13 @@ dependencies = [
  "rodio",
  "serde",
  "serde_json",
+ "sqlx",
  "tar",
  "tauri",
  "tauri-build",
  "tauri-nspanel",
  "tauri-plugin-autostart",
+ "tauri-plugin-fluely-mobile",
  "tauri-plugin-global-shortcut",
  "tauri-plugin-http",
  "tauri-plugin-keychain",
@@ -5658,6 +5660,16 @@ dependencies = [
  "tauri",
  "tauri-plugin",
  "thiserror 2.0.14",
+]
+
+[[package]]
+name = "tauri-plugin-fluely-mobile"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-plugin",
 ]
 
 [[package]]

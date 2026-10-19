@@ -1,5 +1,7 @@
 //! Windows Credential Manager implementation for the published JS API.
 //! The upstream 2.0.2 package registered no desktop command handlers.
+#[cfg(any(target_os="linux",target_os="macos"))]
+#[path="unix_secure.rs"] mod unix_secure;
 fn target(key:&str)->Result<Vec<u16>,String> {
     if key.is_empty() || key.contains('\0') || key.encode_utf16().count()>2048 {
         return Err("Invalid credential key".into());
@@ -9,6 +11,8 @@ fn target(key:&str)->Result<Vec<u16>,String> {
 
 #[tauri::command]
 pub fn save_item(key:String,password:String)->Result<(),String> {
+    #[cfg(any(target_os="linux",target_os="macos"))]
+    {target(&key)?;return unix_secure::save(&key,&password);}
     #[cfg(target_os="windows")]
     unsafe {
         use windows::{core::PWSTR,Win32::Security::Credentials::{CredWriteW,CREDENTIALW,CRED_TYPE_GENERIC,CRED_PERSIST_LOCAL_MACHINE,CRED_MAX_CREDENTIAL_BLOB_SIZE}};
@@ -21,11 +25,13 @@ pub fn save_item(key:String,password:String)->Result<(),String> {
         // Never log secrets or leave an intentional plaintext fallback.
         secret.fill(0);result
     }
-    #[cfg(not(target_os="windows"))]
+    #[cfg(not(any(target_os="windows",target_os="linux",target_os="macos")))]
     {let _=(key,password);Err("This fork's secure credential backend requires Windows".into())}
 }
 
 fn read_item(key:String)->Result<Option<String>,String> {
+    #[cfg(any(target_os="linux",target_os="macos"))]
+    {target(&key)?;return unix_secure::read(&key);}
     #[cfg(target_os="windows")]
     unsafe {
         use windows::{core::PCWSTR,Win32::{Foundation::ERROR_NOT_FOUND,Security::Credentials::{CredReadW,CredFree,CREDENTIALW,CRED_TYPE_GENERIC}}};
@@ -40,7 +46,7 @@ fn read_item(key:String)->Result<Option<String>,String> {
         CredFree(credential.cast());
         String::from_utf8(bytes).map(Some).map_err(|_|"Stored credential is not UTF-8".into())
     }
-    #[cfg(not(target_os="windows"))]
+    #[cfg(not(any(target_os="windows",target_os="linux",target_os="macos")))]
     {let _=key;Err("This fork's secure credential backend requires Windows".into())}
 }
 
@@ -51,6 +57,8 @@ pub fn get_item(key:String)->Result<PasswordResponse,String> { Ok(PasswordRespon
 
 #[tauri::command]
 pub fn remove_item(key:String)->Result<(),String> {
+    #[cfg(any(target_os="linux",target_os="macos"))]
+    {target(&key)?;return unix_secure::remove(&key);}
     #[cfg(target_os="windows")]
     unsafe {
         use windows::{core::PCWSTR,Win32::{Foundation::ERROR_NOT_FOUND,Security::Credentials::{CredDeleteW,CRED_TYPE_GENERIC}}};
@@ -60,7 +68,7 @@ pub fn remove_item(key:String)->Result<(),String> {
             Err(error)=>Err(format!("Windows Credential Manager delete failed: {}",error.code())),
         }
     }
-    #[cfg(not(target_os="windows"))]
+    #[cfg(not(any(target_os="windows",target_os="linux",target_os="macos")))]
     {let _=key;Err("This fork's secure credential backend requires Windows".into())}
 }
 

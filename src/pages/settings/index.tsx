@@ -1,6 +1,7 @@
 import {Theme} from "./components";
 import {InterfaceLanguage} from './components/InterfaceLanguage';
 import {IdentitySettings} from './components/IdentitySettings';
+import {AppIconSettings} from './components/AppIconSettings';
 import {LayoutEditor} from './components/LayoutEditor';
 import {OverlayHotkeys} from './components/OverlayHotkeys';
 import {t,useI18n} from '@/lib/i18n';
@@ -20,6 +21,7 @@ const Settings = () => {
 
       {/* Autostart Toggle */}
       <IdentitySettings />
+      <AppIconSettings />
 
     </PageLayout>
   );

@@ -3,6 +3,7 @@ export interface VisionSettings { method?:VisionMethod;vision_provider_id?:strin
 interface ContextPorts { native(frame:string):Promise<string>;describe(frame:string):Promise<string> }
 export class ScreenSceneMemory {
   private observations=new Map<string,{context:string;observed:number}>();
+  clear():void{this.observations.clear();}
   remember(monitor:string,context:string,now=Date.now()):void {
     this.observations.delete(monitor);
     this.observations.set(monitor,{context:Array.from(context).slice(0,4096).join(''),observed:now});

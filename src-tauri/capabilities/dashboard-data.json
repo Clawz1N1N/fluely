@@ -5,6 +5,7 @@
   "windows": [
     "dashboard"
   ],
+  "platforms": ["windows", "macOS", "linux"],
   "permissions": [
     "sql:default",
     "sql:allow-execute",

@@ -13,6 +13,8 @@ Fluely is a GPL-3.0 fork of [Pluely](https://github.com/iamsrikanthnani/pluely),
 
 The source uses Tauri, React, TypeScript, Vite, CPAL/WASAPI, SQLite and other dependencies listed in package-lock.json and src-tauri/Cargo.lock. Their license texts remain in their source distributions. Vendored tauri-plugin-keychain and tauri-plugin-sql preserve their upstream license files.
 
+Document attachments use fflate (MIT), fast-xml-parser (MIT) and PDF.js (Apache-2.0); estimated multilingual context counts use js-tiktoken (MIT). PDF.js CMaps and standard fonts remain bundled locally with their upstream license files. The full license texts for these JavaScript libraries are bundled under `public/licenses` and `/licenses` in the application assets. Legacy Office conversion uses a separately installed LibreOffice executable; Fluely does not redistribute LibreOffice.
+
 Optional downloaded runtimes are separate from the application binary:
 
 Fluely's experimental pixel-to-text screen method adapts the half-block representation in TheiaVision (MIT, François & Theia, 2026). Its notice is retained in [docs/licenses/theiavision-MIT.txt](docs/licenses/theiavision-MIT.txt); implementation and limitations are described in [docs/vision-methods.md](docs/vision-methods.md).

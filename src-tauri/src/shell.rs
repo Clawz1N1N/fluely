@@ -915,6 +915,9 @@ fn emit_shell_settings<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
 fn setup_answer_window<R: Runtime>(app: &AppHandle<R>, window: &tauri::WebviewWindow<R>) {
     let app_handle = app.clone();
     window.on_window_event(move |event| {
+        if let tauri::WindowEvent::DragDrop(tauri::DragDropEvent::Drop { paths, .. }) = event {
+            crate::document_files::register_drop(&app_handle, paths.clone());
+        }
         if let tauri::WindowEvent::CloseRequested { api, .. }=event {
             api.prevent_close();
             if let Err(error) = hide_answer(&app_handle) {
@@ -974,6 +977,7 @@ fn set_editing_policy_on_main_thread<R: Runtime>(
     // Publish before focusability/style calls can emit focus callbacks. A
     // repeated focus-loss notification must observe nonediting and return.
     state.answer_editing.store(editing, Ordering::SeqCst);
+    if !editing { app.state::<crate::document_files::DroppedDocumentsState>().clear(); }
     let policy_result = (|| {
         window
             .set_focusable(editing)
@@ -1066,6 +1070,9 @@ pub fn set_answer_editing(app: AppHandle, editing: bool) -> Result<(), String> {
 
 #[tauri::command]
 pub fn get_answer_interaction(app:AppHandle)->bool {
+    answer_is_interactive(&app)
+}
+pub fn answer_is_interactive<R:Runtime>(app:&AppHandle<R>)->bool {
     app.state::<ShellState>().answer_editing.load(Ordering::SeqCst)
 }
 

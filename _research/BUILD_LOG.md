@@ -12415,3 +12415,1532 @@ b5572d2cd0288a54bf0cf9f2b4660f4a224dece4b9e6e870c4bb5522c59c6237  fluely.exe
 ```
 
 Full log: logs/controls-package-verified.log
+
+## sessions-node-preintegration — 2026-10-14T14:36:56.978Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 181 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.3073
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 182 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.0163
+  type: 'test'
+  ...
+1..182
+# tests 182
+# suites 0
+# pass 181
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15124.5283
+```
+
+Full log: logs/sessions-node-preintegration.log
+
+## sessions-rust-integration — 2026-10-14T16:30:16.902Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test chat_sessions::tests::archive_rejects_cross_session_media_and_traversal ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test chat_sessions::tests::archive_roundtrip_preserves_metadata_media_and_search ... ok
+test chat_sessions::tests::legacy_import_is_readonly_complete_and_does_not_repeat_or_revert_renames ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 127 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.49s
+```
+
+Full log: logs/sessions-rust-integration.log
+
+## sessions-check — 2026-10-14T16:34:38.237Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 2
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 540 text files checked; 0 failures.
+src/lib/overlay/document-attachments.ts(79,53): error TS2353: Object literal may only specify known properties, and 'isEvalSupported' does not exist in type 'DocumentInitParameters'.
+src/lib/overlay/model-request.ts(20,73): error TS2345: Argument of type 'string | { type: string; text?: string | undefined; image_url?: { url: string; } | undefined; source?: any; inline_data?: any; }[]' is not assignable to parameter of type 'string'.
+  Type '{ type: string; text?: string | undefined; image_url?: { url: string; } | undefined; source?: any; inline_data?: any; }[]' is not assignable to type 'string'.
+```
+
+Full log: logs/sessions-check.log
+
+## sessions-context-check — 2026-10-14T16:38:38.352Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.2 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 545 text files checked; 0 failures.
+```
+
+Full log: logs/sessions-context-check.log
+
+## sessions-context-node — 2026-10-14T16:41:40.236Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 197 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 2.2917
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 198 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 5.6036
+  type: 'test'
+  ...
+1..198
+# tests 198
+# suites 0
+# pass 196
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 31615.2551
+```
+
+Full log: logs/sessions-context-node.log
+
+## beta023-node — 2026-10-14T16:55:52.429Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 204 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2605
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 205 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.4534
+  type: 'test'
+  ...
+1..205
+# tests 205
+# suites 0
+# pass 205
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 18047.0357
+```
+
+Full log: logs/beta023-node.log
+
+## beta023-rust — 2026-10-14T16:56:33.501Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+error: failed to run custom build command for `fluely v0.2.3 (<workspace>\src-tauri)`
+
+Caused by:
+  process didn't exit successfully: `<workspace>\src-tauri\target\debug\build\fluely-3cf3383b9da6b5a8\build-script-build` (exit code: 1)
+  --- stdout
+  cargo:rerun-if-env-changed=TAURI_CONFIG
+  cargo:rustc-check-cfg=cfg(desktop)
+  cargo:rustc-cfg=desktop
+  cargo:rustc-check-cfg=cfg(mobile)
+  cargo:rerun-if-changed=<workspace>\src-tauri\tauri.conf.json
+  unknown field `infoPlist`, expected one of `frameworks`, `files`, `bundle-version`, `bundleVersion`, `bundle-name`, `bundleName`, `minimum-system-version`, `minimumSystemVersion`, `exception-domain`, `exceptionDomain`, `signing-identity`, `signingIdentity`, `hardened-runtime`, `hardenedRuntime`, `provider-short-name`, `providerShortName`, `entitlements`, `dmg`
+  found an unknown configuration field. This usually means that you are using a CLI version that is newer than `tauri-build` and is incompatible. Please try updating the Rust crates by running `cargo update` in the Tauri app folder.
+```
+
+Full log: logs/beta023-rust.log
+
+## beta023-check — 2026-10-14T16:56:38.926Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.3 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 559 text files checked; 0 failures.
+```
+
+Full log: logs/beta023-check.log
+
+## beta023-rust-green — 2026-10-14T16:58:01.978Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test local_engines::job::tests::closing_job_terminates_owned_process ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test chat_sessions::tests::archive_rejects_cross_session_media_and_traversal ... ok
+test chat_sessions::tests::archive_roundtrip_preserves_metadata_media_and_search ... ok
+test chat_sessions::tests::legacy_import_is_readonly_complete_and_does_not_repeat_or_revert_renames ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 129 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.66s
+```
+
+Full log: logs/beta023-rust-green.log
+
+## beta023-clippy — 2026-10-14T17:00:23.503Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 101
+
+Last 20 output lines:
+
+```text
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+    Checking tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
+    Checking tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+error: manually reimplementing `div_ceil`
+  --> src\document_files.rs:65:29
+   |
+65 |     if bytes_base64.len() > (MAX_BYTES + 2) / 3 * 4 {
+   |                             ^^^^^^^^^^^^^^^^^^^ help: consider using `.div_ceil()`: `MAX_BYTES.div_ceil(3)`
+   |
+   = help: for further information visit https://rust-lang.github.io/rust-clippy/rust-1.98.0/index.html#manual_div_ceil
+   = note: `-D clippy::manual-div-ceil` implied by `-D warnings`
+   = help: to override `-D warnings` add `#[allow(clippy::manual_div_ceil)]`
+
+error: could not compile `fluely` (lib) due to 1 previous error
+warning: build failed, waiting for other jobs to finish...
+error: could not compile `fluely` (lib test) due to 1 previous error
+```
+
+Full log: logs/beta023-clippy.log
+
+## beta023-node-final — 2026-10-14T17:00:35.558Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 204 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.3044
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 205 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.5604
+  type: 'test'
+  ...
+1..205
+# tests 205
+# suites 0
+# pass 205
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19200.0735
+```
+
+Full log: logs/beta023-node-final.log
+
+## beta023-clippy-green — 2026-10-14T17:02:17.881Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+    Checking fluely v0.2.3 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.00s
+```
+
+Full log: logs/beta023-clippy-green.log
+
+## beta023-build — 2026-10-14T17:02:55.919Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+   Compiling tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
+   Compiling tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 10s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-build.log
+
+## beta023-native-sessions — 2026-10-14T17:07:11.599Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sessions-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_upgrade_startup_preserves_migration_3_and_imports_legacy_chat True
+native_two_panels_selected_models_router_reasoning_rename_and_new_session True
+native_recorded_audio_transcript_time_and_speaker_archive True
+native_provider_failure_keeps_sanitized_diagnostic True
+```
+
+Full log: logs/beta023-native-sessions.log
+
+## beta023-openrouter-live — 2026-10-14T17:15:08.396Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-openrouter-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+configured_free_openrouter_native_request_and_vault_auth True
+```
+
+Full log: logs/beta023-openrouter-live.log
+
+## beta023-openrouter-original-budget — 2026-10-14T17:16:19.418Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-openrouter-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+configured_free_openrouter_native_request_and_vault_auth True
+```
+
+Full log: logs/beta023-openrouter-original-budget.log
+
+## beta023-native-files-context — 2026-10-14T17:20:14.180Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+native_docx_worker_preview_request_and_original_file_archive True
+  File "<string>", line 35, in <module>
+  File "<string>", line 7, in settle
+AssertionError: Document/context acceptance did not settle
+```
+
+Full log: logs/beta023-native-files-context.log
+
+## beta023-native-files-context-green — 2026-10-14T17:22:32.060Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_docx_worker_preview_request_and_original_file_archive True
+native_all_eight_images_survive_the_three_screen_frame_limit True
+native_context_90_percent_compression_preserves_archive_and_shows_counter True
+```
+
+Full log: logs/beta023-native-files-context-green.log
+
+## beta023-native-documents-full — 2026-10-14T17:23:19.740Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+native_docx_worker_preview_request_and_original_file_archive True
+native_pdf_worker_and_local_font_assets True
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 42, in <module>
+  File "<string>", line 7, in settle
+AssertionError: Document/context acceptance did not settle
+```
+
+Full log: logs/beta023-native-documents-full.log
+
+## beta023-check-final — 2026-10-14T17:26:05.114Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.3 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 564 text files checked; 0 failures.
+```
+
+Full log: logs/beta023-check-final.log
+
+## beta023-node-reviewed — 2026-10-14T17:26:14.257Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 207 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2008
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 208 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.4894
+  type: 'test'
+  ...
+1..208
+# tests 208
+# suites 0
+# pass 208
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19763.713
+```
+
+Full log: logs/beta023-node-reviewed.log
+
+## beta023-icon-resources — 2026-10-14T17:31:00.602Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd rustc --test tests/native-icon.rs -o _research\temp\native-icon-check.exe`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+    |
+624 |     fn try_into(self) -> Result<T, Self::Error>;
+    |        -------- the method is available for `[u8]` here
+    |
+    = help: items from traits can only be used if the trait is in scope
+    = note: 'std::convert::TryInto' is included in the prelude starting in Edition 2021
+help: trait `TryInto` which provides `try_into` is implemented but not in scope; perhaps you want to import it
+    |
+  2 + use std::convert::TryInto;
+    |
+help: there is a method `into` with a similar name
+    |
+ 17 -         let offset = u32::from_le_bytes(entry[12..16].try_into().unwrap()) as usize;
+ 17 +         let offset = u32::from_le_bytes(entry[12..16].into().unwrap()) as usize;
+    |
+
+error: aborting due to 3 previous errors
+
+Some errors have detailed explanations: E0432, E0599.
+For more information about an error, try `rustc --explain E0432`.
+```
+
+Full log: logs/beta023-icon-resources.log
+
+## beta023-icon-resources-green — 2026-10-14T17:31:33.094Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd rustc --edition=2021 --test tests/native-icon.rs -o _research\temp\native-icon-check.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+```
+
+Full log: logs/beta023-icon-resources-green.log
+
+## beta023-icon-native — 2026-10-14T17:31:39.406Z
+
+Directory: <workspace>
+
+Command: `_research\temp\native-icon-check.exe`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+
+running 3 tests
+test core::tests::rejects_empty_oversized_and_malformed_containers ... ok
+test core::tests::ico_directory_preserves_images_and_replaces_offsets_with_ids ... ok
+test patches_private_pe_copy_and_preserves_source ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+```
+
+Full log: logs/beta023-icon-native.log
+
+## beta023-build-final — 2026-10-14T17:30:29.639Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 39.35s
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 14s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-build-final.log
+
+## beta023-final-native-sessions — 2026-10-14T17:37:01.588Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sessions-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_upgrade_startup_preserves_migration_3_and_imports_legacy_chat True
+native_two_panels_selected_models_router_reasoning_rename_and_new_session True
+native_recorded_audio_transcript_time_and_speaker_archive True
+native_provider_failure_keeps_sanitized_diagnostic True
+```
+
+Full log: logs/beta023-final-native-sessions.log
+
+## beta023-final-native-documents — 2026-10-14T17:37:41.344Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_docx_worker_preview_request_and_original_file_archive True
+native_pdf_worker_and_local_font_assets True
+native_all_eight_images_survive_the_three_screen_frame_limit True
+native_context_90_percent_compression_preserves_archive_and_shows_counter True
+```
+
+Full log: logs/beta023-final-native-documents.log
+
+## beta023-final-native-appearance — 2026-10-14T17:38:17.345Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\native-appearance-regression.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 35, in <module>
+AssertionError
+```
+
+Full log: logs/beta023-final-native-appearance.log
+
+## beta023-final-native-appearance-green — 2026-10-14T17:39:08.786Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\native-appearance-regression.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 36, in <module>
+AssertionError
+```
+
+Full log: logs/beta023-final-native-appearance-green.log
+
+## beta023-final-native-appearance-pass — 2026-10-14T17:41:51.505Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < _research\temp\native-appearance-regression.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_appearance_custom_groups_buttons_chat_shimmer_independent_of_service True
+```
+
+Full log: logs/beta023-final-native-appearance-pass.log
+
+## beta023-build-release-candidate — 2026-10-14T17:49:02.071Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 1m 23s
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 4m 01s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-build-release-candidate.log
+
+## beta023-node-release — 2026-10-14T17:58:29.657Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 207 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.4301
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 208 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.7951
+  type: 'test'
+  ...
+1..208
+# tests 208
+# suites 0
+# pass 208
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19829.4818
+```
+
+Full log: logs/beta023-node-release.log
+
+## beta023-check-release — 2026-10-14T18:00:47.807Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.3 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 565 text files checked; 0 failures.
+```
+
+Full log: logs/beta023-check-release.log
+
+## beta023-portable-release — 2026-10-14T18:01:23.823Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-portable-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+single_exe_direct_launch_adjacent_profile_and_default_alias True
+four_ai_modules_cloud_local_system_sources_and_piper True
+ai_settings_screenshot_saved True
+```
+
+Full log: logs/beta023-portable-release.log
+
+## beta023-icon-ui — 2026-10-14T18:01:50.347Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-icon-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_icon_settings_upload_and_alias_PE_resources True
+```
+
+Full log: logs/beta023-icon-ui.log
+
+## beta023-icon-restarted — 2026-10-14T18:02:05.306Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-icon-restarted-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_custom_icon_persists_after_actual_alias_restart True
+```
+
+Full log: logs/beta023-icon-restarted.log
+
+## beta023-rust-release — 2026-10-14T18:02:58.561Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test shell_store::tests::repeated_writes_replace_the_complete_previous_layout ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test chat_sessions::tests::archive_rejects_cross_session_media_and_traversal ... ok
+test chat_sessions::tests::archive_roundtrip_preserves_metadata_media_and_search ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test chat_sessions::tests::legacy_import_is_readonly_complete_and_does_not_repeat_or_revert_renames ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 129 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.41s
+```
+
+Full log: logs/beta023-rust-release.log
+
+## beta023-clippy-release — 2026-10-14T18:03:38.078Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+**********************************************************************
+** Visual Studio 2026 Developer Command Prompt v18.10.3
+** Copyright (c) 2026 Microsoft Corporation
+**********************************************************************
+[vcvarsall.bat] Environment initialized for: 'x64'
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 9.83s
+```
+
+Full log: logs/beta023-clippy-release.log
+
+## beta023-agent-tts — 2026-10-14T21:56:20.098Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/agent-tools.test.mjs tests/provider-diagnostics.test.mjs tests/tts-shortcuts.test.mjs tests/speech.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 15 - new TTS defaults match the requested physical controls
+  ---
+  duration_ms: 1.4673
+  type: 'test'
+  ...
+# Subtest: upgrade changes only old defaults, preserving custom keys and disabled bindings
+ok 16 - upgrade changes only old defaults, preserving custom keys and disabled bindings
+  ---
+  duration_ms: 0.4865
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 1462.4327
+```
+
+Full log: logs/beta023-agent-tts.log
+
+## attachment-native-tests — 2026-10-14T21:57:15.340Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib document_files::tests -- --nocapture`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+   Compiling tauri-plugin-opener v2.4.0
+   Compiling tauri-plugin-shell v2.3.1
+   Compiling tauri-plugin-global-shortcut v2.3.0
+   Compiling tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+   Compiling tauri-plugin-http v2.5.2
+   Compiling sqlx-macros-core v0.8.6
+   Compiling sqlx-macros v0.8.6
+   Compiling tokio-rustls v0.26.2
+   Compiling hyper-rustls v0.27.7
+   Compiling reqwest v0.12.23
+   Compiling sqlx v0.8.6
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1m 13s
+     Running unittests src\lib.rs (src-tauri\target\debug\deps\fluely_lib-037b5400e19dba57.exe)
+
+running 3 tests
+test document_files::tests::legacy_formats_use_real_office_conversion_targets ... ok
+test document_files::tests::dropped_files_require_a_recent_one_use_os_grant ... ok
+test document_files::tests::dropped_documents_reject_directories_unsupported_formats_and_oversized_files ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 128 filtered out; finished in 0.00s
+```
+
+Full log: logs/attachment-native-tests.log
+
+## beta023-followup-node — 2026-10-14T21:58:59.023Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 230 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 2.3245
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 231 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 2.8285
+  type: 'test'
+  ...
+1..231
+# tests 231
+# suites 0
+# pass 231
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23873.6282
+```
+
+Full log: logs/beta023-followup-node.log
+
+## beta023-followup-check — 2026-10-14T21:59:23.417Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.3 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 575 text files checked; 0 failures.
+```
+
+Full log: logs/beta023-followup-check.log
+
+## beta023-followup-rust — 2026-10-14T21:59:13.453Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo test --manifest-path src-tauri/Cargo.toml --offline --lib`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+test structured_core::tests::parse_untagged_goes_to_main ... ok
+test structured_core::tests::preserves_section_order_and_repeated_tags ... ok
+test structured_core::tests::preserves_untagged_unicode ... ok
+test structured_core::tests::stream_does_not_leak_split_tag_prefixes ... ok
+test stt::catalog::tests::installed_cultures_keep_real_names_and_allow_default_only_when_available ... ok
+test stt::catalog::tests::no_installed_recognizers_is_an_actionable_error_instead_of_fake_models ... ok
+test tts::tests::speech_settings_reject_nan_and_preserve_independent_backend ... ok
+test vision::pixel_text::tests::color_grid_preserves_red_green_blue_white_positions ... ok
+test vision::pixel_text::tests::half_blocks_encode_top_bottom_both_and_neither ... ok
+test structured_core::tests::streaming_matches_literal_output_at_every_character_split ... ok
+test vision::tests::screen_context_is_unicode_safe_and_obeys_every_character_budget ... ok
+test chat_sessions::tests::archive_rejects_cross_session_media_and_traversal ... ok
+test chat_sessions::tests::archive_roundtrip_preserves_metadata_media_and_search ... ok
+test chat_sessions::tests::legacy_import_is_readonly_complete_and_does_not_repeat_or_revert_renames ... ok
+test vision::pixel_text::tests::insufficient_context_budget_reports_an_explicit_error ... ok
+test vision::pixel_text::tests::wide_and_portrait_frames_keep_complete_maps_within_budget ... ok
+test sleep::audio::tests::invalid_selected_output_is_not_substituted_with_default ... ok
+test continuous::tests::downscale_preserves_aspect_ratio ... ok
+
+test result: ok. 131 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.84s
+```
+
+Full log: logs/beta023-followup-rust.log
+
+## beta023-followup-clippy — 2026-10-14T21:59:51.568Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd cargo clippy --manifest-path src-tauri/Cargo.toml --offline --all-targets -- -D warnings`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+   Compiling tauri-build v2.4.0
+    Checking rustls-webpki v0.103.4
+   Compiling tauri v2.8.2
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+    Checking rustls v0.23.31
+   Compiling sqlx-macros-core v0.8.6
+   Compiling tauri-plugin-fs v2.4.2
+   Compiling tauri-plugin-autostart v2.5.0
+   Compiling tauri-plugin-keychain v2.0.2 (<workspace>\src-tauri\vendor\tauri-plugin-keychain)
+   Compiling tauri-plugin-global-shortcut v2.3.0
+   Compiling tauri-plugin-opener v2.4.0
+   Compiling tauri-plugin-sql v2.3.0 (<workspace>\src-tauri\vendor\tauri-plugin-sql)
+   Compiling tauri-plugin-shell v2.3.1
+   Compiling tauri-plugin-http v2.5.2
+   Compiling sqlx-macros v0.8.6
+    Checking tokio-rustls v0.26.2
+    Checking hyper-rustls v0.27.7
+    Checking reqwest v0.12.23
+    Checking sqlx v0.8.6
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 22.02s
+```
+
+Full log: logs/beta023-followup-clippy.log
+
+## beta023-followup-build — 2026-10-14T22:00:14.671Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 29.18s
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 2m 27s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-followup-build.log
+
+## beta023-agent-review — 2026-10-19T18:26:18.520Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/agent-tools.test.mjs tests/provider-diagnostics.test.mjs tests/tts-shortcuts.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 13 - new TTS defaults match the requested physical controls
+  ---
+  duration_ms: 1.3914
+  type: 'test'
+  ...
+# Subtest: upgrade changes only old defaults, preserving custom keys and disabled bindings
+ok 14 - upgrade changes only old defaults, preserving custom keys and disabled bindings
+  ---
+  duration_ms: 0.3191
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2952.194
+```
+
+Full log: logs/beta023-agent-review.log
+
+## beta023-final-tools-node — 2026-10-19T18:26:37.101Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 231 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 2.9976
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 232 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 2.6802
+  type: 'test'
+  ...
+1..232
+# tests 232
+# suites 0
+# pass 231
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 36536.883
+```
+
+Full log: logs/beta023-final-tools-node.log
+
+## beta023-final-native-node — 2026-10-19T18:28:14.463Z
+
+Directory: <workspace>
+
+Command: `npm test`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+ok 231 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 1.2188
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 232 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.5094
+  type: 'test'
+  ...
+1..232
+# tests 232
+# suites 0
+# pass 231
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 45528.2184
+```
+
+Full log: logs/beta023-final-native-node.log
+
+## beta023-agent-abort — 2026-10-19T18:32:32.132Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/agent-tools.test.mjs tests/provider-diagnostics.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 13 - user cancellation does not place a healthy model into provider cooldown
+  ---
+  duration_ms: 0.5569
+  type: 'test'
+  ...
+# Subtest: a JSON response arriving after cancellation yields no late text
+ok 14 - a JSON response arriving after cancellation yields no late text
+  ---
+  duration_ms: 2.0068
+  type: 'test'
+  ...
+1..14
+# tests 14
+# suites 0
+# pass 14
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5505.3044
+```
+
+Full log: logs/beta023-agent-abort.log
+
+## beta023-final-serial-node — 2026-10-19T18:30:47.562Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test --test-concurrency=1 tests/*.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+#     at getResponseSettings (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/lib/storage/response-settings.storage.ts:15:24)
+#     at buildEnhancedSystemPrompt (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/lib/functions/ai-response.function.ts:13:30)
+#     at answer (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/src/components/ServiceRuntime.tsx:208:92)
+#     at async TestContext.<anonymous> (file:///C:/Users/broma/OneDrive/Desktop/my_pluely_fork/pluely/tests/vision-runtime.test.mjs:82:19)
+#     at async Test.run (node:internal/test_runner/test:1054:7)
+#     at async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+ok 232 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 1.6286
+  type: 'test'
+  ...
+1..232
+# tests 232
+# suites 0
+# pass 232
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 114581.6545
+```
+
+Full log: logs/beta023-final-serial-node.log
+
+## beta023-release-serial — 2026-10-19T18:34:20.285Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test --test-concurrency=1 tests/*.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 233 - missing vision is shown explicitly and never blamed on the blind brain provider
+  ---
+  duration_ms: 4.1597
+  type: 'test'
+  ...
+# Subtest: brain fallback reuses the prepared visual description instead of paying for the image twice
+ok 234 - brain fallback reuses the prepared visual description instead of paying for the image twice
+  ---
+  duration_ms: 3.3579
+  type: 'test'
+  ...
+1..234
+# tests 234
+# suites 0
+# pass 234
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 72434.599
+```
+
+Full log: logs/beta023-release-serial.log
+
+## beta023-final-tools-build — 2026-10-19T18:27:02.486Z
+
+Directory: <workspace>
+
+Command: `call scripts\rust-env.cmd npm run tauri build`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+  Downloaded windows v0.54.0
+  Downloaded windows v0.52.0
+   Compiling fluely v0.2.3 (<workspace>\src-tauri)
+warning: linker stdout: Создается библиотека <workspace>\src-tauri\target\release\deps\fluely_lib.dll.lib и объект <workspace>\src-tauri\target\release\deps\fluely_lib.dll.exp
+  |
+  = note: `#[warn(linker_messages)]` on by default
+
+warning: `fluely` (lib) generated 1 warning
+    Finished `release` profile [optimized] target(s) in 5m 39s
+       Built application at: <workspace>\src-tauri\target\release\fluely.exe
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type msi
+        Info Target: x64
+     Running candle for "main.wxs"
+     Running light to produce <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        Info Patching binary "C:\\Users\\broma\\OneDrive\\Desktop\\my_pluely_fork\\pluely\\src-tauri\\target\\release\\fluely.exe" for type nsis
+        Info Target: x64
+     Running makensis to produce <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+    Finished 2 bundles at:
+        <workspace>\src-tauri\target\release\bundle\msi\Fluely_0.2.3_x64_en-US.msi
+        <workspace>\src-tauri\target\release\bundle\nsis\Fluely_0.2.3_x64-setup.exe
+```
+
+Full log: logs/beta023-final-tools-build.log
+
+## beta023-release-types — 2026-10-19T18:35:33.106Z
+
+Directory: <workspace>
+
+Command: `npm run check`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+npm notice run fluely@0.2.3 check
+npm notice run node scripts/check-encoding.mjs && tsc --noEmit
+Encoding: 576 text files checked; 0 failures.
+```
+
+Full log: logs/beta023-release-types.log
+
+## beta023-rc19-sessions — 2026-10-19T18:35:51.525Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-sessions-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_upgrade_startup_preserves_migration_3_and_imports_legacy_chat True
+native_two_panels_selected_models_router_reasoning_rename_and_new_session True
+native_recorded_audio_transcript_time_and_speaker_archive True
+native_provider_failure_keeps_sanitized_diagnostic True
+```
+
+Full log: logs/beta023-rc19-sessions.log
+
+## beta023-rc19-documents — 2026-10-19T18:35:59.981Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-files-context-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_docx_worker_preview_request_and_original_file_archive True
+native_pdf_worker_and_local_font_assets True
+native_all_eight_images_survive_the_three_screen_frame_limit True
+native_context_90_percent_compression_preserves_archive_and_shows_counter True
+```
+
+Full log: logs/beta023-rc19-documents.log
+
+## beta023-rc19-provider-tools — 2026-10-19T18:36:04.937Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-provider-tools-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+native_account_modal_rename_add_same_key_and_settings_preserved True
+native_invalid_key_discovery_alert_does_not_replace_saved_key True
+native_webview_DOM_drop_intake_and_forged_grant_rejection True
+native_passive_chat_ignores_drop True
+native_agent_tool_continuation_two_requests_exact_usage_and_TTS_bindings True
+```
+
+Full log: logs/beta023-rc19-provider-tools.log

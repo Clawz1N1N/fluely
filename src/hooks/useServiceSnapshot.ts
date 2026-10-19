@@ -5,6 +5,7 @@ import { getCurrentWindow } from '@tauri-apps/api/window';
 import {invoke} from '@tauri-apps/api/core';
 import { INITIAL_SERVICE_STATE, type ActionRequest, type ServiceSnapshot, type ShellAction, type ShellSettings } from '@/lib/overlay/contracts';
 import { executeAction } from '@/lib/overlay/action-client';
+import {useNeuralAvailability} from './useNeuralAvailability';
 
 interface SnapshotTransport {
   listen: (receive: (state: ServiceSnapshot) => void) => Promise<UnlistenFn>;
@@ -67,6 +68,7 @@ export async function sendShellAction(action: ShellAction, question?: string): P
 /** Visible windows observe the service; only the hidden main window executes actions. */
 export function useServiceSnapshot() {
   useI18n();
+  const availability=useNeuralAvailability();
   const [snapshot, setSnapshot] = useState<ServiceSnapshot>(INITIAL_SERVICE_STATE);
   const [connectionError, setConnectionError] = useState<string | null>(null);
   const [nativeShell,setNativeShell]=useState<ShellSettings|null>(null);
@@ -88,15 +90,15 @@ export function useServiceSnapshot() {
     setSnapshot(state);
     setConnectionError(null);
   }, () => setConnectionError(t("Не вдалося підключитися до служби."))), []);
-  const act = useCallback(async (action: ShellAction, question?: string) => {
+  const act = useCallback(async (action: ShellAction, question?: string,attachments?:{images?:string[];files?:Array<{name:string;mime:string;base64:string;text?:string}>}) => {
     try {
       // Recovery must work even if the service never installed its action listener.
       if(action==='settings'){await invoke('open_dashboard');setConnectionError(null);return true;}
-      await executeAction({action,id:crypto.randomUUID(),source:getCurrentWindow().label,...(question===undefined?{}:{question})},{
+      await executeAction({action,id:crypto.randomUUID(),source:getCurrentWindow().label,...(question===undefined?{}:{question}),...attachments},{
         listen:receive=>listen('shell-action-result',event=>receive(event.payload as {id:string;ok:boolean;error?:string})),
         send:request=>emitTo('main','shell-action',request),
       });setConnectionError(null);return true;
     }catch(error){setConnectionError(error instanceof Error?error.message:t("Не вдалося надіслати дію."));return false;}
   }, []);
-  return { snapshot:nativeShell?{...snapshot,shell:nativeShell}:snapshot, act, connectionError };
+  return { snapshot:{...snapshot,...(nativeShell?{shell:nativeShell}:{}),availability}, act, connectionError };
 }

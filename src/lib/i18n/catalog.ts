@@ -5,6 +5,86 @@ export const catalog: Record<string, Translations> = Object.create(null);
 
 // English and Ukrainian sources are aliases so older UI components share one catalog.
 const rows = String.raw`
+Models in this account share one saved API key. Edit model IDs and names, or add models below.|Моделі цього облікового запису використовують один збережений API-ключ. Змінюйте ідентифікатори й назви або додавайте моделі нижче.|Модели этой учётной записи используют один сохранённый API-ключ. Меняйте идентификаторы и названия или добавляйте модели ниже.
+A key is saved securely for this account. Leave this field blank to keep it; enter a new key only to replace it.|Ключ цього облікового запису збережено в захищеному сховищі. Залиште поле порожнім, щоб зберегти його; введіть новий ключ лише для заміни.|Ключ этой учётной записи сохранён в защищённом хранилище. Оставьте поле пустым, чтобы сохранить его; введите новый ключ только для замены.
+Or add a model ID manually below.|Або додайте ідентифікатор моделі вручну нижче.|Или добавьте идентификатор модели вручную ниже.
+Fetch models or add a model ID manually.|Отримайте список моделей або додайте ідентифікатор моделі вручну.|Получите список моделей или добавьте идентификатор модели вручную.
+New model ID|Ідентифікатор нової моделі|Идентификатор новой модели
+Model display name|Відображувана назва моделі|Отображаемое название модели
+Working…|Виконується…|Выполняется…
+{count} models available|Доступно моделей: {count}|Доступно моделей: {count}
+Provider ID is required|Укажіть ідентифікатор провайдера|Укажите идентификатор провайдера
+Provider name is required|Укажіть назву провайдера|Укажите название провайдера
+Enter an API key before fetching models|Уведіть API-ключ для доступу до моделей|Введите API-ключ для доступа к моделям
+Model ID and display name are required|Укажіть ідентифікатор і відображувану назву моделі|Укажите идентификатор и отображаемое название модели
+Model IDs must be unique within an account|Ідентифікатори моделей в одному обліковому записі мають бути унікальними|Идентификаторы моделей в одной учётной записи должны быть уникальными
+API key validation failed ({status})|Не вдалося перевірити API-ключ ({status})|Не удалось проверить API-ключ ({status})
+Model list request failed ({status})|Не вдалося отримати список моделей ({status})|Не удалось получить список моделей ({status})
+Model discovery connection failed|Не вдалося підключитися для отримання моделей|Не удалось подключиться для получения моделей
+Model list response is invalid|Некоректна відповідь зі списком моделей|Некорректный ответ со списком моделей
+Provider error: HTTP {status}|Помилка провайдера: HTTP {status}|Ошибка провайдера: HTTP {status}
+Provider stream error|Помилка потоку провайдера|Ошибка потока провайдера
+Analyze the attached files|Проаналізуй прикріплені файли|Проанализируй прикреплённые файлы
+Could not read attachment.|Не вдалося прочитати вкладення.|Не удалось прочитать вложение.
+Attach files|Прикріпити файли|Прикрепить файлы
+Reading files…|Читаємо файли…|Читаем файлы…
+Remove attachment|Прибрати вкладення|Убрать вложение
+Context usage|Використання контексту|Использование контекста
+Input tokens|Вхідні токени|Входные токены
+Reserved output|Резерв для відповіді|Резерв для ответа
+Set the context window in AI settings|Задайте розмір контексту в налаштуваннях ШІ|Укажите размер контекста в настройках ИИ
+Context|Контекст|Контекст
+Compressing…|Стискаємо…|Сжимаем…
+Compressed|Стиснуто|Сжато
+Load attachment|Завантажити вкладення|Загрузить вложение
+File attachment|Прикріплений файл|Прикреплённый файл
+Context summary|Резюме контексту|Резюме контекста
+Application icon|Піктограма програми|Значок приложения
+Application icon preview|Попередній перегляд піктограми|Предпросмотр значка
+Choose a square PNG or ICO, 16–1024 pixels, up to 4 MiB. The image is saved in your Fluely profile.|Виберіть квадратний PNG або ICO, 16–1024 пікселів, до 4 МіБ. Зображення зберігається у профілі Fluely.|Выберите квадратный PNG или ICO, 16–1024 пикселей, до 4 МиБ. Изображение сохраняется в профиле Fluely.
+Choose icon|Вибрати піктограму|Выбрать значок
+Restore default icon|Відновити стандартну піктограму|Восстановить стандартный значок
+Restart with the saved process name in the settings below to apply the executable icon.|Перезапустіть зі збереженою назвою процесу в налаштуваннях нижче, щоб застосувати піктограму виконуваного файлу.|Перезапустите с сохранённым именем процесса в настройках ниже, чтобы применить значок исполняемого файла.
+Window icons apply immediately. Restart with the saved process name to apply the executable icon in Explorer and Task Manager; Windows may cache icons.|Піктограми вікон застосовуються одразу. Перезапустіть зі збереженою назвою процесу, щоб застосувати піктограму в Провіднику й Диспетчері завдань; Windows може кешувати піктограми.|Значки окон применяются сразу. Перезапустите с сохранённым именем процесса для значка в Проводнике и Диспетчере задач; Windows может кешировать значки.
+Window icons apply immediately where supported by the desktop. Packaged macOS Dock and Linux launcher icons remain the installed application icon.|Піктограми вікон застосовуються одразу, якщо це підтримує середовище. Піктограми macOS Dock і запуску Linux визначає встановлена програма.|Значки окон применяются сразу, если это поддерживает среда. Значки macOS Dock и запуска Linux определяет установленное приложение.
+Describe this screenshot|Опиши цей знімок екрана|Опиши этот снимок экрана
+Screenshot attachment|Прикріплений знімок екрана|Прикреплённый снимок экрана
+Ask Fluely|Запитайте Fluely|Спросите Fluely
+Record microphone|Записати мікрофон|Записать микрофон
+Stop and transcribe|Зупинити й розпізнати|Остановить и распознать
+Capture screen|Зняти екран|Снять экран
+Allow overlay|Дозволити накладання|Разрешить наложение
+Show overlay|Показати накладання|Показать наложение
+Hide overlay|Приховати накладання|Скрыть наложение
+Android capture starts from Fluely and always uses system consent. Protected screens may be blank. Launcher icons belong to the installed package.|Захоплення Android запускається у Fluely за згодою через систему. Захищені екрани можуть бути порожніми. Піктограми запуску визначає встановлений пакет.|Захват Android запускается во Fluely с системным согласием. Защищённые экраны могут быть пустыми. Значки запуска определяет установленный пакет.
+Selected models|Вибрані моделі|Выбранные модели
+System audio|Системний звук|Системный звук
+Transcript|Транскрипт|Транскрипт
+Conversation|Розмова|Разговор
+Recognized speech will appear here.|Тут з’явиться розпізнане мовлення.|Здесь появится распознанная речь.
+Your questions and answers will appear here.|Тут з’являться ваші запитання й відповіді.|Здесь появятся ваши вопросы и ответы.
+Live input volume|Поточна гучність входів|Текущая громкость входов
+Speech playback|Відтворення мовлення|Воспроизведение речи
+Session history|Історія сесій|История сессий
+New chat|Новий чат|Новый чат
+Search sessions|Пошук сесій|Поиск сессий
+Search sessions…|Пошук сесій…|Поиск сессий…
+Session title|Назва сесії|Название сессии
+Rename|Перейменувати|Переименовать
+No saved sessions|Немає збережених сесій|Нет сохранённых сессий
+Saved conversations, transcripts, audio, and screen observations|Збережені розмови, транскрипти, аудіо та спостереження екрана|Сохранённые разговоры, транскрипты, аудио и наблюдения экрана
+Events: {count}|Події: {count}|События: {count}
+Audio recording|Аудіозапис|Аудиозапись
+Vision description|Опис зображення|Описание изображения
+Load recording|Завантажити запис|Загрузить запись
+View screenshot|Переглянути знімок екрана|Просмотреть снимок экрана
+Search events|Пошук подій|Поиск событий
+Search events…|Пошук подій…|Поиск событий…
+No matching events|Немає відповідних подій|Нет подходящих событий
+Delete session|Видалити сесію|Удалить сессию
+Delete this session and its saved media?|Видалити цю сесію та її збережені медіафайли?|Удалить эту сессию и её сохранённые медиафайлы?
+System voice|Системний голос|Системный голос
+Not configured|Не налаштовано|Не настроено
 TTS settings were saved, but backend profiles could not be saved locally.|Налаштування озвучення збережено, але профілі способів озвучення не вдалося зберегти локально.|Настройки озвучивания сохранены, но профили способов озвучивания не удалось сохранить локально.
 AI settings|Налаштування ШІ|Настройки ИИ
 AI modules|Модулі ШІ|Модули ИИ

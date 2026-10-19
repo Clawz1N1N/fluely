@@ -1,0 +1,3 @@
+[default]
+description = "User-controlled Android overlay, microphone, and screen consent commands."
+permissions = ["allow-status", "allow-request-microphone", "allow-request-overlay", "allow-show-overlay", "allow-hide-overlay", "allow-start-microphone", "allow-stop-microphone", "allow-capture-screen"]

@@ -5,18 +5,25 @@ import type { SpeechSettings } from './speech-controller';
 import { nativeMicrophoneWave } from './local-engine-client';
 import { t } from '@/lib/i18n';
 import {AlarmCodeDetector,DEFAULT_SLEEP_SETTINGS,sleepPrompt,type SleepSettings} from './sleep';
+import {SessionCoordinator,sessionHistory,recordingMedia,type SessionPorts,type SessionEvent} from './session-store';
+import type {ContextSummary,ContextUsage} from './context-budget';
+import {imageMime} from './model-request';
+
+export interface TranscriptionResult {text:string;segments?:Array<{text:string;speaker?:string;start?:number;end?:number;timestamp?:number}>}
 
 export interface CaptureBatch {
   request_id: number;
   frames: Array<{monitor:string;jpeg_base64:string;width:number;height:number}>;
-  transcript: Array<{channel:string;text:string}>;
+  transcript: Array<{channel:string;text:string;timestamp?:number;speaker?:string;audio_ref?:string}>;
   questions: string[];
   question?: string | null;
   client_ids?:string[];
   sleep_prompt?:string;
+  context_summary?:ContextSummary;
+  sessionId?:string;
 }
 export interface CaptureOptions { system_audio: boolean; microphone: boolean; mode?:string }
-export type AnswerChunk = string | { reset: true };
+export type AnswerChunk = string | { reset: true } | {vision:{monitor:string;text:string;timestamp?:number;frameIndex?:number}} | {context?:ContextUsage;compression?:ContextSummary};
 export interface ServicePorts {
   listen<T>(name: string, handler: (payload: T) => void): Promise<() => void>;
   emit(name: string, payload: unknown): Promise<unknown>;
@@ -24,7 +31,9 @@ export interface ServicePorts {
   initialize(): Promise<void>;
   status(): Promise<ProviderStatus>;
   answer(batch: CaptureBatch, history: ServiceSnapshot['history'], signal: AbortSignal): AsyncIterable<AnswerChunk>;
-  transcribe(audio: Blob, signal: AbortSignal): Promise<string>;
+  transcribe(audio: Blob, signal: AbortSignal): Promise<string|TranscriptionResult>;
+  sessions?:SessionPorts;
+  resetContext?():void;
   speech: { configure?(settings:SpeechSettings):void; begin?():void; update(text: string, final: boolean): void; stop(): void; pause(): void; seek(delta:number): void; toggle(): Promise<void> };
 }
 export class ServiceController {
@@ -55,7 +64,11 @@ export class ServiceController {
   private sleepHistory:ServiceSnapshot['history']=[];
   private transitioning=false;
   private modeTransition:Promise<void>=Promise.resolve();
-  constructor(public ports: ServicePorts) {}
+  private sessions?:SessionCoordinator;
+  private recordedTranscripts:Array<{channel:string;text:string}>=[];
+  constructor(public ports: ServicePorts) {
+    if(ports.sessions)this.sessions=new SessionCoordinator(ports.sessions,session=>{this.snapshot.session=session;void this.publish();});
+  }
   private remember<T>(set: Set<T>, value: T): boolean {
     if(set.has(value))return false;set.add(value);
     if(set.size>1000)set.delete(set.values().next().value!);
@@ -73,7 +86,8 @@ export class ServiceController {
   }
   setSpeech(value: Partial<SpeechState>): void { Object.assign(this.snapshot.tts,value);void this.publish(); }
   setError(error: unknown): void {
-    this.snapshot.error=error instanceof Error?t(error.message):t('Не вдалося виконати дію. Перевірте налаштування.');
+    const message=error instanceof Error?error.message:typeof error==='string'?error:null;
+    this.snapshot.error=message?t(message):t('Не вдалося виконати дію. Перевірте налаштування.');
     void this.publish();
   }
   start(): Promise<void> {
@@ -123,6 +137,11 @@ export class ServiceController {
         this.bind('system-audio-error',value=>this.setError(typeof value==='string'?new Error(value):value)),
         this.bind('continuous-error',value=>this.setError(new Error(String(value)))),
         this.bind('audio-encoding-error',value=>this.setError(new Error(String(value)))),
+        this.bind<{sessionId:string;deleted?:boolean}>('chat-sessions-changed',value=>{
+          if(value.sessionId!==this.snapshot.session?.id)return;
+          if(value.deleted)void this.action({action:'session_new',id:crypto.randomUUID(),source:'sessions'});
+          else void this.sessions?.refresh(value.sessionId).catch(error=>this.setError(error));
+        }),
         this.bind('shell-settings-changed',()=>{void (this.snapshot.ready?this.refreshStatus():this.start()).catch(error=>this.setError(error));}),
         this.bind('providers-status',()=>{
           // Registry changes must reach visible windows without waiting for a
@@ -226,9 +245,14 @@ export class ServiceController {
         if(request.action!=='snapshot'&&request.action!=='settings')await this.startup;
         if(!this.alive)return;
         this.snapshot.error=null;
-        if(this.snapshot.sleeping&&!['mode','snapshot','settings','tts_stop'].includes(request.action))throw new Error('Ordinary actions are unavailable during Sleep mode.');
+        if(this.snapshot.sleeping&&!['mode','snapshot','settings','tts_stop'].includes(request.action)&&!(request.action==='session_new'&&request.source==='sessions'))throw new Error('Ordinary actions are unavailable during Sleep mode.');
         switch(request.action){
           case 'snapshot':break;
+          case 'session_new':await this.switchSession(null);break;
+          case 'session_select': {
+            const id=request.sessionId??request.question;if(!id)throw new Error('Select a chat session.');
+            await this.switchSession(id);break;
+          }
           case 'listen': {
             const next=!this.snapshot.listening;
             this.snapshot.listening=next;
@@ -252,6 +276,7 @@ export class ServiceController {
           case 'screenshot':await this.ports.invoke('capture_now');break;
           case 'ask': {
             const question=request.question?.trim();if(!question)throw new Error('Введіть запитання.');
+            for(const file of request.files??[])if(this.sessions)await this.sessions.append({kind:'file',timestamp:Date.now(),text:file.text??'',filename:file.name},{base64:file.base64,mime:file.mime});
             await this.ports.invoke('continuous_add_question',{question,...(request.clientId?{clientId:request.clientId}:{}),...(request.images?{images:request.images}:{})});break;
           }
           case 'answer':await this.ports.invoke('toggle_answer_window');break;
@@ -281,6 +306,41 @@ export class ServiceController {
     if(request.action==='snapshot'||request.action==='settings')return operation();
     const next=this.actions.catch(()=>{}).then(operation);this.actions=next;return next;
   }
+  private async switchSession(id:string|null):Promise<void>{
+    if(!this.sessions)throw new Error('Chat session storage is unavailable.');
+    // Invalidate queued/in-flight batches before changing their conversation owner.
+    this.transitioning=true;
+    this.modeEpoch++;this.abort.abort();this.abort=new AbortController();this.ports.speech.stop();
+    try{
+    const continuous=this.snapshot.continuous;
+    const listening=this.snapshot.listening;
+    this.snapshot.listening=false;await this.reconcileCapture();
+    await this.ports.invoke('stop_continuous');
+    await this.requests.catch(()=>{});
+    this.nativeAudioEpoch=await this.ports.invoke<string>('set_sleep_mode',{sleeping:this.snapshot.sleeping})??this.nativeAudioEpoch;
+    const session=await this.sessions.select(id);this.recordedTranscripts=[];
+    this.snapshot.sessionRevision++;
+    this.sleepHistory=[];
+    this.ports.resetContext?.();
+    this.snapshot.history=session?sessionHistory(session):[];
+    Object.assign(this.snapshot,{main:'',side:'',speak:'',context:null,error:null,requestError:null,clientIds:[],busy:false,requestId:null});
+    const last=session?[...session.events].reverse().find(event=>event.kind==='answer'):undefined;
+    if(last)Object.assign(this.snapshot,{main:last.main??last.text,side:last.side??'',speak:last.speak??''});
+    if(continuous)await this.ports.invoke('start_continuous');
+    this.snapshot.listening=listening;await this.reconcileCapture();
+    }finally{this.transitioning=false;}
+  }
+  private async saveEvent(event:Omit<SessionEvent,'id'>):Promise<void>{if(this.sessions)await this.sessions.append({mode:this.snapshot.sleeping?'sleep':'awake',...event});}
+  private async saveBatch(batch:CaptureBatch):Promise<void>{
+    const timestamp=Date.now();
+    for(const text of batch.questions??[batch.question??''])if(text)await this.saveEvent({kind:'question',timestamp,text,request_id:batch.request_id});
+    for(const item of batch.transcript){
+      const existing=this.recordedTranscripts.findIndex(event=>event.channel===item.channel&&event.text===item.text);
+      if(existing>=0){this.recordedTranscripts.splice(existing,1);continue;}
+      await this.saveEvent({kind:'transcript',timestamp:item.timestamp??timestamp,text:item.text,channel:item.channel,speaker:item.speaker,audio_ref:item.audio_ref,request_id:batch.request_id});
+    }
+    for(const [frame_index,frame] of batch.frames.entries())if(this.sessions)await this.sessions.append({kind:'screenshot',timestamp,text:frame.monitor,request_id:batch.request_id,frame_index},{mime:imageMime(frame.jpeg_base64),base64:frame.jpeg_base64});
+  }
   batch(batch: CaptureBatch): Promise<void> {
     if(!batch||!Number.isSafeInteger(batch.request_id)||!this.remember(this.seenBatches,batch.request_id))return Promise.resolve();
     const epoch=this.modeEpoch;
@@ -290,22 +350,30 @@ export class ServiceController {
       const sleeping=this.snapshot.sleeping;
       const signal=this.abort.signal;
       const settings={...this.sleepSettings};
-      const input=sleeping?{...batch,frames:[],transcript:batch.transcript.filter(item=>item.channel==='[system]'),questions:[],question:null,sleep_prompt:sleepPrompt(settings)}:batch;
+      const input=sleeping?{...batch,frames:[],transcript:batch.transcript.filter(item=>item.channel==='[system]'),questions:[],question:null,sleep_prompt:sleepPrompt(settings)}:{...batch,context_summary:this.snapshot.session?.context_summary,sessionId:this.snapshot.session?.id};
       this.snapshot.busy=true;this.snapshot.error=null;this.snapshot.requestId=String(batch.request_id);
       this.snapshot.requestError=null;
       this.snapshot.clientIds=batch.client_ids??[];
       Object.assign(this.snapshot,{main:'',side:'',speak:''});
       if(!sleeping&&this.ports.speech.begin)this.ports.speech.begin();else this.ports.speech.stop();
       let parser=new StructuredParser();let raw='';
+      let answerArchived=false;
       const detector=new AlarmCodeDetector(settings.alarm_code);
       let alarmFired=false;
       try {
         if(deliveredDuringTransition||epoch!==this.modeEpoch)throw new Error('Request cancelled by Sleep mode transition.');
         if(sleeping&&!input.transcript.length)throw new Error('Ordinary actions are unavailable during Sleep mode.');
+        await this.saveBatch(input);
         await this.publish(true);
         for await(const chunk of this.ports.answer(input,structuredClone(sleeping?this.sleepHistory:this.snapshot.history),signal)){
           if(!this.alive||signal.aborted||epoch!==this.modeEpoch)throw new DOMException('Aborted','AbortError');
           if(typeof chunk!=='string'){
+            if('context' in chunk || 'compression' in chunk){
+              if(chunk.context)this.snapshot.context=chunk.context;
+              if(chunk.compression&&!sleeping)await this.saveEvent({kind:'summary',timestamp:Date.now(),text:chunk.compression.text,through:chunk.compression.through});
+              await this.publish(true);continue;
+            }
+            if('vision' in chunk){if(!sleeping)await this.saveEvent({kind:'vision',timestamp:chunk.vision.timestamp??Date.now(),text:chunk.vision.text,channel:chunk.vision.monitor,request_id:batch.request_id,frame_index:chunk.vision.frameIndex});continue;}
             parser=new StructuredParser();raw='';Object.assign(this.snapshot,{main:'',side:'',speak:''});
             detector.reset();if(!sleeping)this.ports.speech.begin?.();await this.publish(true);continue;
           }
@@ -319,10 +387,18 @@ export class ServiceController {
           const question=[...input.transcript.map(t=>`${t.channel} ${t.text}`),...(input.questions??[input.question??''])].filter(Boolean).join('\n');
           const history=sleeping?this.sleepHistory:this.snapshot.history;
           history.push({role:'user',content:question||'Проаналізуй знімок екрана.'},{role:'assistant',content:raw});
+          await this.saveEvent({kind:'answer',timestamp:Date.now(),text:raw,main:this.snapshot.main,side:this.snapshot.side,speak:this.snapshot.speak,request_id:batch.request_id,mode:sleeping?'sleep':'awake'});
+          answerArchived=true;
           if(sleeping){this.sleepHistory=history.slice(-20);if(batch.client_ids?.length)this.snapshot.requestError='Ordinary actions are unavailable during Sleep mode.';}
-          else{this.snapshot.history=history.slice(-20);this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;}
+          else{
+            this.snapshot.history=history;
+            this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;
+          }
         }
-      }catch(error){if(this.alive){this.snapshot.requestError=error instanceof Error?error.message:String(error);if(!signal.aborted&&!deliveredDuringTransition&&epoch===this.modeEpoch)this.setError(error);if(!this.snapshot.sleeping&&!deliveredDuringTransition&&epoch===this.modeEpoch)this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;}}
+      }catch(error){
+        if(raw&&!answerArchived)await this.saveEvent({kind:'answer',timestamp:Date.now(),text:raw,main:this.snapshot.main,side:this.snapshot.side,speak:this.snapshot.speak,request_id:batch.request_id,mode:sleeping?'sleep':'awake',incomplete:true}).catch(storageError=>this.setError(storageError));
+        if(this.alive){this.snapshot.requestError=error instanceof Error?error.message:String(error);if(!signal.aborted&&!deliveredDuringTransition&&epoch===this.modeEpoch)this.setError(error);if(!this.snapshot.sleeping&&!deliveredDuringTransition&&epoch===this.modeEpoch)this.snapshot.answerVisible=await this.ports.invoke('present_answer_window')!==false;}
+      }
       finally{
         this.snapshot.busy=false;this.snapshot.requestId=null;
         if(this.alive){try{await this.ports.invoke('continuous_request_done',{requestId:batch.request_id});}catch(error){this.setError(error);}await this.publish(true);}
@@ -333,13 +409,29 @@ export class ServiceController {
     if(this.transitioning)return;
     const epoch=this.modeEpoch;const signal=this.abort.signal;
     const nativeEpoch=this.nativeAudioEpoch;
+    const mode=this.snapshot.sleeping?'sleep':'awake';
     if(this.snapshot.sleeping&&channel==='[mic]')return;
     const finishingOwnedMicrophone=ownedFinalSegment&&channel==='[mic]'&&this.microphoneCapturing;
     if(!this.alive||(!this.snapshot.listening&&!finishingOwnedMicrophone))return;
     await this.ports.invoke('continuous_set_audio_pending',{pending:true});
     try{
-      const text=await this.ports.transcribe(blob,signal);
-      if(text.trim()&&this.alive&&!signal.aborted&&epoch===this.modeEpoch)await this.ports.invoke('continuous_add_transcript',{channel,text,expectedEpoch:nativeEpoch});
+      const prepared=this.sessions?await recordingMedia(blob):undefined;
+      if(!this.alive||signal.aborted||epoch!==this.modeEpoch||this.transitioning)return;
+      const timestamp=prepared?.timestamp??Date.now();
+      const recording=this.sessions&&prepared?await this.sessions.appendOwned({kind:'audio',timestamp,text:'',channel,mode},prepared.media):undefined;
+      const result=await this.ports.transcribe(blob,signal);const text=typeof result==='string'?result:result.text;
+      if(text.trim()&&this.alive&&!signal.aborted&&epoch===this.modeEpoch){
+        if(this.sessions){
+          const segments=typeof result==='string'?undefined:result.segments;
+          for(const segment of segments?.length?segments:[{text}]){
+            if(!recording)break;
+            await this.sessions.appendTo(recording.sessionId,{kind:'transcript',timestamp:segment.timestamp??timestamp+(segment.start??0)*1000,text:segment.text,channel,speaker:segment.speaker,start:segment.start,end:segment.end,audio_ref:recording.event.audio_ref,mode});
+          }
+          if(!this.alive||signal.aborted||epoch!==this.modeEpoch)return;
+          this.recordedTranscripts.push({channel,text});
+        }
+        await this.ports.invoke('continuous_add_transcript',{channel,text,expectedEpoch:nativeEpoch});
+      }
     }catch(error){if(this.alive&&!signal.aborted)this.setError(error);}
     finally{
       await this.ports.invoke('continuous_set_audio_pending',{pending:false});

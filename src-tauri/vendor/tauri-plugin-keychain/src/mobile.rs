@@ -29,19 +29,19 @@ impl<R: Runtime> Keychain<R> {
   pub fn get_item(&self, payload: KeychainRequest) -> crate::Result<KeychainResponse> {
     self
       .0
-      .run_mobile_plugin("get_item", payload)
+      .run_mobile_plugin("getItem", payload)
       .map_err(Into::into)
   }
   pub fn save_item(&self, payload: KeychainRequest) -> crate::Result<KeychainResponse> {
     self
       .0
-      .run_mobile_plugin("save_item", payload)
+      .run_mobile_plugin("saveItem", payload)
       .map_err(Into::into)
   }
   pub fn remove_item(&self, payload: KeychainRequest) -> crate::Result<KeychainResponse> {
     self
       .0
-      .run_mobile_plugin("remove_item", payload)
+      .run_mobile_plugin("removeItem", payload)
       .map_err(Into::into)
   }
 }

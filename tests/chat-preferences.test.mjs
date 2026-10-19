@@ -41,7 +41,8 @@ test('service answer sends selected mode, response language and length to the mo
     stream:async function*(_entry,prompt){sent=prompt;yield '<main>Ответ</main>';},
   }))chunks.push(chunk);
   assert.match(sent,/software engineering assistant/);assert.match(sent,/Respond in Russian/);assert.match(sent,/2-4 sentences maximum/);
-  assert.doesNotMatch(DEFAULT_STRUCTURED_PROMPT,/Відповідай українською/);assert.deepEqual(chunks,['<main>Ответ</main>']);
+  assert.doesNotMatch(DEFAULT_STRUCTURED_PROMPT,/Відповідай українською/);assert.deepEqual(chunks.filter(chunk=>typeof chunk==='string'),['<main>Ответ</main>']);
+  const usage=chunks.find(chunk=>chunk.context)?.context;assert.equal(usage.model,'cloud');assert.equal(usage.estimated,true);assert.equal(usage.contextWindow,null);assert(usage.inputTokens>0);
 });
 test('answer window receives read-only SQL permissions for saved user templates',()=>{
   const capability=JSON.parse(readFileSync(new URL('../src-tauri/capabilities/answer-prompts.json',import.meta.url),'utf8'));
@@ -49,10 +50,10 @@ test('answer window receives read-only SQL permissions for saved user templates'
 });
 
 test('reasoning quota preflight uses fitted candidate history and excludes monitor JPEGs',async()=>{
-  const candidate=model('blind','brain',{context_window:2048,max_output_tokens:128});
-  const history=[{role:'user',content:'old'.repeat(20000)}];let estimates;
+  const candidate=model('blind','brain',{context_window:8192,max_output_tokens:128});
+  const history=[{role:'user',content:'old'.repeat(20000)},{role:'assistant',content:'old answer'},{role:'user',content:'recent question'},{role:'assistant',content:'recent answer'},{role:'user',content:'latest question'},{role:'assistant',content:'latest answer'}];let estimates;
   for await(const _ of answer({request_id:2,frames:[{monitor:'display',jpeg_base64:'A'.repeat(100000),width:200,height:200}],transcript:[],questions:['Question']},history,new AbortController().signal,{
-    candidateProviders:async()=>[candidate],choose:async(_kind,_excluded,_signal,_preferred,input)=>{estimates=input;return candidate;},
+    candidateProviders:async()=>[candidate],choose:async(_kind,_excluded,_signal,_preferred,input)=>{if(typeof input==='object')estimates=input;return candidate;},
     systemPrompt:()=>'',memory:new ScreenSceneMemory(),report:async()=>{},nativeContext:async()=>'Small screen description',
     visionSettings:async()=>({mode:'ocr',max_chars:100}),stream:async function*(){yield '<main>Answer</main>';},
   })){}

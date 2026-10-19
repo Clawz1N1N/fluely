@@ -5,16 +5,21 @@ import { fetchAIResponse, buildEnhancedSystemPrompt } from '../functions/ai-resp
 import { fetchSTT } from '../functions/stt.function';
 import { getStreamingContent } from '../functions/common.function';
 import { providerFetch, ProviderHttpError, readEventStream } from './network';
+import {transcriptionResult,type TranscriptionResult} from './transcription';
 import type { ProviderEntry, ProviderKind, ProviderStatus } from './provider-types';
 import type { Message } from '@/types';
 import {selectRankedProvider,abortableDelay} from './provider-selection';
 import curl2Json from '@bany/curl-to-json';
 import {deepVariableReplacer,getByPath} from '../functions/common.function';
 import {discoverModels,type ModelInfo} from './model-catalog';
-import {fitModelHistory,outputParameters,outputTokenCeiling,imageMime,estimateBrainTokens,reasoningParameters,tokenUsage,type TokenUsage} from './model-request';
+import {fitModelHistory,outputParameters,outputTokenCeiling,imageMime,reasoningParameters,tokenUsage,type TokenUsage} from './model-request';
+import {agentRequestOptions,ToolCallAccumulator,agentToolReply} from './agent-tools';
 
 const usageByAttempt=new WeakMap<ProviderEntry,TokenUsage>();
+const completedToolAttempts=new WeakSet<ProviderEntry>();
+export function providerTokenUsage(entry:ProviderEntry):TokenUsage|undefined {return usageByAttempt.get(entry);}
 export class ProviderQuotaError extends Error {}
+function requestSecrets(entry:ProviderEntry,variables:Record<string,string>):string[]{return Object.entries(variables).filter(([key])=>entry.secret_keys.includes(key)||/key|token|secret|password/i.test(key)).map(([,value])=>value);}
 function observeUsage(entry:ProviderEntry,event:unknown):void {
   const next=tokenUsage(event),current=usageByAttempt.get(entry)??{};
   for(const key of ['input','output','total'] as const)if(next[key]!==undefined)current[key]=next[key];
@@ -57,32 +62,37 @@ export async function fetchProviderModels(entry:ProviderEntry,enteredKey?:string
   return discoverModels(entry,key,providerFetch,signal);
 }
 export async function reportProvider(entry: ProviderEntry, error?: unknown): Promise<void> {
+  // A tool exchange already reported each physical request independently.
+  if(completedToolAttempts.delete(entry)){usageByAttempt.delete(entry);return;}
   const usage=usageByAttempt.get(entry);
+  const cancelled=error instanceof Error&&error.name==='AbortError';
   // Missing/partial usage and failed requests retain the conservative reservation.
   const tokensUsed=error instanceof ProviderQuotaError?0:error===undefined?(usage?.total??(usage?.input!==undefined&&usage?.output!==undefined?usage.input+usage.output:undefined)):undefined;
-  await invoke('report_provider_result', { providerId: entry.id, ok: error === undefined||error instanceof ProviderQuotaError,
+  await invoke('report_provider_result', { providerId: entry.id, ok: error === undefined||error instanceof ProviderQuotaError||cancelled,
     retryAfterSecs: error instanceof ProviderHttpError ? error.retryAfterSecs ?? null : null,
     tokenReservationId:entry.tokenReservationId??null,tokensUsed:tokensUsed??null });
   usageByAttempt.delete(entry);
 }
 
 export async function transcribeRanked(audio:Blob,signal:AbortSignal=new AbortController().signal):Promise<string> {
-  const excluded:string[]=[];
+  const excluded:string[]=[];let lastError:unknown;
   while(!signal.aborted){
-    const entry=await selectRankedProvider('stt',excluded,signal,{pick:pickProvider,status:providerStatus,wait:abortableDelay});
+    let entry:ProviderEntry;
+    try{entry=await selectRankedProvider('stt',excluded,signal,{pick:pickProvider,status:providerStatus,wait:abortableDelay});}catch(error){if(!signal.aborted&&lastError&&excluded.length)throw lastError;throw error;}
     try{const text=await transcribeWithProvider(entry,audio,signal);await reportProvider(entry);return text;}
-    catch(error){if(signal.aborted)throw error;await reportProvider(entry,error);if(error instanceof ProviderQuotaError)throw error;if(!(error instanceof ProviderHttpError&&error.status===429))excluded.push(entry.id);}
+    catch(error){if(signal.aborted)throw error;lastError=error;await reportProvider(entry,error);if(error instanceof ProviderQuotaError)throw error;if(!(error instanceof ProviderHttpError&&error.status===429))excluded.push(entry.id);}
   }
   throw new DOMException('Aborted','AbortError');
 }
 
 export async function* streamBrain(entry: ProviderEntry, prompt: string, history: Message[], text: string, images: string[], signal: AbortSignal): AsyncGenerator<string> {
   const variables = await providerVariables(entry);
-  if (entry.curl) {
+  const agent=agentRequestOptions(entry);
+  if (entry.curl&&!agent) {
     const selectedVariables = Object.fromEntries(Object.entries(variables).flatMap(([key,value]) => [[key,value],[key.toLowerCase(),value]]));
     yield* fetchAIResponse({ provider: { id: entry.id, curl: entry.curl, streaming: entry.streaming, responseContentPath: entry.response_content_path },
       selectedProvider: {provider:entry.id,variables:{...selectedVariables,MODEL:entry.model,model:entry.model,MAX_TOKENS:String(outputTokenCeiling(entry)),max_tokens:String(outputTokenCeiling(entry)),REASONING_EFFORT:entry.reasoning_effort??'off',reasoning_effort:entry.reasoning_effort??'off'}},systemPrompt:prompt,history:fitModelHistory(entry,buildEnhancedSystemPrompt(prompt),text,history),userMessage:text,imagesBase64:images,signal,registryReserved:true,
-      resetReasoning:true,requestOverrides:entry.preset==='google'?{generationConfig:{...outputParameters(entry),...reasoningParameters(entry)}}:{...outputParameters(entry),...reasoningParameters(entry)},
+      resetReasoning:true,resetAgentTools:entry.variables.FLUELY_AGENT_TOOLS==='off',requestOverrides:entry.preset==='google'?{generationConfig:{...outputParameters(entry),...reasoningParameters(entry)}}:{...outputParameters(entry),...reasoningParameters(entry)},
       beforeSend:async body=>reserveTokens(entry,new TextEncoder().encode(JSON.stringify(body)).length+images.reduce((sum,image)=>sum+Math.max(0,16384-image.length),0)+outputTokenCeiling(entry)+256,signal),
       onUsage:event=>observeUsage(entry,event) });
     return;
@@ -112,18 +122,53 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
     const supportsUsage=entry.preset==='openai'||entry.preset==='openrouter'||entry.provider_id?.startsWith('local-')||entry.id.startsWith('fluely-local-')||/^https:\/\/(?:api\.openai\.com|openrouter\.ai)(?:\/|$)/i.test(entry.base_url);
     body = {model:entry.model,stream:true,...(supportsUsage?{stream_options:{include_usage:true}}:{}),...outputParameters(entry),...reasoningParameters(entry),messages:[{role:'system',content:prompt},...history,{role:'user',content}]};
   }
-  await reserveTokens(entry,estimateBrainTokens(prompt,history,text,images)+outputTokenCeiling(entry),signal);
-  const response = await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
-  if (!response.ok) throw ProviderHttpError.fromResponse(response);
-  if (!response.body) throw new Error('Порожній потік відповіді провайдера.');
-  for await (const event of readEventStream(response.body,signal)) {
-    observeUsage(entry,event);
-    const delta=getStreamingContent(event,'choices[0].message.content');
-    if(delta)yield delta;
+  if(agent){Object.assign(headers,agent.headers);Object.assign(body as object,agent.body);}
+  let attempt=entry;
+  for(let round=0;round<2;round++){
+    let failure:unknown;
+    try{
+      if(signal.aborted)throw new DOMException('Aborted','AbortError');
+      // Each tool continuation is a real provider request with its own quota.
+      const allowance=new TextEncoder().encode(JSON.stringify(body)).length+images.reduce((sum,image)=>sum+Math.max(0,16384-image.length),0)+outputTokenCeiling(entry)+256;
+      if(round&&entry.tokenReservationId!==undefined){
+        const next=await selectRankedProvider(entry.kind,[],signal,{pick:(kind,excluded,preferred)=>pickProvider(kind,excluded,preferred,Math.max(0,allowance-outputTokenCeiling(entry))),status:providerStatus,wait:abortableDelay},entry.id);
+        if(next.id!==entry.id){await reportProvider(next,new ProviderQuotaError('Unused continuation reservation'));throw new ProviderQuotaError('The selected model is unavailable for the tool continuation. Retry when its budget recovers.');}
+        attempt=next;
+      }
+      await reserveTokens(attempt,allowance,signal);
+      const response=await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
+      if(!response.ok)throw await ProviderHttpError.fromResponseBody(response,requestSecrets(entry,variables));
+      if(!response.body)throw new Error('Порожній потік відповіді провайдера.');
+      const tools=new ToolCallAccumulator();let content='';
+      const consume=(event:unknown)=>{if(signal.aborted)throw new DOMException('Aborted','AbortError');const error=ProviderHttpError.fromEvent(event,requestSecrets(entry,variables));if(error)throw error;observeUsage(attempt,event);tools.add(event);return getStreamingContent(event,'choices[0].message.content');};
+      if(response.headers.get('content-type')?.includes('application/json')){
+        const delta=consume(await response.json());if(delta){content+=delta;yield delta;}
+      }else for await(const event of readEventStream(response.body,signal)){
+        const delta=consume(event);if(delta){content+=delta;yield delta;}
+      }
+      const calls=tools.finish();if(!calls.length)return;
+      if(!agent||round)throw new Error('Provider tool call limit reached. Select a model that can return a text answer.');
+      if(entry.tokenReservationId!==undefined){
+        const usage=usageByAttempt.get(entry);
+        await reportProvider(entry);
+        completedToolAttempts.add(entry);
+        if(usage)usageByAttempt.set(entry,usage);
+      }
+      const request=body as {messages:unknown[];tool_choice:string};
+      const details=tools.reasoningDetails();
+      request.messages.push({role:'assistant',content:content||null,tool_calls:calls,...(details.length?{reasoning_details:details}:{})},...calls.map(agentToolReply));
+      request.tool_choice='none';
+    }catch(error){failure=error;throw error;}
+    finally{if(round&&attempt!==entry){
+      const first=usageByAttempt.get(entry)??{},next=usageByAttempt.get(attempt)??{},combined:TokenUsage={};
+      for(const key of ['input','output','total'] as const)if(first[key]!==undefined&&next[key]!==undefined)combined[key]=first[key]+next[key];
+      usageByAttempt.set(entry,combined);
+      await reportProvider(attempt,signal.aborted?new DOMException('Aborted','AbortError'):failure);
+    }}
   }
 }
 
-export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, signal?: AbortSignal): Promise<string> {
+export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, signal?: AbortSignal,onMetadata?:(result:TranscriptionResult)=>void): Promise<string> {
   // Audio APIs rarely return token usage; retain a conservative byte reservation.
   await reserveTokens(entry,audio.size+(entry.max_output_tokens??16384),signal);
   if(entry.preset==='local-gguf-asr'){
@@ -146,17 +191,20 @@ export async function transcribeWithProvider(entry: ProviderEntry, audio: Blob, 
       method:'POST',headers:{'Content-Type':'application/json',...(key?{'x-goog-api-key':key}:{})},
       body:JSON.stringify({contents:[{parts:[{text:'Transcribe the audio accurately. Return only the transcript, without commentary.'},{inline_data:{mime_type:audio.type||'audio/wav',data:btoa(binary)}}]}],generationConfig:outputParameters(entry)}),signal,
     });
-    if(!response.ok)throw ProviderHttpError.fromResponse(response);
+    if(!response.ok)throw await ProviderHttpError.fromResponseBody(response,requestSecrets(entry,variables));
     const json=await response.json();observeUsage(entry,json);const text=json.candidates?.[0]?.content?.parts?.map((part:{text?:string})=>part.text??'').join('');
     if(typeof text!=='string')throw new Error('Google STT не повернув транскрипт.');return text;
   }
   const headers: Record<string,string>={};
   const key=variables.API_KEY??variables.api_key;if(key)headers.Authorization=`Bearer ${key}`;
   const body=new FormData();body.append('file',audio,'audio.wav');body.append('model',entry.model);
+  if(entry.preset==='openai-compatible'&&/transcribe-diarize/i.test(entry.model)){
+    body.append('response_format','diarized_json');body.append('chunking_strategy','auto');
+  }else if(['openai-compatible','groq','local-whisper'].includes(entry.preset)&&/whisper/i.test(entry.model))body.append('response_format','verbose_json');
   const response=await providerFetch(`${entry.base_url.replace(/\/$/,'')}/audio/transcriptions`,{method:'POST',headers,body,signal});
-  if(!response.ok)throw ProviderHttpError.fromResponse(response);
-  const json=await response.json();observeUsage(entry,json);if(typeof json.text!=='string')throw new Error('STT повернув відповідь без транскрипту.');
-  return json.text;
+  if(!response.ok)throw await ProviderHttpError.fromResponseBody(response,requestSecrets(entry,variables));
+  const json=await response.json();observeUsage(entry,json);const result=transcriptionResult(json);onMetadata?.(result);
+  return result.text;
 }
 
 /** Independent TTS providers share ranking and quotas, but return binary audio. */
@@ -169,7 +217,7 @@ export async function synthesizeWithProvider(entry:ProviderEntry,text:string,set
     const request=curl2Json(entry.curl) as {url:string;header?:Record<string,string>;data?:unknown;method?:string};
     const response=await providerFetch(deepVariableReplacer(request.url,values),{method:request.method||'POST',
       headers:deepVariableReplacer(request.header??{'Content-Type':'application/json'},values),body:JSON.stringify(deepVariableReplacer(request.data??{},values)),signal});
-    if(!response.ok)throw ProviderHttpError.fromResponse(response);
+    if(!response.ok)throw await ProviderHttpError.fromResponseBody(response,requestSecrets(entry,variables));
     if(!response.headers.get('content-type')?.includes('json'))return response.blob();
     const data=getByPath(await response.json(),entry.response_content_path);
     if(typeof data!=='string')throw new Error('TTS не повернув аудіо за вказаним шляхом відповіді.');
@@ -185,7 +233,7 @@ export async function synthesizeWithProvider(entry:ProviderEntry,text:string,set
     body={contents:[{parts:[{text:`Speak in ${settings.language}: ${text}`}]}],generationConfig:{...outputParameters(entry),responseModalities:['AUDIO'],speechConfig:{voiceConfig:{prebuiltVoiceConfig:{voiceName:settings.voice||'Kore'}}}}};
   }else if(key)headers.Authorization=`Bearer ${key}`;
   const response=await providerFetch(url,{method:'POST',headers,body:JSON.stringify(body),signal});
-  if(!response.ok)throw ProviderHttpError.fromResponse(response);
+  if(!response.ok)throw await ProviderHttpError.fromResponseBody(response,requestSecrets(entry,variables));
   if(entry.preset!=='google')return response.blob();
   const json=await response.json();observeUsage(entry,json);const audio=json.candidates?.[0]?.content?.parts?.find((part:{inlineData?:unknown})=>part.inlineData)?.inlineData;
   if(!audio?.data)throw new Error('Google TTS не повернув аудіо.');

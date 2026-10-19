@@ -218,9 +218,11 @@ fn capture(
         let step = rate as f64 / core::RATE as f64;
         let mut position = 0.0f64;
         let mut pending = Vec::<f32>::new();
+        let mut meter = crate::audio_levels::Meter::new();
         while active.load(Ordering::SeqCst) {
             match receive.recv_timeout(Duration::from_millis(50)) {
                 Ok(samples) => {
+                    meter.update(&app, "[mic]", &samples);
                     pending.extend(samples);
                     while position + 1.0 < (pending.len() as f64) {
                         let index = position as usize;

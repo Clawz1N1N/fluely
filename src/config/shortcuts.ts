@@ -106,9 +106,9 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
     name: "TTS Stop",
     description: "Stop TTS playback",
     defaultKey: {
-      macos: "cmd+shift+o",
-      windows: "ctrl+shift+o",
-      linux: "ctrl+shift+o",
+      macos: "ctrl+alt+space",
+      windows: "ctrl+alt+space",
+      linux: "ctrl+alt+space",
     },
   },
   {
@@ -126,9 +126,9 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
     name: "TTS Seek Back",
     description: "Play the previous sentence",
     defaultKey: {
-      macos: "cmd+shift+left",
-      windows: "ctrl+shift+left",
-      linux: "ctrl+shift+left",
+      macos: "ctrl+alt+z",
+      windows: "ctrl+alt+z",
+      linux: "ctrl+alt+z",
     },
   },
   {
@@ -136,9 +136,9 @@ export const DEFAULT_SHORTCUT_ACTIONS: ShortcutAction[] = [
     name: "TTS Seek Forward",
     description: "Play the next sentence",
     defaultKey: {
-      macos: "cmd+shift+right",
-      windows: "ctrl+shift+right",
-      linux: "ctrl+shift+right",
+      macos: "ctrl+alt+x",
+      windows: "ctrl+alt+x",
+      linux: "ctrl+alt+x",
     },
   },
 ];

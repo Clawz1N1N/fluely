@@ -1,3 +1,4 @@
+#[cfg(not(target_os="android"))]
 #[tauri::command]
 pub fn get_system_locale()->String{
     #[cfg(target_os="windows")]
@@ -13,3 +14,6 @@ pub fn get_system_locale()->String{
         if locale.starts_with("uk"){"uk".into()}else if locale.starts_with("ru"){"ru".into()}else{"en".into()}
     }
 }
+#[cfg(target_os="android")]
+#[tauri::command]
+pub fn get_system_locale(app:tauri::AppHandle)->String{tauri_plugin_fluely_mobile::system_locale(&app).unwrap_or_else(|_|"en".into())}

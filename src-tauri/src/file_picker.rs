@@ -67,7 +67,27 @@ pub async fn pick_local_engine_file(
         .await
         .map_err(|e| e.to_string())?
     }
-    #[cfg(not(target_os = "windows"))]
+    #[cfg(any(target_os="macos",target_os="linux"))]
+    {
+        let _ = app;
+        tauri::async_runtime::spawn_blocking(move || {
+            #[cfg(target_os="macos")]
+            let result=std::process::Command::new("osascript").args(["-e", "POSIX path of (choose file with prompt \"Choose a Fluely model or server file\")"]).output();
+            #[cfg(target_os="linux")]
+            let result=std::process::Command::new("zenity").args(["--file-selection", "--title=Choose a Fluely model or server file"]).output();
+            let output=result.map_err(|e|format!("Native file picker unavailable: {e}"))?;
+            if !output.status.success(){
+                #[cfg(target_os="macos")]
+                if String::from_utf8_lossy(&output.stderr).contains("(-128)"){return Ok(None);}
+                #[cfg(target_os="linux")]
+                if output.status.code()==Some(1){return Ok(None);}
+                return Err("The native file picker failed (Linux requires zenity)".into());
+            }
+            let value=String::from_utf8(output.stdout).map_err(|_|"File picker returned invalid UTF-8")?.trim_end_matches(['\r','\n']).to_string();
+            if value.is_empty(){Ok(None)}else if std::path::Path::new(&value).is_absolute(){Ok(Some(value))}else{Err("File picker returned a relative path".into())}
+        }).await.map_err(|e|e.to_string())?
+    }
+    #[cfg(not(any(target_os="windows",target_os="macos",target_os="linux")))]
     {
         let _ = app;
         Err("Native file picker is supported on Windows".into())

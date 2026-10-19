@@ -53,3 +53,13 @@ test('model quota and reasoning controls are localized in Ukrainian and Russian'
   }
   setLanguage('en');
 });
+
+test('OpenRouter brain models expose a per-model tool opt-out while other providers do not',()=>{
+ setLanguage('en');
+ for(const [provider,checked] of [[{...model,preset:'openrouter'},true],[{...model,preset:'openrouter',variables:{FLUELY_AGENT_TOOLS:'off'}},false]]){
+  const html=renderToStaticMarkup(React.createElement(ModelSettingsControls,{provider,onChange:()=>{}}));
+  assert.match(html,/Agent tools/);assert.match(html,checked?/aria-label="Agent tools"[^>]*checked=""/:/aria-label="Agent tools"(?![^>]*checked)/);
+ }
+ const html=renderToStaticMarkup(React.createElement(ModelSettingsControls,{provider:model,onChange:()=>{}}));
+ assert.doesNotMatch(html,/Agent tools/);
+});

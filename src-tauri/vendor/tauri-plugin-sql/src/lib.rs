@@ -82,6 +82,12 @@ pub struct Migration {
 #[derive(Debug)]
 struct MigrationList(Vec<Migration>);
 
+// Fluely's legacy profile may contain versions from an older released app.
+// Never forge/delete that ledger. Known versions must still match checksums.
+pub fn compatible_migrator(db_url:&str,mut migrator:Migrator)->Migrator{
+    if db_url=="sqlite:pluely.db"{migrator.set_ignore_missing(true);}migrator
+}
+
 impl MigrationSource<'static> for MigrationList {
     fn resolve(self) -> BoxFuture<'static, std::result::Result<Vec<SqlxMigration>, BoxDynError>> {
         Box::pin(async move {
@@ -155,7 +161,7 @@ impl Builder {
                         if let Some(migrations) =
                             self.migrations.as_mut().and_then(|mm| mm.remove(&db))
                         {
-                            let migrator = Migrator::new(migrations).await?;
+                            let migrator = compatible_migrator(&db,Migrator::new(migrations).await?);
                             pool.migrate(&migrator).await?;
                         }
 
@@ -183,5 +189,30 @@ impl Builder {
                 }
             })
             .build()
+    }
+}
+
+#[cfg(all(test,feature="sqlite"))]
+mod compatibility_tests {
+    use super::*;
+    fn migrations(extra:bool,changed:bool)->MigrationList{
+        let mut versions=vec![Migration{version:1,description:"one",kind:MigrationKind::Up,sql:if changed{"CREATE TABLE known(changed TEXT);"}else{"CREATE TABLE known(value TEXT);"}},Migration{version:2,description:"two",kind:MigrationKind::Up,sql:"INSERT INTO known(value) VALUES('preserved');"}];
+        if extra{versions.push(Migration{version:3,description:"released_extra",kind:MigrationKind::Up,sql:"CREATE TABLE legacy(value TEXT); INSERT INTO legacy VALUES('also preserved');"});}MigrationList(versions)
+    }
+    #[test]
+    fn missing_legacy_version_preserves_ledger_schema_and_data_but_enforces_known_checksums(){
+        tokio::runtime::Builder::new_current_thread().enable_all().build().unwrap().block_on(async{
+            let pool=sqlx::sqlite::SqlitePoolOptions::new().max_connections(1).connect("sqlite::memory:").await.unwrap();
+            Migrator::new(migrations(true,false)).await.unwrap().run(&pool).await.unwrap();
+            let checksum:Vec<u8>=sqlx::query_scalar("SELECT checksum FROM _sqlx_migrations WHERE version=3").fetch_one(&pool).await.unwrap();
+            let result=compatible_migrator("sqlite:pluely.db",Migrator::new(migrations(false,false)).await.unwrap()).run(&pool).await;
+            assert!(result.is_ok(),"Legacy migration must remain compatible: {result:?}");
+            assert_eq!(sqlx::query_scalar::<_,String>("SELECT value FROM legacy").fetch_one(&pool).await.unwrap(),"also preserved");
+            assert_eq!(sqlx::query_scalar::<_,String>("SELECT value FROM known").fetch_one(&pool).await.unwrap(),"preserved");
+            assert_eq!(sqlx::query_scalar::<_,Vec<u8>>("SELECT checksum FROM _sqlx_migrations WHERE version=3").fetch_one(&pool).await.unwrap(),checksum);
+            assert!(compatible_migrator("sqlite:pluely.db",Migrator::new(migrations(false,true)).await.unwrap()).run(&pool).await.is_err());
+            assert!(compatible_migrator("sqlite:other.db",Migrator::new(migrations(false,false)).await.unwrap()).run(&pool).await.is_err());
+            pool.close().await;
+        });
     }
 }

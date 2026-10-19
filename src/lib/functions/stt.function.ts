@@ -171,7 +171,7 @@ export async function fetchSTT(params: STTParams): Promise<string> {
       throw new Error(`Network error: ${e instanceof Error ? e.message : e}`);
     }
 
-    if (!response.ok) throw ProviderHttpError.fromResponse(response);
+    if (!response.ok) throw await ProviderHttpError.fromResponseBody(response,Object.entries(allVariables).filter(([key])=>/key|token|secret|password/i.test(key)).map(([,value])=>String(value)));
 
     const responseText = await response.text();
     let data: any;

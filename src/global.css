@@ -201,6 +201,12 @@ html[data-fluely-dashboard] [data-sidebar="sidebar"] {
 [data-streamdown="code-block"] code {
   color: inherit !important;
 }
+.fluely-attachments { display:flex; flex-wrap:wrap; align-items:center; gap:4px; min-width:0; font-size:11px; }
+.fluely-inline-button,.fluely-attachment { display:inline-flex; align-items:center; gap:4px; border:1px solid color-mix(in srgb,currentColor 25%,transparent); border-radius:4px; padding:3px 6px; }
+.fluely-inline-button:disabled { opacity:.4; }
+.fluely-attachment { max-width:180px; }
+.fluely-attachment button:first-child { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.fluely-attachment-preview { flex-basis:100%; min-width:0; border:1px solid color-mix(in srgb,currentColor 20%,transparent); border-radius:4px; padding:6px; }
 
 .dark [data-streamdown="code-block"] code span {
   color: var(--shiki-dark) !important;

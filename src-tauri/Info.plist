@@ -14,23 +14,5 @@
   <key>NSAudioCaptureUsageDescription</key>
   <string>Fluely needs access to system audio to process transcription and AI responses.</string>
 
-  <!-- Privacy - Audio Processing -->
-  <key>NSPrivacyAccessedAPITypes</key>
-  <array>
-    <dict>
-      <key>NSPrivacyAccessedAPIType</key>
-      <string>NSPrivacyAccessedAPICategoryAudioProcessing</string>
-      <key>NSPrivacyAccessedAPITypeReasons</key>
-      <array>
-        <string>C617.1</string>
-      </array>
-    </dict>
-  </array>
-  
-  <!-- Hardened Runtime Entitlements -->
-  <key>com.apple.security.device.microphone</key>
-  <true/>
-  <key>com.apple.security.device.audio-input</key>
-  <true/>
 </dict>
 </plist>

@@ -6,6 +6,7 @@ import {
   deleteAllConversations,
 } from "@/lib";
 import { STORAGE_KEYS } from "@/config";
+import {invoke} from '@tauri-apps/api/core';
 
 export const useSettings = () => {
   const {
@@ -83,12 +84,10 @@ export const useSettings = () => {
   }, [selectedSttProvider.provider]);
 
   const handleDeleteAllChatsConfirm = async () => {
-    try {
+        const sessions=await invoke<Array<{id:string}>>('list_chat_sessions',{query:null});
+        for(const session of sessions)await invoke('delete_chat_session',{sessionId:session.id});
       await deleteAllConversations();
       setShowDeleteConfirmDialog(false);
-    } catch (error) {
-      console.error("Failed to delete all conversations:", error);
-    }
   };
 
   return {

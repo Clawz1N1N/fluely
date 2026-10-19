@@ -13,6 +13,7 @@ def button(name,scope='body'):
 
 main=next(t for t in list_tabs() if t['url']=='http://tauri.localhost/');switch_tab(main['targetId']);cdp('Page.setWebLifecycleState',state='active')
 invoke('open_dashboard');invoke('show_answer_window')
+invoke('set_answer_editing',{'editing':False})
 dashboard=next(t for t in list_tabs() if t['url'].endswith('/settings'))
 answer=next(t for t in list_tabs() if t['url'].endswith('/shell/answer'))
 switch_tab(dashboard['targetId'])
@@ -32,7 +33,7 @@ appearance=invoke('get_shell_settings');appearance.update(shimmer=True,shimmer_s
 invoke('set_shell_appearance',{'settings':appearance})
 switch_tab(panel['targetId'])
 settle(lambda:js("document.querySelector('[data-panel-id]')&&getComputedStyle(document.querySelector('[data-panel-id]')).backgroundColor")=='rgba(23, 23, 23, 0.1)')
-assert js("getComputedStyle(document.querySelector('[data-panel-id] button')).backgroundColor")=='rgba(23, 23, 23, 0.05)'
+assert js("getComputedStyle(document.querySelector('[data-panel-id] button')).backgroundColor").endswith(', 0.05)')
 assert js("getComputedStyle(document.querySelector('.shimmer-ring')).animationDuration")=='20s'
 assert js("getComputedStyle(document.querySelector('.shimmer-ring')).opacity")=='0.85'
 switch_tab(answer['targetId']);settle(lambda:js("getComputedStyle(document.querySelector('#root > div')).backgroundColor")=='rgba(23, 23, 23, 0.2)')

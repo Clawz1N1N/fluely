@@ -13,7 +13,7 @@ test('requests always bound output so native quota reservations have a finite ce
   assert.deepEqual(outputParameters({preset:'openai-compatible',context_window:1000}),{max_completion_tokens:250});
 });
 test('finite context drops oldest history and never begins with an orphan assistant answer',()=>{
-  const history=[{role:'user',content:'x'.repeat(10000)},{role:'assistant',content:'old'},{role:'user',content:'recent'},{role:'assistant',content:'reply'}];
+  const history=[{role:'user',content:'example '.repeat(10000)},{role:'assistant',content:'old'},{role:'user',content:'recent'},{role:'assistant',content:'reply'}];
   assert.deepEqual(fitModelHistory({context_window:3000,max_output_tokens:500},'prompt','question',history),history.slice(2));
   assert.equal(fitModelHistory({},'','',history),history);
 });

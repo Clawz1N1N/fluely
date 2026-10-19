@@ -19,7 +19,7 @@ pub(crate) async fn load<R: Runtime>(
     let pool = DbPool::connect(&db, &app).await?;
 
     if let Some(migrations) = migrations.0.lock().await.remove(&db) {
-        let migrator = Migrator::new(migrations).await?;
+        let migrator = crate::compatible_migrator(&db,Migrator::new(migrations).await?);
         pool.migrate(&migrator).await?;
     }
 

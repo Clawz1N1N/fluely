@@ -42,3 +42,61 @@ test('several models share their account key and distinct accounts never collide
   const one=modelEntries(account,selected,[]),two=modelEntries({...account,credential_id:'account-two'},selected,[]);
   assert.equal(one[0].credential_id,one[1].credential_id);assert.notEqual(one[0].id,two[0].id);assert.equal(one[0].max_output_tokens,1000);assert.equal(one[1].supports_images,true);
 });
+
+test('OpenRouter validates the key before accepting its public model catalogue',async()=>{
+ const calls=[];
+ await assert.rejects(discoverModels({preset:'openrouter',base_url:'https://openrouter.ai/api/v1'},'invalid-key',async(url)=>{
+   calls.push(url);return url.endsWith('/key')?{ok:false,status:401,json:async()=>({error:{message:'Invalid API key invalid-key'}})}:{ok:true,json:async()=>({data:[{id:'public-model'}]})};
+ }),error=>/401/.test(error.message)&&/Invalid API key/.test(error.message)&&!error.message.includes('invalid-key'));
+ assert.deepEqual(calls,['https://openrouter.ai/api/v1/key']);
+});
+
+test('valid OpenRouter key discovery authenticates without a paid generation request',async()=>{
+ const calls=[];
+ const models=await discoverModels({preset:'openrouter',base_url:'https://openrouter.ai/api/v1'},'fixture-key',async(url,init)=>{
+  calls.push({url,init});return {ok:true,json:async()=>url.endsWith('/key')?{data:{label:'fixture'}}:{data:[{id:'model'}]}};
+ });
+ assert.equal(models[0].id,'model');assert.deepEqual(calls.map(c=>c.url),['https://openrouter.ai/api/v1/key','https://openrouter.ai/api/v1/models']);assert.equal(calls[0].init.headers.Authorization,'Bearer fixture-key');
+});
+
+test('discovery exposes sanitized native transport errors and allows keyless local servers',async()=>{
+ await assert.rejects(discoverModels({preset:'openai-compatible',base_url:'https://example.invalid/v1'},'private-fixture',async()=>{throw 'Connection failed with private-fixture';}),error=>error.message==='Connection failed with [redacted]');
+ const models=await discoverModels({preset:'ollama',base_url:'http://localhost:11434/v1'},undefined,async()=>({ok:true,json:async()=>({data:[{id:'local'}]})}));
+ assert.equal(models[0].id,'local');
+});
+
+test('editing a model ID preserves registry identity, key, quotas and reasoning metadata',()=>{
+ const account={provider_id:'openrouter',credential_id:'saved-account',display_name:'Work',preset:'openrouter',base_url:'https://openrouter.ai/api/v1',kind:'brain'};
+ const existing=modelEntries(account,[{id:'before',name:'Before',context_window:4000,max_output_tokens:1000,supports_images:true,supports_audio:true}],[]);
+ Object.assign(existing[0],{limit_per_day:11,token_limit_per_day:999,reasoning_effort:'high',reasoning_efforts:['off','high'],manual_neutral:true,secret_keys:['API_KEY']});
+ const [edited]=modelEntries(account,[{id:'after',name:'After',provider_entry_id:existing[0].id,context_window:4000,max_output_tokens:1000,supports_images:true,supports_audio:true}],existing);
+ assert.equal(edited.id,'saved-account:brain:before');assert.equal(edited.model,'after');assert.equal(edited.model_display_name,'After');assert.equal(edited.credential_id,'saved-account');assert.equal(edited.limit_per_day,11);assert.equal(edited.token_limit_per_day,999);assert.equal(edited.reasoning_effort,'high');assert.equal(edited.manual_neutral,true);assert.deepEqual(edited.secret_keys,['API_KEY']);assert.equal(edited.supports_audio,true);
+});
+
+test('model selection rejects empty identity, duplicate IDs and invalid capacities',()=>{
+ const account={provider_id:'p',credential_id:'account',display_name:'Account',preset:'other',base_url:'http://localhost',kind:'brain'};
+ const model={id:'valid',name:'Valid',context_window:null,max_output_tokens:null,supports_images:false,supports_audio:false};
+ for(const patch of [{id:''},{id:'   '},{name:'  '},{context_window:1.5},{context_window:10,max_output_tokens:11}])assert.throws(()=>modelEntries(account,[{...model,...patch}],[]));
+ assert.throws(()=>modelEntries(account,[model,{...model,id:' valid '}],[]),/unique/);
+});
+
+test('discovery rejects cancellation during body parsing and redacts malformed response failures',async()=>{
+ const abort=new AbortController();
+ await assert.rejects(discoverModels({preset:'ollama',base_url:'http://localhost:11434/v1'},undefined,async()=>({ok:true,json:async()=>{abort.abort();return {data:[{id:'late'}]};}}),abort.signal),{name:'AbortError'});
+ await assert.rejects(discoverModels({preset:'openai-compatible',base_url:'https://example.invalid/v1'},'private-response-key',async()=>({ok:true,json:async()=>{throw new Error('Unexpected body private-response-key');}})),error=>!error.message.includes('private-response-key'));
+});
+
+test('OpenRouter missing key fails before requesting its public model list',async()=>{
+ let requested=false;
+ await assert.rejects(discoverModels({preset:'openrouter',base_url:'https://openrouter.ai/api/v1'},undefined,async()=>{requested=true;return {ok:true,json:async()=>({data:[]})};}),/API key/);
+ assert.equal(requested,false);
+});
+
+test('model provenance cannot capture another account registry identity',()=>{
+ const model={id:'a',name:'A',context_window:null,max_output_tokens:null,supports_images:true,supports_audio:false};
+ const account={provider_id:'p',credential_id:'one',display_name:'Work',preset:'other',base_url:'http://localhost',kind:'brain'};
+ const [foreign]=modelEntries(account,[model],[]);
+ foreign.token_limit_per_day=17;
+ const [saved]=modelEntries({...account,credential_id:'two'},[{...model,provider_entry_id:foreign.id}],[foreign]);
+ assert.equal(saved.id,'two:brain:a');assert.notEqual(saved.token_limit_per_day,17);
+});

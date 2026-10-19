@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { invoke } from '@tauri-apps/api/core';
-import { Brain, Languages, ScanEye, Volume2, Mic, BookOpen, AlignLeft } from 'lucide-react';
+import {listen,type UnlistenFn} from '@tauri-apps/api/event';
 import { t, useI18n } from '@/lib/i18n';
 import { getAllSystemPrompts } from '@/lib/database';
 import { LANGUAGES } from '@/lib/response-settings.constants';
@@ -9,19 +9,22 @@ import { isLocalProvider, providersForSelection, modelDisplayName, type ChatPref
 import type { ProviderEntry, ProviderKind } from '@/lib/overlay/provider-types';
 import type { SystemPrompt } from '@/types';
 import type { LocalEngineConfig } from '@/lib/overlay/local-engine-client';
+import {providerConfigurationKey} from '@/lib/overlay/neural-availability';
 
 const sourceLabels:Record<ModelSource,[string,string,string]>={auto:['Auto','Авто','Авто'],cloud:['Cloud','Хмара','Облако'],local:['Local','Локально','Локально'],system:['System','Система','Система']};
 const kindLabels:Record<ProviderKind,[string,string,string]>={brain:['Reasoning','Міркування','Рассуждение'],stt:['STT','STT','STT'],tts:['TTS','TTS','TTS'],vision:['Vision','Зір','Зрение']};
-const button='flex items-center gap-1 rounded border border-white/20 px-2 py-1 text-[11px] hover:bg-white/10 disabled:opacity-40';
+const button='rounded px-1 py-1 text-[10px] text-white/60 hover:text-white disabled:opacity-40';
 const choice='w-full rounded px-2 py-1.5 text-left text-xs hover:bg-white/10';
 type Panel='prompt'|'language'|'length'|ProviderKind|null;
-export function ChatQuickControls({interactive}:{interactive:boolean}){
+export function ChatQuickControls({interactive,shortcut}:{interactive:boolean;shortcut?:React.ReactNode}){
   const {language}=useI18n();
   const tr=(value:[string,string,string])=>value[language==='uk'?1:language==='ru'?2:0];
   const [preferences,setPreferences]=useState<ChatPreferences>();
   const [providers,setProviders]=useState<ProviderEntry[]>([]);
+  const providerKey=useRef('');
   const [localConfigs,setLocalConfigs]=useState<LocalEngineConfig[]>([]);
   const [piperAvailable,setPiperAvailable]=useState(false);
+  const [nativeTts,setNativeTts]=useState({backend:'system',voice:''});
   const [prompts,setPrompts]=useState<SystemPrompt[]>([]);
   const [panel,setPanel]=useState<Panel>(null);
   const [source,setSource]=useState<ModelSource>('cloud');
@@ -29,15 +32,19 @@ export function ChatQuickControls({interactive}:{interactive:boolean}){
   const [busy,setBusy]=useState(false),[error,setError]=useState('');
   const [customEffort,setCustomEffort]=useState('');
   const refresh=async()=>{const results=await Promise.allSettled([invoke<ProviderEntry[]>('list_providers'),invoke<LocalEngineConfig[]>('get_local_engine_configs'),invoke<{voice:string;backend:string}>('get_tts_settings')]);
-    if(results[0].status==='fulfilled')setProviders(results[0].value);else throw results[0].reason;
+    if(results[0].status==='fulfilled'){providerKey.current=providerConfigurationKey(results[0].value);setProviders(results[0].value);}else throw results[0].reason;
     if(results[1].status==='fulfilled')setLocalConfigs(results[1].value);
-    if(results[2].status==='fulfilled')setPiperAvailable(results[2].value.voice.toLowerCase().endsWith('.onnx'));
+    if(results[2].status==='fulfilled'){setNativeTts(results[2].value);setPiperAvailable(results[2].value.voice.toLowerCase().endsWith('.onnx'));}
   };
   const candidates=(kind:ProviderKind,next:ModelSource)=>providersForSelection(providers.map(p=>({...p,enabled:p.enabled||p.id.startsWith('fluely-local-')&&localConfigs.some(c=>p.id===`fluely-local-${c.kind}`&&!!c.model_path&&!!c.executable)})),kind,{source:next,provider_id:null});
   useEffect(()=>{let disposed=false,off:(()=>void)|undefined;
     void listenChatPreferences(value=>{if(!disposed)setPreferences(value);}).then(stop=>{if(disposed)stop();else off=stop;}).catch(error=>setError(String(error)));
     return()=>{disposed=true;off?.();};},[]);
   useEffect(()=>{if(!interactive)setPanel(null);},[interactive]);
+  useEffect(()=>{let disposed=false;const stops:UnlistenFn[]=[];const reload=()=>{if(!disposed)void refresh().catch(()=>{});};reload();
+    void listen<{providers:ProviderEntry[]}>('providers-status',event=>{const next=providerConfigurationKey(event.payload.providers);if(next!==providerKey.current){providerKey.current=next;if(!disposed)setProviders(event.payload.providers);}}).then(stop=>{if(disposed)stop();else stops.push(stop);}).catch(()=>{});
+    for(const name of ['local-engine-status','neural-settings-changed'])void listen(name,reload).then(stop=>{if(disposed)stop();else stops.push(stop);}).catch(()=>{});
+    return()=>{disposed=true;stops.forEach(stop=>stop());};},[]);
   const run=async(operation:()=>Promise<unknown>,close=true)=>{setBusy(true);setError('');try{await operation();if(close)setPanel(null);}catch(error){setError(error instanceof Error?error.message:String(error));}finally{setBusy(false);}};
   const patch=async(value:Parameters<typeof updateChatPreferences>[0])=>setPreferences(await updateChatPreferences(value));
   const open=(next:Panel)=>{setPanel(panel===next?null:next);setSearch('');setCustomEffort('');setError('');
@@ -66,20 +73,24 @@ export function ChatQuickControls({interactive}:{interactive:boolean}){
     if((next==='system'&&(kind!=='stt'||models.length<=1))||next==='auto'||(next==='local'&&models.length+(kind==='tts'&&piperAvailable?1:0)<=1)){setSource(next);void run(()=>selectModel(kind,next,models.length===1?models[0].id:null),kind!=='brain');}
     else{setSource(next);setSearch('');}
   };
-  const currentBrain=providers.find(p=>p.id===preferences?.selections.brain?.provider_id);
+  const selectedProvider=(kind:ProviderKind)=>providers.find(provider=>provider.id===preferences?.selections[kind]?.provider_id)??providersForSelection(providers,kind,preferences?.selections[kind]).sort((a,b)=>a.rank-b.rank)[0];
+  const currentBrain=selectedProvider('brain');
   const efforts=currentBrain?.reasoning_efforts?.length?currentBrain.reasoning_efforts:['off','low','medium','high','xhigh','max'];
   const saveEffort=(effort:string)=>{if(!currentBrain)return;void run(async()=>{
     await invoke('upsert_provider',{provider:{...currentBrain,reasoning_effort:effort,reasoning_efforts:[...new Set([...efforts,effort])]}});await refresh();
   },false);};
   const promptLabel=preferences?.prompt_id?.startsWith('mode:')?preferences.mode_prompts.find(p=>`mode:${p.modelId}`===preferences.prompt_id)?.title:undefined;
-  const kinds=[['brain',Brain],['stt',Mic],['tts',Volume2],['vision',ScanEye]] as const;
-  return <div className="relative border-t border-white/15 px-2 py-1.5" aria-label={tr(['Chat settings','Налаштування чату','Настройки чата'])}>
-    <div className="flex flex-wrap gap-1">
-      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='prompt'} onClick={()=>open('prompt')}><BookOpen size={12}/>{promptLabel?t(promptLabel):tr(['Prompt','Шаблон','Шаблон'])}</button>
-      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='language'} onClick={()=>open('language')}><Languages size={12}/>{tr(['Language','Мова','Язык'])}</button>
-      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='length'} onClick={()=>open('length')}><AlignLeft size={12}/>{tr(['Length','Довжина','Длина'])}</button>
-      {kinds.map(([kind,Icon])=><button key={kind} disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel===kind} onClick={()=>open(kind)} title={providers.find(p=>p.id===preferences?.selections[kind]?.provider_id)?.model}><Icon size={12}/>{tr(kindLabels[kind])} · {tr(sourceLabels[preferences?.selections[kind]?.source??'auto'])}</button>)}
+  const kinds=['brain','stt','tts','vision'] as const;
+  const modelLabel=(kind:ProviderKind)=>{const provider=selectedProvider(kind);if(provider)return modelDisplayName(provider);const source=preferences?.selections[kind]?.source;if(kind==='tts'&&(source==='system'||(!source&&nativeTts.backend==='system')))return nativeTts.voice||t('System voice');if(kind==='tts'&&source==='local'&&piperAvailable)return 'Piper';if(kind==='vision'&&source==='system')return 'OCR/UI';return t('Not configured');};
+  const summary=[...kinds.map(kind=>`${tr(kindLabels[kind])}: ${modelLabel(kind)}${kind==='brain'&&currentBrain?` (${currentBrain.reasoning_effort??'off'})`:''}`),`${tr(['Language','Мова','Язык'])}: ${preferences?.response_language??'auto'}`,`${tr(['Length','Довжина','Длина'])}: ${preferences?.response_length??'auto'}`].join(' · ');
+  return <div className="relative min-w-0 w-full px-2 pb-1" aria-label={tr(['Chat settings','Налаштування чату','Настройки чата'])}>
+    <div className="flex flex-wrap items-center gap-x-1">
+      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='prompt'} onClick={()=>open('prompt')}>{promptLabel?t(promptLabel):tr(['Prompt','Шаблон','Шаблон'])}</button>
+      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='language'} onClick={()=>open('language')}>{tr(['Language','Мова','Язык'])}</button>
+      <button disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel==='length'} onClick={()=>open('length')}>{tr(['Length','Довжина','Длина'])}</button>
+      {kinds.map(kind=><button key={kind} disabled={!interactive||busy||!preferences} type="button" className={button} aria-expanded={panel===kind} onClick={()=>open(kind)} title={modelLabel(kind)}>{tr(kindLabels[kind])}</button>)}
     </div>
+    <div className="flex min-w-0 items-end justify-between gap-2"><span aria-label={t('Selected models')} title={summary} className="min-w-0 flex-1 break-words text-[10px] leading-tight text-white/60">{summary}</span>{shortcut}</div>
     {interactive&&panel&&preferences&&<div className="absolute bottom-full left-2 right-2 z-20 mb-1 max-h-72 overflow-auto rounded-lg border border-white/25 bg-neutral-900 p-2 shadow-xl" role="region">
       <div className="mb-1 flex items-center justify-between text-xs font-medium"><span>{panel==='prompt'?tr(['Prompt template','Шаблон інструкції','Шаблон инструкции']):panel==='language'?tr(['Response language','Мова відповіді','Язык ответа']):panel==='length'?tr(['Response length','Довжина відповіді','Длина ответа']):tr(kindLabels[panel])}</span><button type="button" className={button} onClick={()=>setPanel(null)} aria-label={t('Close')}>×</button></div>
       {error&&<p role="alert" className="py-1 text-xs text-red-300">{error}</p>}

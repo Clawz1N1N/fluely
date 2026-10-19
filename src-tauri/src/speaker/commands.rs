@@ -147,6 +147,7 @@ async fn run_vad_capture(
     let mut silence_chunks = 0;
     let mut speech_chunks = 0;
     let max_samples = sr as usize * 30; // 30s safety cap per utterance
+    let mut meter = crate::audio_levels::Meter::new();
 
     while let Some(sample) = stream.next().await {
         buffer.push_back(sample);
@@ -161,6 +162,7 @@ async fn run_vad_capture(
             }
 
             // Apply noise gate BEFORE VAD (critical for accuracy)
+            meter.update(&app, "[system]", &mono);
             let mono = apply_noise_gate(&mono, config.noise_gate_threshold);
 
             let (rms, peak) = calculate_audio_metrics(&mono);
