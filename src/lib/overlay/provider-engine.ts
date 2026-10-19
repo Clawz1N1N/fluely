@@ -160,9 +160,9 @@ export async function* streamBrain(entry: ProviderEntry, prompt: string, history
       request.tool_choice='none';
     }catch(error){failure=error;throw error;}
     finally{if(round&&attempt!==entry){
-      const first=usageByAttempt.get(entry)??{},next=usageByAttempt.get(attempt)??{},combined:TokenUsage={};
-      for(const key of ['input','output','total'] as const)if(first[key]!==undefined&&next[key]!==undefined)combined[key]=first[key]+next[key];
-      usageByAttempt.set(entry,combined);
+      // Context occupancy belongs to the last request, not the sum of repeated
+      // history across tool rounds. Billing is already settled per attempt.
+      usageByAttempt.set(entry,{...usageByAttempt.get(attempt)});
       await reportProvider(attempt,signal.aborted?new DOMException('Aborted','AbortError'):failure);
     }}
   }

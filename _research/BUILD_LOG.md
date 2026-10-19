@@ -13944,3 +13944,79 @@ native_agent_tool_continuation_two_requests_exact_usage_and_TTS_bindings True
 ```
 
 Full log: logs/beta023-rc19-provider-tools.log
+
+## beta023-rc19-openrouter — 2026-10-19T18:37:16.748Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-openrouter-smoke.py`
+
+Exit code: 1
+
+Last 20 output lines:
+
+```text
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "%USERPROFILE%\.local\bin\browser-harness.exe\__main__.py", line 10, in <module>
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 255, in main
+    _run(args)
+  File "%USERPROFILE%\AppData\Roaming\uv\tools\browser-harness\Lib\site-packages\browser_harness\run.py", line 406, in _run
+    exec(code, globals())
+  File "<string>", line 16, in <module>
+StopIteration
+```
+
+Full log: logs/beta023-rc19-openrouter.log
+
+## beta023-rc19-openrouter-live — 2026-10-19T18:37:31.308Z
+
+Directory: <workspace>
+
+Command: `%USERPROFILE%\.local\bin\browser-harness.exe < scripts\native-openrouter-smoke.py`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+configured_free_openrouter_native_request_and_vault_auth True
+```
+
+Full log: logs/beta023-rc19-openrouter-live.log
+
+## beta023-last-context — 2026-10-19T18:40:02.520Z
+
+Directory: <workspace>
+
+Command: `node --loader ./scripts/ts-loader.mjs --test tests/provider-diagnostics.test.mjs tests/context-runtime.test.mjs tests/context-budget.test.mjs`
+
+Exit code: 0
+
+Last 20 output lines:
+
+```text
+ok 14 - user cancellation does not place a healthy model into provider cooldown
+  ---
+  duration_ms: 1.125
+  type: 'test'
+  ...
+# Subtest: a JSON response arriving after cancellation yields no late text
+ok 15 - a JSON response arriving after cancellation yields no late text
+  ---
+  duration_ms: 2.7377
+  type: 'test'
+  ...
+1..15
+# tests 15
+# suites 0
+# pass 15
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4400.9792
+```
+
+Full log: logs/beta023-last-context.log

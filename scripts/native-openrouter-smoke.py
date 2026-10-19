@@ -13,7 +13,7 @@ for path in candidates:
 assert source and source.get('secret_keys'),'Configured free model not found'
 assert source['base_url'].rstrip('/')=='https://openrouter.ai/api/v1'
 def invoke(command,args=None):return js('window.__TAURI_INTERNALS__.invoke('+json.dumps(command)+(','+json.dumps(args) if args is not None else '')+')')
-dashboard=next(tab for tab in list_tabs() if tab['url'].endswith('/settings'));switch_tab(dashboard['targetId'])
+dashboard=next(tab for tab in list_tabs() if tab['url'].endswith(('/settings','/dev')));switch_tab(dashboard['targetId'])
 budget=source['max_output_tokens'] if os.environ.get('FLUELY_ACCEPTANCE_ORIGINAL_OUTPUT')=='1' else 64
 entry=dict(source,id='owned-live-openrouter',credential_id=source.get('credential_id') or source['id'],variables={},curl=None,max_output_tokens=budget,reasoning_effort='off',enabled=True,manual_neutral=False)
 for field in ['limit_per_second','limit_per_minute','limit_per_hour','limit_per_day','token_limit_per_second','token_limit_per_minute','token_limit_per_hour','token_limit_per_day']:entry[field]=0
